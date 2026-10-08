@@ -23,11 +23,11 @@ wins over anything you remember about this project. The research behind it is in
 
 ## Founder constraints that shape every task
 
-- Base case 15 hours a week of founder time, 42 project weeks a year, total hours capped
-  at 55 a week including the day job. Dates are bands, not points. Gates are cumulative
-  hour triggers, not calendar dates. See `docs/plan/decisions.md` D5 and D10.
-- Review budget: 8-15 pull requests a week, each 200 changed lines or fewer (hard cap
-  400). Review bandwidth is the binding constraint of the whole project. A PR that is
+- 30 hours a week of founder time on top of a day job, 42 project weeks a year, a deload
+  fortnight every 12 weeks. Dates are bands, not points. Gates are cumulative build-hour
+  triggers, not calendar dates. See `docs/plan/decisions.md` D5, D10, D11, and D23.
+- Review budget: about 20-25 pull requests a week at 30 hours (8-15 at 15 hours), each
+  200 changed lines or fewer (hard cap 400). Review bandwidth is the binding constraint of the whole project. A PR that is
   too big does not get reviewed; it gets split.
 - Line-by-line review areas: `crates/sim`, `crates/proto`, `crates/persist`, and the
   authority paths of `crates/server`. The founder reads every line. Keep these crates

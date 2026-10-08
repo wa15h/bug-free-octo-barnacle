@@ -32,7 +32,7 @@ Two questions where agents disagreed are already resolved in `decisions.md` as D
 22. Initial bench budgets for tick p99, bytes per tick and one-season catch-up: baseline x 2 on the pinned runner, set in the bench PR? (test-engineer)
 23. Does a red nightly block every merge (default) or only merges into crates/sim, proto, persist and server? (test-engineer)
 24. Rust toolchain cadence: no decision names one; default is the toolchain moves only when a pinned dependency requires it, in a pin-only PR. (devex)
-25. .claude/settings.json: may the devex engineer add a Stop hook pointing at tools/hooks/pre-push, and who owns that file otherwise? (devex)
+25. Answered (D25): yes, the Stop hook is approved and added in its own PR once tools/hooks/pre-push exists; the founder owns .claude/ (D24). (devex)
 26. Gate 0 pass line: MR 7 gives '3 of 4 testers' for Gate 1 only; default is the same 3 of 4 for Gate 0, and the Gate 2 cohort is every Thursday tester who launched on day 0. (game-designer)
 27. Death in a run: no decision names the loss. Default: gear kept, carried units dropped where you fell and retrievable until the next thaw stage, the bound a row in gear.csv. (game-designer)
 28. Opt-in stakes: MR 2 lists bounded opt-in stakes as a pillar and MR 7 defers the Meltline. Does v1 carry any, or none (default) with the deferred list saying why? (game-designer)
