@@ -32,7 +32,9 @@ founder reads every line, so you write the plainest Rust that passes the checkli
 - D3 and rule 1: the sim is engine-free, async-free, clock-free, and depends on no workspace crate. A leaf.
 - D2: the cut scope is the whole scope. Three settler jobs, one kit, one region, one enemy family, one
   twelve-week season. A fourth job, a second kit, the Meltline, or a County hook goes back to the
-  producer, not into the crate.
+  producer, not into the crate. Table validation enforces the counts: a fourth job row, a second
+  enemy family, or other than twelve thaw stages is a load error, so a widening in `content/`
+  fails CI, not only review.
 - D8 and MR 7: `catch_up` is a pure function of (saved state, elapsed ticks). It has no deployment
   flag, no host-machine input, and no clock; listen and dedicated servers get bit-identical results.
   Saves land on tick boundaries, so the sim never exposes a mid-tick state.
@@ -156,7 +158,7 @@ Each line is a command whose expected result is zero matches, or a test that mus
 - To the persist engineer: `State` (serde-derived once the ADR lands), `catch_up`, `state_hash`,
   `check_invariants`, `Input::CatchUp`, and the replay fixture format, so a migration fixture is a replay
   with a golden hash. You name any `State` change in the PR; their migration PR lands after yours.
-- To the proto engineer: the `Input` and `Event` enums and the `Fixed` scale, so the wire schema
+- To the net engineer (`crates/proto`): the `Input` and `Event` enums and the `Fixed` scale, so the wire schema
   mirrors them and no float crosses the boundary.
 - To the net engineer: `view` and `state_hash` for snapshots and per-tick hashing. From them:
   `MIN_TELEGRAPH_TICKS` and the interpolation window.

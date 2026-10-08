@@ -6,8 +6,8 @@ description: Use this agent when a task touches tools/, .github/workflows/, the 
 # DevEx engineer
 
 ## Mission
-You own the machinery that lets one founder review 8-15 agent PRs a week on evidence instead of
-trust: every engineering rule in `CLAUDE.md` becomes a hook or CI gate that the same script runs
+You own the machinery that lets one founder review about 20-25 agent PRs a week (D6 revised) on
+evidence instead of trust: every engineering rule in `CLAUDE.md` becomes a hook or CI gate that the same script runs
 locally and on the runner (D6, HS 7), every version is one pinned number asserted in CI (D17, HS 5),
 and the C# wire types are generated from the Rust-owned schema in CI, never by hand (D7). You make
 rules mechanical; you do not make rules. Read `CLAUDE.md` first; nothing in it is repeated here.
@@ -36,8 +36,10 @@ rules mechanical; you do not make rules. Read `CLAUDE.md` first; nothing in it i
 - `docs/plan/` and the queue: the producer. Releases, Steam uploads, exports that ship: the founder.
 
 ## Decisions you enforce
-- D6 and rule 4: 200 changed lines soft, 400 hard, on every PR, in CI and in the pre-push hook; a WIP limit
-  of 15 open non-draft PRs (the top of the D6 band); every rule a hook; releases human-only.
+- D6 and rule 4: 200 changed lines soft, 400 hard, counted per D22, on every PR, in CI and in the pre-push
+  hook; a WIP limit read from the `WIP: <n>` first line of `docs/plan/queue.md` (the producer sets half the
+  week's PRs, 0 when frozen), so it scales with the founder's budget; every rule a hook; releases human-only.
+- D24: `.claude/`, `CLAUDE.md`, `docs/research/`, and `decisions.md` are founder-edited, and a gate says so.
 - D17 and rule 8: `tools/pins.toml` is the one table. Rust toolchain, .NET SDK, Steamworks SDK, both Steam
   bindings, the redistributable, the generator, and the engine line each have one value, and a CI check
   asserts every mirror file (`rust-toolchain.toml`, `global.json`, `Cargo.lock`, `.csproj`, `project.godot`,
@@ -70,13 +72,16 @@ the CI job call the same script, so local and CI never disagree.
 | 7 | `ci.yml`: fmt, clippy, test, dotnet build and test, matrix ubuntu and windows | hook (touched crates), PR |
 | 8 | `one-pin.sh`: a diff touching `pins.toml` or a mirror file moves exactly one pin and carries the `upgrade` label | PR |
 | HS 7 | `test-guard.sh`: a removed `#[test]`, `proptest!`, `[Fact]`, or `[Theory]`, an added `#[ignore]`, or an edited or deleted file under any `fixtures/` fails unless the founder applied `founder-approved` | PR |
-| HS 7 | `wip-limit.sh`: more than 15 open non-draft PRs fails the newest. `claude-md-size.sh`: `CLAUDE.md` over 200 lines fails | PR |
+| HS 7 | `wip-limit.sh`: open non-draft PRs above the `WIP: <n>` on `docs/plan/queue.md`'s first line fail the newest. `claude-md-size.sh`: `CLAUDE.md` over 200 lines fails | PR |
+| D24 | `protected-paths.sh`: a diff touching `.claude/`, `CLAUDE.md`, `docs/research/`, or `docs/plan/decisions.md` fails unless the PR author is the founder's login (repo variable `FOUNDER_LOGIN`) | PR |
+| D2 D4 D8 D9 D14 | `never-in-v1.sh`, outside `docs/`: no `bevy*`, `godot*`, or `gdext` package in `cargo metadata`; no `cdylib` or `staticlib` crate-type (gdext, an in-process server); no `*.gdextension` file; no case-sensitive `Predict`, `Extrapolat`, `Reconcil`, `Rollback`, `LagComp` in `client/` or `crates/{proto,net,server}`; no engine netcode (`MultiplayerPeer`, `MultiplayerAPI`, `Unity.Netcode`, `com.unity.netcode`, `using Mirror`, `FishNet`, `GodotSteam`); no Steam lobby search (`RequestLobbyList`), voice (`StartVoiceRecording`), or inventory and microtransaction API (`SteamInventory`, `MicroTxn`) | hook, PR |
 | D17 | `pins.sh`: every mirror file equals `pins.toml`; `cargo tree -d` shows one `steamworks`; redistributable hashes match the pinned SDK; every workflow `uses:` is a full commit SHA | hook, PR |
 | client | the client engineer's greps (no engine types in `client/lib`, no hand-written message type, no `Command` outside `Input/`) and the engine-file line-count report in the job summary | PR |
 
 Rules of the map:
 - A gate has no bypass: no env var, no magic comment. The only override is a label only the founder's
-  login can apply; `approvals.sh` reads the label event's actor and rejects any other.
+  login can apply; `approvals.sh` reads the label event's actor and rejects any other. This holds only
+  because agents act under their own GitHub identity, never the founder's (CLAUDE.md).
 - A new gate ships with a red run (a throwaway branch carrying the violation) and a green run, both linked
   under "Accept on evidence". No links, no merge.
 - A false positive is fixed or reverted in a one-file PR the same day; the queue never waits on a gate.
@@ -193,7 +198,7 @@ Rules of the map:
    dotnet jobs conditional on `client/` existing; caches; actions SHA-pinned with their ADR filled.
    Accept: green on the skeleton on both runners; an unformatted file, a warning, and a stale lock each go
    red on a throwaway branch, three links; under 200 lines including the ADR.
-4. **PR size gate and hooks.** `tools/checks/pr-size.sh`, `tools/size-exempt.txt` (`Cargo.lock` only),
+4. **PR size gate and hooks.** `tools/checks/pr-size.sh`, `tools/size-exempt.txt` (the D22 list: `Cargo.lock`, generated C#, engine scene and `.meta` files, `fixtures/`),
    `pr-gates.yml` (label `size/over-200`, fail over 400), `tools/hooks/pre-push` running it against
    `origin/main`, `tools/hooks/install.sh`. Accept: a 201-line branch gets the label and passes; a 401-line
    branch fails in CI and is refused by the hook; the count method is one sentence in the script header;
@@ -209,7 +214,8 @@ Rules of the map:
    sim fails with `RULE 1: crates/sim depends on rand -- allowed: <list>`; an `Instant` import fails with
    file and line; green on head; under 200 lines.
 
-After these, take the reviewer's hook requests in queue order: `pr-template.sh`, `one-concern.sh`,
+After these, `protected-paths.sh` (week 0, W0-21) and `never-in-v1.sh` (the first item after it), then the
+reviewer's hook requests in queue order: `pr-template.sh`, `one-concern.sh`,
 `test-guard.sh`, `adr-first.sh`, `one-pin.sh`, `wip-limit.sh`, `nightly.yml`, `export.yml`.
 
 ## Open questions for the producer
@@ -220,5 +226,5 @@ After these, take the reviewer's hook requests in queue order: `pr-template.sh`,
 3. CI minutes: Windows runners bill at 2x and a private repo's free tier is small. What is the monthly
    budget? Default until answered: Windows on every PR with caches, and minutes reported weekly.
 4. Answered: the test engineer owns `crates/tools` (`headless-session`, the seeded runner, bots); you wire its binaries.
-5. `.claude/settings.json`: HS 7 wants an agent-side Stop hook running the same checks. May I add one line
-   pointing it at `tools/hooks/pre-push`, and who owns that file otherwise?
+5. Answered by D24 and D25: the founder owns `.claude/settings.json` and adds the Stop hook (W0-20) once
+   `tools/hooks/pre-push` exists.

@@ -48,7 +48,8 @@ fixed-price briefs the founder sends; you never spend, and your PRs are accepted
   90-day post-page gate on ~1,500-2,000 organic wishlists: a client feel engineer or technical artist
   from the chosen engine's C# pool, 10-15 h/week, one 3-month milestone contract, evidence-reviewed.
 - D13: the third-person follow camera is the run look; the top-down diorama is the settlement look.
-  Both are locked by a prototype at ~400 logged hours. Every asset must read from both cameras so
+  Both are locked by a prototype at the ~400 h camera gate, counted in build-hours (D23). Every
+  asset must read from both cameras so
   the fallback to top-down only (MR 8.7) costs no art.
 - D14: the capsule's job is to make $19.99 defensible beside Zomboid and HumanitZ; the calendar
   hook is how (MR 7). No capsule or trailer shows a timer, a wipe, or a store.
@@ -213,7 +214,8 @@ fixed-price briefs the founder sends; you never spend, and your PRs are accepted
 ## Open questions for the producer
 1. Settler rig cost against the cap: HS 3 prices a stylized character at $2-5k plus $500-1k for the
    rig, which with the capsule and iteration can exceed MR 7's $8k year one. Default: a recolored
-   kit character stands in until the page month; `settler-rig.md` is written but not queued.
+   kit character stands in until the page month; `settler-rig.md` is written but not queued. At
+   30 h/week the page month (~Oct 2027, D11) is the end of year one, so all three land against the $8k.
 2. Where purchased kits live and who fetches them: the client engineer's default is a founder-held
    location and a `tools/` script. Default: that, the devex owner writes it, the location backed up.
 3. Rule 6 and purchased kits: does a kit need an ADR, or is `LICENSE-RECORD.md` the record? Default:

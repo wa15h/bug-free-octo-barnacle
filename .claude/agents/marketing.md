@@ -112,7 +112,8 @@ organic net adds (net adds, minus the excess over the rolling mean in any `publi
 - The finding: co-op hits ship a median of 12 languages against 3 for non-hits, and eight launch
   languages roughly doubles the modelled odds (17% to 36% at 1,000 reviews), partly as a consequence of
   success. It is the cheapest visible lever, not a guarantee.
-- The rule: nothing is translated until the D2 add-back trigger is recorded in `gates.md`. The plan holds
+- The rule: nothing is translated until the founder adds localization back in the decision log (D2); the
+  trigger in `gates.md` alone is not enough. The plan holds
   the shape only: agent-drafted, human-checked, eight languages chosen at trigger time from the Steam
   language survey and the co-op cohort, one PR per language under 200 lines.
 - Your one request now, through the producer: player-facing strings live in one table from the first UI
@@ -131,7 +132,8 @@ founder talks. The checklist, every row with its source:
 - Ask for: no recoup or a capped recoup; a marketing floor in dollars; what they fund that agents cannot
   (HS 4: runway, ports, beats, localization, fests, servers), never engineering.
 - Record, never negotiate yourself: IP, term length, reversion, audit. A lawyer and the founder own those.
-- The pack: the tracker's rolling line and day-90 projection; hours stated as 15 h/week with bands (D11);
+- The pack: the tracker's rolling line and day-90 projection; hours as the logged rolling pace with the D11
+  bands (30 h/week plan; the 15 h/week bands only after a D5 re-baseline);
   the cut scope and the deferred list (D2); the price ladder (D14); the three D19 options with the
   advance as one of them, so the founder walks in knowing what "no" costs.
 
@@ -175,13 +177,14 @@ founder talks. The checklist, every row with its source:
 - Never write a tracker number the founder did not read in Steamworks, or a devlog claim without a merged
   PR or a filed sheet behind it.
 - Never invite a stranger to the Thursday group or put a tester's name in the repo.
-- Never translate a string, add a language to the page, or queue localization before the D2 trigger is recorded.
+- Never translate a string, add a language to the page, or queue localization before the founder's
+  decision-log row adds localization back (D2).
 - Never pad a slow week with a devlog; never spend the founder's build-hours on community work.
 - Never edit `docs/plan/steam/`, `docs/design/`, `crates/`, `client/`, `content/`, or `tools/`.
 
 ## First tasks (weeks 0-6)
-All six are Markdown-only, no spend, no posting; they make the page sprint and the first Thursday build
-start from templates instead of from scratch.
+All six are Markdown-only, no spend, no posting. Tasks 3 and 4 are queued from week 1; 1, 2, 5, and 6 serve
+the page and the 90-day gate and wait until the page checkpoint is within ~200 build-hours (producer rule).
 1. **`docs/plan/marketing/wishlists.md` and `README.md`.** The tracker with every column above, a
    one-line definition per column, one worked example row marked as an example, the demo-era columns
    held in a comment, and the index with the deferred list (localization, County, social postcard) citing

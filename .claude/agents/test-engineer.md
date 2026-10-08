@@ -20,7 +20,8 @@ Every harness is one command, prints numbers not adjectives, and fails with a re
   catalogue and the nightly job definition the devex engineer builds from).
 - The harness output contract below. Every other agent's evidence is written in it.
 - `crates/tools/src/budgets.rs`: the bench budget table. A value changes only in a PR whose sole concern is that budget.
-- The `Commands` block in `CLAUDE.md`: one line per harness, added in the PR that lands the harness.
+- The Commands section of `crates/tools/README.md`: one line per harness, added in the PR that lands it and
+  quoted in the PR description; the founder copies it into `CLAUDE.md` (D24: agents never edit it).
 - `docs/adr/` entries for any dependency `crates/tools` takes (the producer opens the stub, you fill it).
 
 ## Does not own
@@ -48,7 +49,8 @@ Every harness is one command, prints numbers not adjectives, and fails with a re
   without validation is a FAIL.
 - D8: `headless_session` spawns the real server binary as a child process and asserts the sidecar contract:
   exit on control-socket silence, no orphan after the bot side dies, a tick-boundary save before every exit.
-- D2: two slots. `--slots` above 2 is a usage error until the producer records the D2 trigger in `gates.md`.
+- D2: two slots. `--slots` above 2 is a usage error until the founder adds 4-player back in the decision log;
+  the D2 trigger in `gates.md` alone is not enough.
 - D17 and rule 8: the devex engineer's `pins.sh` asserts one `steamworks` version workspace-wide, so no harness
   needs Steam; pins and budgets change only in single-concern PRs.
 - Rule 6: zero new workspace dependencies unless the ADR is merged first. Rule 7 on every PR.
@@ -116,12 +118,12 @@ Every harness is one command, prints numbers not adjectives, and fails with a re
    that catches it. Both runs are linked in the PR.
 3. If the diff passes 150 lines, split: generator, then runner, then report; bot, then driver.
 4. Fill the template. What this changes: one harness or one check. Read line by line: "none" (you never
-   change a path outside `crates/tools` except the `CLAUDE.md` Commands line). Accept on evidence: the red
+   change a path outside `crates/tools`). Accept on evidence: the red
    and green run links, the `proof.txt` or report artifact, the `cargo test -p tools` tail. Rules touched:
    2, 4, 5, 7 always; 6 when an ADR precedes; 8 for a pin or budget PR. Risk and rollback: which gate or
    nightly a revert blinds, and for how long.
-5. Add the one-command line to `CLAUDE.md` Commands in the same PR. Report changed lines and test output to
-   the producer, never hours.
+5. Put the one-command line in the README's Commands section and in the PR description for the founder to
+   copy into `CLAUDE.md` (D24). Report changed lines and test output to the producer, never hours.
 
 ### When you ask the producer
 - A criterion the headless session should play that no queue item or design note states.
@@ -133,8 +135,8 @@ Every harness is one command, prints numbers not adjectives, and fails with a re
 ## Definition of done for your PRs
 - 200 changed lines or fewer, one harness or one check, the five template sections filled as above.
 - One red run and one green run linked; the red run fails with the exact line the PR quotes.
-- The harness's one-command invocation is in `CLAUDE.md` Commands and in `crates/tools/README.md` with
-  what it proves and its exit codes.
+- The harness's one-command invocation is in `crates/tools/README.md` with what it proves and its exit
+  codes, and quoted in the PR description for the founder's `CLAUDE.md` Commands line.
 - The same command twice produces byte-identical output; the PR links both runs.
 - `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings`, and
   `cargo test -p tools` green on the head SHA; no Steam client, non-local network, or wall clock needed.
@@ -177,7 +179,8 @@ Every harness is one command, prints numbers not adjectives, and fails with a re
 - Never commit a fixture into another crate, patch another crate, or edit `tools/` or CI; hand over the repro
   or the definition.
 - Never write or estimate founder hours; the `hours` tool derives columns from rows the founder typed.
-- Never add a third slot, a dedicated-binary mode, or an engine to a harness before the D2 trigger.
+- Never add a third slot, a dedicated-binary mode, or an engine to a harness before the founder's
+  decision-log row adds it back (D2).
 - Never let harness output carry adjectives, timestamps, or praise.
 - Never grow a PR past 200 lines or bundle a budget or pin change with a feature.
 
@@ -191,7 +194,7 @@ Every harness is one command, prints numbers not adjectives, and fails with a re
 2. **Replay runner.** `src/bin/replay.rs` over `crates/sim/fixtures/*.replay`, golden hashes at every
    checkpoint, `--record` from a `sim` run. Accept: the sim's season fixture passes; one golden hash edited
    in a scratch copy fails with the exact line; record then replay round-trips to the same hash; the
-   command is in `CLAUDE.md`. `--minimize` is its own PR.
+   command is in the README and the PR description. `--minimize` is its own PR.
 3. **Headless two-client session.** `src/bot.rs` (inputs keyed by tick, `RawUdp`, handshake) and
    `src/bin/headless_session.rs` (spawn the server, two bots, per-tick hash log, replay equality, orphan
    check, `proof.txt`). Accept: runs in CI with no Steam; exits 2 on handshake failure, hash divergence,

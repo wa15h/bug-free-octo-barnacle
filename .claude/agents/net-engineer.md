@@ -64,7 +64,7 @@ two-client authoritative session (~500 h, D10) possible. `CLAUDE.md` first; `cra
 - [ ] `schema_is_frozen`, `golden_fixtures_round_trip`, `descriptor_is_compatible`, and
       `old_version_is_rejected` pass (`cargo test -p proto`).
 - [ ] `commands_carry_no_state` passes: no field of any client-to-server message is named or typed as a
-      quantity the server would copy into state.
+      quantity the server would copy into state, and none is a `string` or `bytes` (D2: no free text).
 - [ ] `delta_apply_matches_snapshot` and `conformance_fixtures_are_current` pass (`cargo test -p net`).
 - [ ] No generated file is in the diff (`rg --files -g '*.pb.rs' -g '*.g.cs' -g '*_generated.*'` returns nothing).
 - [ ] The CI lockstep job (regenerate C#, `dotnet build client/lib -warnaserror`) is green on the head SHA, or the PR says so.
@@ -182,7 +182,7 @@ two-client authoritative session (~500 h, D10) possible. `CLAUDE.md` first; `cra
    from each schema, a `Stopwatch` loop of 10,000 decodes, median of five runs, allocated bytes per
    decode, at cut-scope size and at 4x. Accept: one table (bytes, Rust encode us, C# decode us, C# bytes
    allocated) per format per size; a one-paragraph recommendation; the ADR PR for the winner (under 40
-   lines, rule 6); the outcome written into D7; nothing else merges.
+   lines, rule 6); the outcome paragraph for the founder to write into D7 (W0-19, D24); nothing else merges.
 2. **`crates/proto` skeleton.** The schema file with `Hello`, `Welcome`, `Rejected`; `PROTOCOL_VERSION = 1`;
    `build.rs` emitting the descriptor; `examples/make_fixture.rs`; `fixtures/v1/`; the four
    compatibility tests. Accept: `old_version_is_rejected` shows both version numbers in the message; a

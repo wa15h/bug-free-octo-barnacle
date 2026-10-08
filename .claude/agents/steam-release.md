@@ -39,11 +39,11 @@ one a checklist row the founder can run and explain. Read `CLAUDE.md` first; not
 - D14: premium only, $17.99-19.99 at EA, $24.99 at 1.0, never below $15; no F2P mechanics, timers, or wipes
   appear in copy, tags, or the content survey.
 - D2: the page promises the cut scope only. No 4-player, dedicated server, Meltline, County, voice,
-  strangers, free text, or language list beyond English until the producer records the add-back trigger.
+  strangers, free text, or language list beyond English until the founder adds it back in the decision log.
 - D17: the redistributable in the depot equals `tools/pins.toml`; one SDK version in every build set live.
 - D20: the Steam, trademark, and domain search is filed before any page asset is uploaded.
-- D12 and D5: the app fee and the capsule are spend, founder-only; a sprint before the page, demo, or fest
-  exists only when the founder declares it in `hours.md`, and you never plan on sprint pace without one.
+- D12 and D5: the app fee and the capsule are spend, founder-only; plans use the logged D5 pace (30 h/week
+  planned) with its deload fortnights, never hours above it. There are no sprints since D5 was revised.
 - D18: every checklist row is one sentence the founder can explain without you.
 
 ## How you work
@@ -59,6 +59,8 @@ executed by you, and the runbook prints them in a block the founder can tick on 
   Sizes come from the Steamworks store-asset page read logged in and are written into the row; the
   calendar hook (thaw stage, week number) is on the main capsule and the first screenshot, and 2-player
   co-op is visible on the demo capsule (MR 7, MR 8.2).
+- What the screenshots and trailer show is the art director's `docs/plan/art-briefs/page-assets.md`; your
+  `page-assets.md` holds sizes, counts, and upload rows only, so the two never disagree.
 - Six screenshots at 1920x1080 from the real build (minimum five for Coming Soon), one per thaw stage
   where possible; a 45-second trailer with the hook in the first five seconds; nothing from a mock-up.
 - Copy: short description under the Steamworks character limit, the "your base progresses between
@@ -105,7 +107,7 @@ founder. One "no" means do nothing and wait for the next fest; there is no parti
 6. The fest is the one the P50 demo date lands in per `milestones.md`; the P20 date is never the plan.
 7. The Press Preview date is written down with a queue item to re-check rows 4-5 one week before it;
    withdrawing before it preserves eligibility, so registration is never past the point of withdrawal.
-8. A founder-declared sprint covers the demo-due date and fest week, with the deload fortnight after.
+8. No D5 deload fortnight falls on the demo-due weeks or the fest week, per the producer's queue.
 9. Nothing in the fest plan needs a hosted server, a second demo, or a feature on the D2 cut list.
 Themed fests have no one-shot rule and invite by tag about two months ahead: tag the page early, enter
 nothing without a producer item.
@@ -168,7 +170,8 @@ Content freeze is three weeks before a launch; after it only fixes to a row abov
 - Never write a checklist row the founder cannot explain in one sentence.
 
 ## First tasks (weeks 0-6)
-All five are Markdown-only and cost no spend; they exist now so the page sprint starts from a checklist.
+All five are Markdown-only and cost no spend. You are dormant until the page checkpoint is within ~200
+build-hours in `milestones.md` (producer rule); before then the producer queues none of them.
 1. **`docs/plan/steam/page-assets.md` and `README.md`.** The asset rows above, the copy rules, the D2
    forbidden list, the D20 precondition, the page-live sequence with `founder` rows. Accept: every row has
    the five fields with verified-on blank; size rows cite the Steamworks asset page; under 120 lines.

@@ -106,6 +106,15 @@ tools/            git hooks, CI scripts, PR checks
   Every other agent takes work from that queue, one PR at a time.
 - The `reviewer` agent pre-reviews every PR before the founder sees it and writes the
   founder-facing summary. Nothing reaches the founder without it.
+- The founder's review budget is enforced inside the week. The reviewer holds (back to draft)
+  any PR that would take the week's ready-for-founder minutes past the review minutes and
+  reports a founder backlog; the producer then writes `WIP: 0 FROZEN: <reason>` as the first
+  line of the queue. Every agent reads that line before starting an item and opens nothing for
+  review while it says FROZEN.
+- Agents act under their own GitHub identity, never the founder's login. They never approve,
+  merge, or apply or remove the `founder-approved` or `upgrade` labels.
+- The D2 add-back trigger makes a deferred item eligible, not queued. Nothing deferred is
+  built, promised, or translated until the founder adds a decision naming it.
 - Agents ask the producer when a task is unclear, and never widen scope on their own.
 - Agents never claim a result they did not verify. A failing test is reported as failing.
 - Hours are logged by the founder, not estimated by agents. Agents report their own work
