@@ -6,7 +6,7 @@ unless the founder objects), or Pending (a spike or gate decides).
 
 | ID | Decision | Status | Source |
 |---|---|---|---|
-| D1 | Concept: Longthaw, staged. Player-hosted 1-4 player scavenging game with an offline-progressing settlement and a thaw-calendar hook. Ashward (developer-hosted persistent valley) is the fallback scope cut, not the plan. | Default | MR 1, 7, 8.1; HS 8 |
+| D1 | Concept: The Reclaimers (working title, D20), staged. Player-hosted 1-4 player scavenging game with an offline-progressing settlement and a cordon-calendar hook, in the setting D26 defines. Revised 2026-10-09: the Ashward settlement-only fallback is withdrawn (D28). | Decided | MR 1, 7, 8.1; HS 8; founder 2026-10-09 |
 | D2 | Shipped scope for v1 is the cut scope: one season, one kit, one region, one enemy family, three settler jobs, 2-player listen server only. Everything else is earned by 18+ logged hours a week for six consecutive months. | Decided | HS 6, 9.10 |
 | D3 | Server is Rust: a plain tokio binary over Steam Datagram Relay via steamworks-rs GameServer sockets, engine-free sim/proto/net/persist crates, raw-UDP fallback. One-day SDR spike on app 480 before week 1. | Decided | MR 7; HS 5, 9.4 |
 | D4 | Client is C# on an engine-agnostic .NET Standard 2.1 library. Engine chosen by a weeks 0-6 bake-off between Godot 4.7 C# and Unity 6 on logged founder hours; tie within 15% goes to Unity 6. Bevy and Unreal are out. No Rust GDExtension on the critical path. | Pending bake-off | HS 5, 9.2 |
@@ -25,7 +25,7 @@ unless the founder objects), or Pending (a spike or gate decides).
 | D17 | Pins: one Rust toolchain, one Steamworks SDK version across every binding and the redistributable, one engine minor line. At most two engine minor upgrades a year. | Decided | HS 5 |
 | D18 | Rust education is not a goal. The founder reads line-by-line crates to verify them, not to learn. Agents explain decisions in PR descriptions so the founder can explain every merged change without the agent. | Decided | HS 2, 7 |
 | D19 | Employment decision at the 90-day gate: a four-day week or sabbatical from a named savings runway, a publisher advance, or hobby pace on the cut scope with early access in 2031-33 accepted in writing. | Pending gate | HS 9.14 |
-| D20 | Working title "Longthaw" needs a Steam, trademark, and domain search before the store page goes live. | Pending | MR 7 |
+| D20 | Working title "The Reclaimers", chosen by the founder on 2026-10-09 (replacing "Longthaw"). A Steam, trademark, and domain search by a human is required before the store page goes live. Known collision: "Reclaimers" (Steam app 2177010, LNO Studios, a single-player fantasy roguelike released April 2025, $9.99). Fallbacks if the search blocks it: "Reclaimed: Fenceline", "Reclaimed: All Clear", "Unfenced". Code identifiers use the internal codename `Hearth` and never the title, so a title change touches no code. | Pending search | Founder; setting and cause memos |
 
 ## Week 0 (before any feature work)
 
@@ -43,3 +43,40 @@ unless the founder objects), or Pending (a spike or gate decides).
 | D23 | Gates and milestone bands count build-hours, computed from the founder's logged hours as (logged minus 2.5 a week) x 0.8 x 0.92, because that is how HS 6 derived the bands. `docs/plan/hours.md` stores logged hours; the build-hours column is derived. | Default | Open question 1; HS 6 |
 | D24 | Agents never edit `.claude/` (agent definitions, settings, hooks), `CLAUDE.md`, `docs/research/`, or `decisions.md`. They propose changes in a PR description or an open question; the founder edits these files. | Decided | Harness flag on the devex engineer's Stop-hook question |
 | D25 | A Claude Code Stop hook in `.claude/settings.json` runs `tools/hooks/pre-push` when an agent finishes, so no agent ends a task with failing checks. Approved by the founder on 2026-10-08. It is added in its own PR after the devex engineer's pre-push script exists; agents still never edit `.claude/` themselves (D24). | Decided | Founder; devex-engineer open question 5 |
+
+## Setting and pacing (added 2026-10-09)
+
+| ID | Decision | Status | Source |
+|---|---|---|---|
+| D26 | Setting: an overgrown city (placeholder name Alder), sealed twelve years ago after a sickness that is long over, never named, and never shown. Nature took the city back. The ring fence (the cordon) stays up because twelve years of neglect left the buildings unsafe, and building inspectors certify the city sector by sector each real week on the Christchurch model. The frozen county, the thaw, nuclear causes, zombies, infected, mutants, and anomalies are all out. The glossary below is the single source for every setting term; mechanics are unchanged from the thaw design and only names, fiction, and art change. | Decided | Founder; `docs/research/setting-review.md`; `docs/research/cause-and-name.md` |
+| D27 | Front-load the fun: the producer orders weeks 1-6 so a watchable settlement comes first. The simulation skeleton, three settler jobs, the ledger, and the settlement viewer lead the queue after week 0's spikes and scaffolding; lower-priority tooling waits behind them. The aim is to reach Gate 0 (the settlement is fun to watch alone) as early as the build-hours allow. | Decided | Founder |
+| D28 | When hours run short, dates slip; scope and quality never do. The cut scope (D2) is the target state. No shortcut, scope cut, or quality reduction is ever taken to hold a date. A low rolling average, a V under 0.6, or a fatigue flag re-dates the bands (D5, D11) and nothing else. A failed fun gate (D10) goes to the founder as a decision with options, never as an automatic cut. This withdraws HS 9.10's quarterly scope cut and the Ashward settlement-only fallback. | Decided | Founder |
+
+### Setting glossary (D26)
+
+| Old term | New term |
+|---|---|
+| Longthaw (title) | The Reclaimers (working title, D20); code identifiers use the codename `Hearth` (for example `client/Hearth.sln`, `Hearth.Client.csproj`) |
+| a northern county that thaws week by week; Hallam County | an overgrown city whose ring fence lifts sector by sector each week; Alder (placeholder city name) |
+| volcanic winter, the Long Winter, winter as the cause | the sickness (over, unnamed, never shown) and the evacuation |
+| frozen (setting sense) | overgrown |
+| the thaw (the weekly world clock) | the lifting, run by the re-entry survey: building inspectors certify sectors structurally safe |
+| thaw calendar, thaw-calendar hook | cordon calendar, cordon-calendar hook |
+| thaw line, snowline | cordon line |
+| thaw stage, thaw week, thaw season, twelve-stage thaw ramp | cordon stage, cordon week, cordon season, twelve-stage cordon ramp |
+| `content/thaw.csv`, `thaw_stage(season_seed, week)` | `content/cordon.csv`, `cordon_stage(season_seed, week)` |
+| exposed slots, flooded slots; the thaw floods low ground | lifted slots, closed slots; sectors close for works (shoring, demolition, rubble hauled out) |
+| kit manifest columns `floodable`, `snow_capable` | `closable`, `growth_capable` |
+| snow, snowpack, ice | overgrowth, overgrowth density |
+| meltwater clock, meltwater level (the in-run clock) | the lock-up clock: one shared `dusk` value (Fixed) per run that rises only in session; cordon gates lock at printed `dusk` values, deepest wicket gates first and the main gate last; missing the last gate ends the run (gear kept, carried units left where you stood) |
+| melt, mid-melt | lift, mid-lift |
+| the Meltline (deferred opt-in mode); 90-second pump extraction | the Hospital Quarter (placeholder, deferred, D2): an unlifted sector entered by licence; 90-second inspection-gate extraction; carried units drop on death |
+| the County (deferred meta-layer) | the Boroughs |
+| settler job placeholders hauler, sorter, builder | Salvager (junk to components), Grower (planted beds to food), Builder (components to blueprint buildings) |
+| enemy family (unnamed) | a wild boar sounder: piglets harass, sows bluff-charge, the tusker telegraphs a straight charge with a long recovery; pillars, cars, and stairs break charges; it is driven off at a morale break and grows bolder as `dusk` rises (a content curve, no new state). No zombies, infected, or mutants |
+| "white and slate in week one, ochre and green by week twelve" | "wild green and rust beyond a small lit hearth in week one; cleared streets, beds, and lamplight across the lifted sectors by week twelve" |
+| palette roles snow, slate, meltwater, ochre, green | wild, concrete, cordon-orange, lamplight, bed-green, plus placard red, yellow, and green for door placards |
+| plague door marks, FEMA X-codes | ATC-20-style rectangular door placards: green INSPECTED, yellow RESTRICTED USE, red UNSAFE. Never a cross shape, never red on white (the Red Cross emblem) |
+| capsule test (nuclear franchises) | before any capsule spend, a greybox capsule shown to 30+ survival players: pass if under 25% name a zombie game, The Division, COVID, or Pacific Drive. The capsule never shows infected, hazmat suits, gas masks, red crosses, or an animal as the hero subject |
+
+Terms that stay as they are: the `FROZEN` queue flag, `schema_is_frozen`, and frozen schema or descriptor files are not setting terms. Comparable titles in the research (The Forever Winter and others) keep their names. The research reports are history; D26 overrides them.

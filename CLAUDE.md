@@ -1,7 +1,8 @@
-# Longthaw (working title)
+# The Reclaimers (working title)
 
 A player-hosted 1-4 player online co-op scavenging game with a settlement that keeps
-working between sessions, set in a northern county that thaws week by week. Steam first,
+working between sessions, set in an overgrown city sealed after a long-over sickness, whose
+ring fence lifts sector by sector each week (D26). Steam first,
 premium price, Rust authoritative server, C# client. Built by one founder with a day job
 and a team of coding agents. Agents write all code; the founder reviews everything.
 
@@ -11,13 +12,14 @@ wins over anything you remember about this project. The research behind it is in
 
 ## Shipped scope for v1 (the cut scope, decided)
 
-- One thaw season (12 real weeks), one region, one modular ruin kit, one enemy family.
+- One cordon season (12 real weeks), one region, one modular ruin kit, one enemy family
+  (a wild boar sounder). Every setting term comes from the glossary under D26.
 - The hearth: three settler jobs, a printed ledger, buildings from blueprints.
 - Out-and-back runs of 30-90 minutes; slow, telegraphed, positioning-first combat.
 - 2-player co-op over a listen server the host's client spawns as a sidecar process.
 - Offline progression as a deterministic catch-up function, identical on every server.
 - Deferred until earned by demonstrated hours: 4-player drop-in, the free headless
-  dedicated binary, the Meltline extraction mode, a second kit, the County meta-layer,
+  dedicated binary, the Hospital Quarter mode, a second kit, the Boroughs meta-layer,
   localization. Never in v1: client prediction or rollback, strangers, free text between
   players, in-game voice promises.
 
@@ -65,7 +67,7 @@ wins over anything you remember about this project. The research behind it is in
 ## Repository layout
 
 ```
-crates/sim        deterministic simulation (settlers, jobs, ledger, thaw calendar, combat rules)
+crates/sim        deterministic simulation (settlers, jobs, ledger, cordon calendar, combat rules)
 crates/proto      schema-owned wire protocol and versioning; generates C# types in CI
 crates/net        replication, snapshots, interest filtering, interpolation inputs
 crates/persist    saves, versioned migrations, catch-up, migration-fixture harness
@@ -113,6 +115,8 @@ tools/            git hooks, CI scripts, PR checks
   review while it says FROZEN.
 - Agents act under their own GitHub identity, never the founder's login. They never approve,
   merge, or apply or remove the `founder-approved` or `upgrade` labels.
+- When hours run short, dates slip; scope and quality never do (D28). No agent proposes a
+  shortcut or a cut to hold a date.
 - The D2 add-back trigger makes a deferred item eligible, not queued. Nothing deferred is
   built, promised, or translated until the founder adds a decision naming it.
 - Agents ask the producer when a task is unclear, and never widen scope on their own.
