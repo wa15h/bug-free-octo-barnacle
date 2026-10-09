@@ -38,12 +38,16 @@ one a checklist row the founder can run and explain. Read `CLAUDE.md` first; not
 - D15: Windows plus Steam Deck Playable via Proton, native Linux as a bonus; the page lists nothing else.
 - D14: premium only, $17.99-19.99 at EA, $24.99 at 1.0, never below $15; no F2P mechanics, timers, or wipes
   appear in copy, tags, or the content survey.
-- D2: the page promises the cut scope only. No 4-player, dedicated server, Meltline, County, voice,
+- D2: the page promises the cut scope only. No 4-player, dedicated server, Hospital Quarter, Boroughs, voice,
   strangers, free text, or language list beyond English until the founder adds it back in the decision log.
 - D17: the redistributable in the depot equals `tools/pins.toml`; one SDK version in every build set live.
-- D20: the Steam, trademark, and domain search is filed before any page asset is uploaded.
+- D20: the Steam, trademark, and domain search for "The Reclaimers" (a founder row) is filed before any page
+  asset is uploaded; it answers the known collision ("Reclaimers", Steam app 2177010), and if it blocks the
+  title the founder picks a D20 fallback. Depot, branch, and script names use the codename `Hearth`, never the title.
 - D12 and D5: the app fee and the capsule are spend, founder-only; plans use the logged D5 pace (30 h/week
   planned) with its deload fortnights, never hours above it. There are no sprints since D5 was revised.
+- D28: when hours run short, the page, demo, fest, and launch dates slip; no scope, checklist row, Deck row,
+  or refund-window run is dropped to hold one.
 - D18: every checklist row is one sentence the founder can explain without you.
 
 ## How you work
@@ -57,18 +61,21 @@ executed by you, and the runbook prints them in a block the founder can tick on 
 ### Steam page assets (MR 7; D14, D20)
 - Capsules: header, small, main, vertical, library capsule, library hero, library logo, page background.
   Sizes come from the Steamworks store-asset page read logged in and are written into the row; the
-  calendar hook (thaw stage, week number) is on the main capsule and the first screenshot, and 2-player
-  co-op is visible on the demo capsule (MR 7, MR 8.2).
+  cordon-calendar hook is on the main capsule (the cordon line carries it) and on the first screenshot
+  ("Week N of 12"), and 2-player co-op is visible on the demo capsule (MR 7, MR 8.2). No capsule shows
+  infected, hazmat suits, gas masks, red crosses, or an animal as the hero subject (D26).
 - What the screenshots and trailer show is the art director's `docs/plan/art-briefs/page-assets.md`; your
   `page-assets.md` holds sizes, counts, and upload rows only, so the two never disagree.
-- Six screenshots at 1920x1080 from the real build (minimum five for Coming Soon), one per thaw stage
+- Six screenshots at 1920x1080 from the real build (minimum five for Coming Soon), one per cordon stage
   where possible; a 45-second trailer with the hook in the first five seconds; nothing from a mock-up.
 - Copy: short description under the Steamworks character limit, the "your base progresses between
   sessions" claim worded as a catch-up function (MR 7), Online Co-Op category set, up to 20 tags with the
   five that matter first, system requirements from the export job's test machines, support contact on the
-  D20 domain, content survey answered from the GDD.
-- Page live only after: D20 search filed, capsule commissioned and paid (founder), copy checked against
-  the D2 list above, Valve's page review passed (founder submits, founder reads the result).
+  D20 domain, content survey answered from the GDD; every setting word follows the D26 glossary and the
+  sickness is never named.
+- Page live only after: D20 search filed, the D26 greybox capsule test passed before any capsule spend,
+  capsule commissioned and paid (founder), copy checked against the D2 list above, Valve's page review
+  passed (founder submits, founder reads the result).
 
 ### Steam Deck Playable (D15; MR 7; client-engineer `Deck readiness`)
 Track Valve's four categories; every row cites a `client/DECK.md` monthly run on hardware, never an
@@ -145,7 +152,7 @@ Content freeze is three weeks before a launch; after it only fixes to a row abov
   and a request that `pins.sh` compares the depot's redistributable hash to `pins.toml`.
 - From the client engineer: the monthly `client/DECK.md` log and the input-map glyph set. To them, via
   the producer: Deck tracker failures with Valve's category and wording.
-- From the game designer: the capsule brief with the calendar as a mandatory element, and the demo slice.
+- From the game designer: the capsule brief with the cordon calendar as a mandatory element, and the demo slice.
   To them: the demo rules above as a checklist and the first-ten-minutes finding.
 - From the art director: `docs/plan/art-briefs/capsule.md` and `page-assets.md` (the shot list and trailer
   spine); your `page-assets.md` holds the Steamworks sizes and upload rows. From the marketing agent:

@@ -21,7 +21,7 @@ rules mechanical; you do not make rules. Read `CLAUDE.md` first; nothing in it i
   `.github/PULL_REQUEST_TEMPLATE.md`, a verbatim copy of `docs/plan/pr-template.md` kept equal by a check.
 - The workspace root: `Cargo.toml` (`[workspace]`, members, resolver, shared lints), `rust-toolchain.toml`,
   `rustfmt.toml`, `.editorconfig`, and the root `.gitignore`.
-- The C# solution files: `client/Longthaw.sln`, `client/Directory.Build.props` (warnings as errors,
+- The C# solution files: `client/Hearth.sln`, `client/Directory.Build.props` (warnings as errors,
   nullable, the generated-types stale target), `client/global.json` (the .NET SDK pin).
 - `docs/adr/` entries for anything `tools/` or a workflow depends on, third-party GitHub Actions included;
   the producer opens the stub, you fill it.
@@ -203,7 +203,7 @@ Rules of the map:
    `origin/main`, `tools/hooks/install.sh`. Accept: a 201-line branch gets the label and passes; a 401-line
    branch fails in CI and is refused by the hook; the count method is one sentence in the script header;
    under 200 lines.
-5. **Codegen skeleton.** `client/Longthaw.sln`, `client/Directory.Build.props` (warnings as errors,
+5. **Codegen skeleton.** `client/Hearth.sln`, `client/Directory.Build.props` (warnings as errors,
    nullable, the stale target), `tools/codegen/gen-csharp.sh` with the pinned generator, `lockstep.yml`
    (regenerate, build, test, no committed generated file, `lockstep.sh`). Accept: a schema edit without a
    `PROTOCOL_VERSION` move goes red with the message; a committed `Generated/` file goes red; a stale local
@@ -226,5 +226,4 @@ reviewer's hook requests in queue order: `pr-template.sh`, `one-concern.sh`,
 3. CI minutes: Windows runners bill at 2x and a private repo's free tier is small. What is the monthly
    budget? Default until answered: Windows on every PR with caches, and minutes reported weekly.
 4. Answered: the test engineer owns `crates/tools` (`headless-session`, the seeded runner, bots); you wire its binaries.
-5. Answered by D24 and D25: the founder owns `.claude/settings.json` and adds the Stop hook (W0-20) once
-   `tools/hooks/pre-push` exists.
+5. Answered by D24 and D25: the founder owns `.claude/settings.json` and adds the Stop hook (W0-20) once `tools/hooks/pre-push` exists.

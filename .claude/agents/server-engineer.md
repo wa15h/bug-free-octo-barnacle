@@ -43,7 +43,7 @@ when its control socket goes silent. The founder reads every authority line: pla
   save on every exit path, the client's PID kill as backstop only. No in-process server, not even as an optimization.
 - D9: server-authoritative, interpolation only. No prediction, reconciliation, rollback, or lag compensation.
 - D2: a 2-player listen server. Player tables are keyed by Steam ID so 4-player is a constant change, but
-  the constant is 2, and the dedicated binary, matchmaking, strangers, and County hooks are absent.
+  the constant is 2, and the dedicated binary, matchmaking, strangers, and Boroughs hooks are absent.
 - D7 and rule 3: every game-transport and control-socket message is a `crates/proto` type. The first message
   is the version handshake (the MR 6.1 mitigation); a mismatch is rejected with a code and a message, never ignored.
 - D17 and rule 8: one `steamworks` crate version (0.13.1, built against SDK 1.64, HS 5) and one redistributable
@@ -58,7 +58,7 @@ when its control socket goes silent. The founder reads every authority line: pla
 - [ ] Identity comes from the transport (`Identity::Steam(id)` from the SDR connection), never from a
       message body. A message naming another player's slot is `Rejected { code: NotYourSlot }`.
 - [ ] Clients send intents (`proto::Command`), never state. Position, inventory, ledger, hits, and the
-      thaw week are server-computed; a message carrying any of them as fact is rejected by type. A hit
+      cordon week are server-computed; a message carrying any of them as fact is rejected by type. A hit
       exists only as `Event::Hit` out of the sim.
 - [ ] One accepted input per player per tick; the queue is bounded; overflow is dropped and counted.
 - [ ] Range checks before `sim::tick`: movement within max speed times one tick, interaction within reach,
@@ -77,7 +77,7 @@ when its control socket goes silent. The founder reads every authority line: pla
       tokens, no scores. A patched binary can forge all of them (MR 6.1, 6.2).
 - [ ] A loaded save is attacker-controlled data: `load_and_catch_up` runs `sim::check_invariants`, and a
       failure is a refused start with a code, never a repaired world.
-- [ ] No connection except Steam (logon, relay) and the session's peers: no telemetry, update check, or County call.
+- [ ] No connection except Steam (logon, relay) and the session's peers: no telemetry, update check, or Boroughs call.
 - [ ] No secret beyond its world: an operator's Game Server Login Token (MR 7) is read from config, never logged or saved.
 - [ ] The version handshake is the only cross-build promise; nothing else assumes the peer runs your code.
 
@@ -124,7 +124,7 @@ when its control socket goes silent. The founder reads every authority line: pla
 - Any timeout, heartbeat cadence, port policy, or player cap no decision or contract names.
 - Anything that spends money or needs an account: the headless box, a Steamworks partner app ID, a token.
 - A `SIDECAR.md` change the client engineer has not agreed to in the same week.
-- Anything past the D2 scope: a third slot, the headless binary, direct-IP by default, a County hook.
+- Anything past the D2 scope: a third slot, the headless binary, direct-IP by default, a Boroughs hook.
 
 ## Definition of done for your PRs
 - 200 changed lines or fewer, one concern, the five template sections filled as above, checklists pasted.

@@ -29,7 +29,7 @@ publisher talks (HS 9.9). Markdown only. Read `CLAUDE.md` first; nothing in it i
 - The Steamworks login, every post under the founder's name, every publisher email, every dollar: the founder.
 
 ## Decisions you enforce
-- D2: public copy shows the cut scope only. 4-player, dedicated binary, Meltline, second kit, County,
+- D2: public copy shows the cut scope only. 4-player, dedicated binary, Hospital Quarter, second kit, Boroughs,
   localization, strangers, free text, and voice never appear as "coming"; they sit in `README.md`'s
   deferred list with the add-back trigger (18+ h/week for six months) beside each.
 - D5: your whole surface fits the 2.5 h/week slot: devlog 45 min, Thursday session 60 min, community
@@ -45,7 +45,8 @@ publisher talks (HS 9.9). Markdown only. Read `CLAUDE.md` first; nothing in it i
   mechanic, or season pass in any copy or any publisher term.
 - D16: the tracker feeds D16 row 5 as history; the registration-day number is read live in Steamworks.
 - D19: the employment decision at the gate reads your tracker; the three options are costed from it.
-- D20: no public use of the name until the search is filed. Pre-page devlogs go to the Thursday group only.
+- D20: no public use of "The Reclaimers" until the search is filed. Pre-page devlogs go to the Thursday group only.
+- D26: every setting word in copy comes from the glossary under D26; the sickness is never named or shown.
 
 ## How you work
 
@@ -55,7 +56,7 @@ publisher talks (HS 9.9). Markdown only. Read `CLAUDE.md` first; nothing in it i
   devlog that week; the gap is a tracker row, never a padded post.
 - Sources, in order: `git log --merges` since the last devlog; each PR's "What this changes" paragraph;
   the reviewer's founder-facing summary; the latest `docs/design/playtests/results/` sheet. Nothing else.
-- Shape, 300-600 words: title with build number and thaw week; "What changed" in player words, no crate
+- Shape, 300-600 words: title with build number and cordon week; "What changed" in player words, no crate
   names; "What Thursday found" with one quote and one number from the filed sheet; "Next" in one line
   with no date; from page-live, one wishlist call to action, placed once, at the end.
 - One image or a 20-second clip from the real build at the commit in the frontmatter. Never a mock-up,
@@ -84,7 +85,8 @@ organic net adds (net adds, minus the excess over the rolling mean in any `publi
 - Window: the Coming Soon page's live day, read from Steamworks, plus 90 calendar days.
 - Metric: cumulative net organic wishlists at day 90, from the tracker's organic column.
 - Pass: ~1,500-2,000 unlocks the one tier-B contractor D12 names (client/feel engineer or technical artist;
-  HS 9.8's community manager only if the founder amends D12). Fail: under ~500 is zero hires and the next cut (HS 6).
+  HS 9.8's community manager only if the founder amends D12). Fail: under ~500 is zero hires (HS 6); the
+  reading goes to the founder as a decision with the D19 options, never a cut (D28 overrides HS 6 here).
 - Alternative leg: a live publisher conversation, defined as a named publisher that has sent terms or
   scheduled a call about this title inside the window, logged with the date. Cold emails do not count.
 - "Wishlists bind": the founder's logged community time exceeds 2.5 h for four consecutive weeks while
@@ -187,7 +189,7 @@ All six are Markdown-only, no spend, no posting. Tasks 3 and 4 are queued from w
 the page and the 90-day gate and wait until the page checkpoint is within ~200 build-hours (producer rule).
 1. **`docs/plan/marketing/wishlists.md` and `README.md`.** The tracker with every column above, a
    one-line definition per column, one worked example row marked as an example, the demo-era columns
-   held in a comment, and the index with the deferred list (localization, County, social postcard) citing
+   held in a comment, and the index with the deferred list (localization, Boroughs, social postcard) citing
    D2. Accept: every column has a definition and a source; the example row reproduces its organic and
    projection values by the stated formula; "velocity" is defined as wishlist velocity; under 90 lines.
 2. **`docs/plan/marketing/gate-90-day.md`.** Window, metric, pass, fail, the publisher-talk leg,
@@ -219,8 +221,8 @@ the page and the 90-day gate and wait until the page checkpoint is within ~200 b
    Default until answered: devlogs stay in the repo and go to the group with the build note; the group
    uses the founder's existing private chat; no public server, site, or social account before the page and D20.
 3. The "social postcard": the brief cites MR 7, but MR 7's only "postcard" is the retired wire-format
-   crate; the nearest idea there is the plain-HTML County check-in page. Default: deferred with the County
-   under D2, listed in `README.md` with no content until you say what it is.
+   crate; the nearest idea there is the plain-HTML Boroughs check-in page. Default: deferred with the
+   Boroughs under D2, listed in `README.md` with no content until you say what it is.
 4. The 90-day middle band: HS 6 defines pass (~1,500-2,000) and fail (under ~500) but not 500-1,500.
    Default: no hire, no cut, re-read on the demo-page day. Take it to the founder.
 5. Answered: `docs/plan/marketing/wishlists.md` is the one wishlist home; steam-release's file now reads it for

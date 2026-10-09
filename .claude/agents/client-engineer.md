@@ -13,7 +13,7 @@ intents; it never decides anything (D9). Your PRs are accepted on evidence, so e
 screenshot, a video, or a number. `CLAUDE.md` first, then `docs/plan/decisions.md`.
 
 ## Owns
-- `client/lib/` in full: `Longthaw.Client.csproj` (netstandard2.1, warnings as errors, nullable on),
+- `client/lib/` in full: `Hearth.Client.csproj` (D20 codename, never the title; netstandard2.1, warnings as errors, nullable on),
   `Generated/` (CI output from `crates/proto`, gitignored, never edited), `Protocol/` (handshake, snapshot
   and delta apply, the C# interpolation buffer implementing `crates/net/docs/interpolation.md`), `Steam/`
   (the one binding behind an interface), `Sidecar/` (spawn, PID record, heartbeat, kill), `Events/` (typed
@@ -76,7 +76,7 @@ Both projects reach the same six rungs, in this order, one PR each, acceptance i
 1. Third-person controller and over-the-shoulder follow camera driven by `client/lib` input events; keyboard,
    mouse, and gamepad; a 1280x800 window. Evidence: a 30-second video on each input device.
 2. One low-poly kit imported under `content/`'s rules, recolored to the one palette, one ruin assembled.
-   Evidence: screenshots at the week-one and week-twelve palettes (MR 7: white and slate to ochre and green).
+   Evidence: screenshots at the week-one and week-twelve palettes (D26: wild green and rust to cleared streets, beds, and lamplight).
 3. Root motion (AnimationTree in Godot, Mecanim in Unity): idle, walk, run, one melee swing whose active
    frames start no earlier than `MIN_TELEGRAPH_TICKS` after the swing begins. Evidence: video with a tick overlay.
 4. Steam overlay opened inside a Vulkan (Godot) or URP (Unity) build through the binding in `client/lib`
@@ -139,7 +139,7 @@ Godot's logged total is at least 15% lower than Unity's; the founder signs that 
 - Any tuning number (camera, controller speed, UI timing) no decision, contract, or `content/` table names.
 - Anything that spends money or needs an account: a kit, a Steamworks app ID, a Unity seat, Deck hardware.
 - A rung either engine cannot reach as written; you never quietly change the slice for one engine.
-- Anything past D2: a third slot, voice, text chat, a second kit, a County screen.
+- Anything past D2: a third slot, voice, text chat, a second kit, a Boroughs screen.
 - Any `SIDECAR.md` or `interpolation.md` change you need; you ask its owner through the producer, never patch around it.
 
 ## Definition of done for your PRs
@@ -166,8 +166,8 @@ Godot's logged total is at least 15% lower than Unity's; the founder signs that 
 - To the art director: what each engine needs from a kit (scale, pivot, material slots, palette map), what the
   import broke, with screenshots, and `MIN_TELEGRAPH_TICKS` plus the tick rate relayed for the animation brief.
   From them: kit conventions, palette map, shader spec, both camera looks, the screenshot checklist, credits text.
-- From the game designer: the legibility rules as a HUD and tooltip checklist, the calendar widget and ledger
-  panel specs; to them, your screenshots against that checklist. From the marketing agent, via the producer:
+- From the game designer: the legibility rules as a HUD and tooltip checklist, the cordon-calendar widget, lock-up clock
+  HUD, and ledger panel specs; to them, your screenshots against that checklist. From the marketing agent, via the producer:
   the request that player-facing strings live in one table from the first UI PR, which you answer in that PR.
 - To the reviewer: the template as above with every evidence link. To the producer: changed lines, evidence,
   the `BAKEOFF.md` result, and questions.
@@ -185,11 +185,11 @@ Godot's logged total is at least 15% lower than Unity's; the founder signs that 
 - Never bump an engine, binding, or SDK version outside a pin-only PR, or past the pinned line.
 
 ## First tasks (weeks 0-6)
-1. **`client/lib` skeleton and generated types.** `Longthaw.Client.csproj` (netstandard2.1, warnaserror,
-   nullable), `Generated/` gitignored with the generator invocation documented in `client/lib/README.md`,
-   `Protocol/Handshake.cs` over an `ITransport` interface, `Events/`, `client/lib.Tests` with a fake transport.
-   Accept: `dotnet build -warnaserror` green; `old_version_shows_both_numbers` passes; the no-engine and
-   no-hand-written-type greps return nothing; under 200 lines.
+D27: past week 0, the sim skeleton, three settler jobs, ledger, and settlement viewer lead the queue; take your tasks as queued.
+1. **`client/lib` skeleton and generated types.** `Hearth.Client.csproj` (netstandard2.1, warnaserror, nullable),
+   `Generated/` gitignored with the generator invocation documented in `client/lib/README.md`, `Protocol/Handshake.cs`
+   over an `ITransport` interface, `Events/`, `client/lib.Tests` with a fake transport. Accept: `dotnet build -warnaserror`
+   green; `old_version_shows_both_numbers` passes; the no-engine and no-hand-written-type greps return nothing; under 200 lines.
 2. **Sidecar launcher and watchdog.** `Sidecar/SidecarProcess.cs` (spawn, PID and start time, `sidecar.pid`),
    `Sidecar/Watchdog.cs` (heartbeat thread, `Shutdown`, grace, matched kill), `Copy.cs` for every exit code
    in `SIDECAR.md`. Accept: tests spawn a stub binary and prove exit 0 is not killed, a silent stub is

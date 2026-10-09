@@ -9,7 +9,7 @@ Two questions where agents disagreed are already resolved in `decisions.md` as D
 (how lines count against the PR cap) and D23 (gates count build-hours).
 
 1. Gate counting: D10 says cumulative-hour triggers, but the HS 6 dates reproduce only from build-hours ((logged - 2.5) x 0.8 x 0.92). Confirm gates.md counts build-hours, not raw logged hours. (producer)
-2. V < 0.6 at the ~400 h velocity gate under the cut scope: is the Ashward settlement-only slice the agreed consequence, or only a re-baseline of the bands? (producer)
+2. Answered (D28): V < 0.6 at the ~400 h velocity gate re-dates the bands (D5, D11) and nothing else; no scope is cut and no fallback slice is built to hold a date. The cut scope (D2) stays the target state. (producer)
 3. Hours source of truth: docs/plan/hours.md typed by you, with the crates/tools hours tool only deriving columns (the team's default); and is that tool wanted before week 6 or does the file by hand suffice until the velocity gate? (producer, test-engineer)
 4. The 201-400 line band: D6 sets 200 as the norm and 400 as the hard cap but not when the band is allowed. Until told, the reviewer returns 201-400 with a split plan. (reviewer)
 5. Line counting against the 200 cap: do generated C# types, Cargo.lock, fixture files and engine-generated scene/.meta files count, and do evidence-area lines cost the same budget as line-by-line lines? The defaults currently differ: reviewer counts every line, client counts hand-written lines only, devex exempts Cargo.lock only. (reviewer, client-engineer, devex)
@@ -34,14 +34,14 @@ Two questions where agents disagreed are already resolved in `decisions.md` as D
 24. Rust toolchain cadence: no decision names one; default is the toolchain moves only when a pinned dependency requires it, in a pin-only PR. (devex)
 25. Answered (D25): yes, the Stop hook is approved and added in its own PR once tools/hooks/pre-push exists; the founder owns .claude/ (D24). (devex)
 26. Gate 0 pass line: MR 7 gives '3 of 4 testers' for Gate 1 only; default is the same 3 of 4 for Gate 0, and the Gate 2 cohort is every Thursday tester who launched on day 0. (game-designer)
-27. Death in a run: no decision names the loss. Default: gear kept, carried units dropped where you fell and retrievable until the next thaw stage, the bound a row in gear.csv. (game-designer)
-28. Opt-in stakes: MR 2 lists bounded opt-in stakes as a pillar and MR 7 defers the Meltline. Does v1 carry any, or none (default) with the deferred list saying why? (game-designer)
+27. Death in a run: no decision names the loss on death; D26 names it only for missing the last gate (gear kept, carried units left where you stood). Default: gear kept, carried units dropped where you fell and retrievable until the next cordon stage, the bound a row in gear.csv. (game-designer)
+28. Opt-in stakes: MR 2 lists bounded opt-in stakes as a pillar and MR 7 defers the opt-in extraction mode, now the Hospital Quarter (D26). Does v1 carry any, or none (default) with the deferred list saying why? (game-designer)
 29. Settler rig cost against the $8k year-one cap: default is a recolored kit character until the page month, with settler-rig.md written but not queued. (art-director)
 30. Purchased kits: confirm a founder-held, backed-up location with a devex-written tools/ fetch script and meshes never committed; and under rule 6 is LICENSE-RECORD.md the record, with an ADR only when a kit brings an importer plugin or shader dependency (default)? (art-director, client)
 31. Capsule timing: HS 9.7 pulls the capsule into the page month, MR 7 wants the hook in the first screenshot; default is the brief ready in weeks 0-6 and a founder-made HUD screenshot until the ~$400 spend is queued. (art-director)
 32. Themed fests: does D16's ~2,000-wishlist, public-a-month rule bind themed-fest entries too? Default: tag the page, enter nothing. (steam-release)
 33. Steam Playtest: MR 7 names a ~50-person closed alpha absent from the decision log. Is it in scope, and does it start the D16 'public a month' clock? Default: no and no. (steam-release)
 34. Channels before the page: default is devlogs stay in the repo and go to the Thursday group with the build note, the group uses your existing private chat, and no public server, site or social account exists before the page and the D20 search. (marketing)
-35. The 'social postcard' the brief cites from MR 7 cannot be found there (MR 7's only 'postcard' is the retired wire-format crate). What is it? Default: deferred with the County under D2. (marketing)
+35. The 'social postcard' the brief cites from MR 7 cannot be found there (MR 7's only 'postcard' is the retired wire-format crate). What is it? Default: deferred with the Boroughs under D2. (marketing)
 36. The 90-day gate middle band: HS 6 defines pass (~1,500-2,000) and fail (under ~500) but not 500-1,500. Default: no hire, no cut, re-read on the demo-page day. (marketing)
 37. D12 names only a client feel engineer or technical artist as the gate contractor; HS 9.8 also allows a part-time community manager if wishlists bind. Amend D12 to include it, or leave it out? The marketing file now follows D12 as written.

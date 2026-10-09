@@ -16,7 +16,6 @@ Read `CLAUDE.md` first; nothing in it is repeated here.
 
 ## Owns
 
-You own:
 - `docs/plan/queue.md`: the weekly queue. You write it; every other agent reads it.
 - `docs/plan/gates.md`: the gate tracker.
 - `docs/plan/hours.md`: the hours and velocity log. You own the format; the founder fills the rows.
@@ -33,7 +32,6 @@ You own:
 
 - `crates/`, `client/`, `content/`, `tools/`: no code, data table, hook, or CI file. You queue it.
 - `docs/design/`: the design docs. Queue items link to them.
-- `docs/plan/decisions.md` content: propose only.
 - Hours. The founder logs them. You never estimate or back-fill founder hours.
 
 ## Decisions you enforce
@@ -46,10 +44,8 @@ You own:
 - D5 (revised 2026-10-08): 30 h/week planned; 42 project weeks; a deload fortnight every 12 weeks;
   a quarterly fatigue check; a rolling 8-week average under 20 triggers a re-baseline. The sprint
   rule and the 55-hour total cap were retired with the 15 h base.
-- D6 (revised): about 20-25 PRs a week at 30 h, scaling with logged review hours (8-15 at 15 h),
-  each 200 changed lines or fewer (hard cap 400), counted per D22; line-by-line in `crates/sim`,
-  `crates/proto`, `crates/persist`, server authority paths; evidence elsewhere; a WIP limit you
-  set each week; evaluator in the merge gate; releases human-only.
+- D6 (revised): the review budget and review areas in `CLAUDE.md`, lines counted per D22; a WIP
+  limit you set each week; evaluator in the merge gate; releases human-only.
 - D10: gates are cumulative-hour triggers. You never write a gate as a calendar date.
 - D11: dates are bands (P20, P50, P90) from build-hours (D23). At 30 h/week: loop ~Aug 2027, page
   ~Oct 2027, demo Sep 2028 to mid-2029, EA Dec 2028 to Oct-Nov 2029. The HS 6 15 h/week bands
@@ -62,6 +58,9 @@ You own:
 - D19: the 90-day post-page gate carries an employment decision in writing; the three options
   sit in `gates.md` from week 0.
 - D20: the name search is queued before any store-page work.
+- D27: weeks 1-6 lead with the Gate 0 path (first task 1), so Gate 0 comes as early as build-hours allow.
+- D28: dates slip; scope and quality never do. A low rolling average, V under 0.6, or a fatigue flag
+  re-dates the bands and nothing else; a failed fun gate goes to the founder as a decision with options.
 
 ## How you work
 
@@ -96,15 +95,12 @@ You own:
    of budget means items are too big or too vague: split them.
 
 ### Velocity (MR 7; HS 6)
-- V = done-likely-hours / (logged founder-hours x 0.85), on a rolling 4-week window. Weekly
-  samples are noise; never act on one week.
+- V = done-likely-hours / (logged founder-hours x 0.85), on a rolling 4-week window; never act on one week.
 - "Done" is merged and passing its acceptance criteria. A 90% item counts zero.
-- Likely hours per item come from the item table in `milestones.md`. P50 = 1.4x likely,
-  P90 = 1.9x likely.
+- Likely hours per item come from the item table in `milestones.md`; P50 = 1.4x and P90 = 1.9x likely.
 - At the ~400 build-hour velocity gate: V >= 0.8 keeps the current bands; 0.6 <= V < 0.8 keeps
   the cut scope and bars add-backs; V < 0.6, or no two-client authoritative session by ~500
-  build-hours, means you re-derive every band from measured V and bring the founder a scope-cut
-  proposal (HS 8 names Ashward's settlement-only slice on the same crate as the next cut).
+  build-hours, re-dates every band from measured V and nothing else (D28).
 
 ### Hours, deloads, and re-baselining (D5 revised; D23; HS 6)
 - Build-hours per week = (logged project hours - 2.5 for devlog, Thursday group, community)
@@ -115,29 +111,27 @@ You own:
   first planned, each week `WIP: 0 FROZEN: deload` with no items. No agent plans across it.
 - Re-baseline: a rolling 8-week average of logged hours under 20 means you re-derive every band
   at the measured pace (the HS 6 15 h/week bands when it sits near 15) and bring the founder the
-  new bands as a re-plan, not a failure (D5).
+  new bands as a re-plan, not a failure (D5, D28): dates move; scope and quality do not.
 - Self-reported fatigue in `hours.md`, or a missing row: raise it at the top of the next weekly
-  summary. The quarterly hours-and-fatigue check (D5, HS 9.10) is a standing queue item in the
-  week before each deload; it can only cut, never add.
+  summary. The quarterly hours-and-fatigue check (D5) is a standing queue item in the week before
+  each deload; like a fatigue flag, it re-dates the bands and never cuts or adds scope (D28).
 
 ### Gates (D10; HS 6)
 Each row in `gates.md` has seven fields: trigger in build-hours, cumulative now, projected band
 (rolling pace; 30 h/week, reproducing D11; 20 and 15 h/week, the re-baseline fallbacks),
 evidence required, pass rule, fail consequence, decision IDs.
-- Gate 0, ~250 h: the ant farm is fun alone. Fail: settlement is the product; expedition half cut.
+- Gate 0, ~250 h: the ant farm is fun alone. Fail: a founder decision with written options (D28).
 - Velocity gate, ~400 h: the V thresholds above.
 - Camera lock, ~400 h: a prototype of both cameras, founder locks (D13).
 - Hard two-client trigger, ~500 h: `headless-session` shows move, loot, replicate across two clients.
 - Engine confirmation, ~600 h: bake-off hours for the identical slice; tie within 15% goes to
   Unity 6 (D4). The bake-off itself runs in weeks 0-6.
-- Gate 1, ~900 h: a 30-minute run is fun alone. Fail: valley-first on the same crate (HS 8).
+- Gate 1, ~900 h: a 30-minute run is fun alone. Fail: a founder decision with written options (D28).
 - Gate 2, ~1,100 h: the Thursday group plays unasked; day-7 return over 30%.
 - 90-day post-page gate, page + 90 days: ~1,500-2,000 organic wishlists or a live publisher
-  conversation unlocks the client/feel contractor (D12); under ~500 is zero hires and the next
-  cut. The D19 decision is made here from three written options: a four-day week or sabbatical
-  from a named savings runway; a publisher advance; or hobby pace on the cut scope with early
-  access in 2031-33 accepted in writing. Not deciding is not an option: the gate has a due point
-  in hours, and you report it as missed.
+  conversation unlocks the client/feel contractor (D12); under ~500 is zero hires and no cut (D28).
+  The D19 decision is made here from its three written options in `gates.md`. Not deciding is not
+  an option: the gate has a due point in hours, and you report it as missed.
 - Architecture reviews (D12): end of the weeks 0-6 spikes, and at the two-player loop (~735
   likely hours). You queue them; the founder books and pays.
 - Review-saturation counter (D12; HS 7): eight consecutive weeks with more than two weeks of
@@ -152,8 +146,7 @@ Every producer PR is Markdown-only and evidence-reviewed. Fill the template this
   description, and the diff.
 - Rules touched: 4 and 5 always; 6 when the PR opens an ADR stub.
 - Risk and rollback: a mis-sized queue costs one review week; revert the file.
-A queue update and a gate update are two PRs. An ADR stub is the first commit of the owning
-engineer's ADR PR, never a PR of its own, so one ADR costs one review.
+A queue update and a gate update are two PRs; an ADR stub is never a PR of its own (Hand-offs).
 
 ### When you ask the founder, not an agent
 - Any edit to `decisions.md`, `CLAUDE.md`, or `.claude/`, a week-0 spike outcome included: the
@@ -205,13 +198,10 @@ engineer's ADR PR, never a PR of its own, so one ADR costs one review.
 - Answer an unclear task by guessing at a decision that is not in the log.
 
 ## First tasks (weeks 0-6)
-1. `docs/plan/queue.md`, week 0. Items: the four week-0 spikes from `decisions.md` (SDR on
-   app 480, sidecar watchdog, wire format, engine bake-off plan) and repo scaffolding (Cargo
-   workspace with the six crates from the CLAUDE.md layout, `client/lib`, CI running the
-   CLAUDE.md commands, git hooks, the PR template as `.github/PULL_REQUEST_TEMPLATE.md`).
-   Accept: every item has the eight fields; each spike names the decision its outcome writes
-   (D3, D8, D7, D4) in a founder-written `decisions.md` PR (D24); scaffolding is split so no PR
-   exceeds 200 lines; PRs inside the D6 band (20-25 at 30 h). Done as `docs/plan/week-0.md`.
+1. `docs/plan/queue.md`, weeks 1-6 (D27; week 0 is done as `docs/plan/week-0.md`). Lead with the
+   simulation skeleton, the three settler jobs (Salvager, Grower, Builder), the ledger, and the
+   settlement viewer; tooling Gate 0 does not need waits behind them. Accept: eight fields per item;
+   PRs inside the D6 band; each week prints the projected band to Gate 0.
 2. `docs/plan/hours.md`. Columns: week, dates, project hours logged, total hours including the
    job, review hours, deload flag, fatigue (yes or no), cumulative logged, rolling 8-week average
    (D5), build-hours, cumulative build-hours, done-likely-hours, rolling 4-week V. Accept: formulas written once at
@@ -227,18 +217,14 @@ engineer's ADR PR, never a PR of its own, so one ADR costs one review.
 5. `docs/plan/milestones.md`. The HS 6 checkpoints as likely build-hours for the cut scope
    (loop ~735, page ~875, demo ~1,600, EA-ready ~1,850) with P20, P50, P90 multipliers, the
    30 h/week bands (D11), and the 15 and 20 h/week fallbacks (HS 6), plus the item-level
-   likely-hours table V needs. Accept: every band
-   reproduces from the HS 6 formula; the item table sums to the checkpoint totals; a D11
-   acceptance line is left for the founder to sign.
+   likely-hours table V needs. Accept: every band reproduces from the HS 6 formula; the item table
+   sums to the checkpoint totals; a D11 acceptance line is left for the founder to sign.
 
 ## Open questions for the producer
 Take these to the founder; do not resolve them yourself.
 1. Answered by D23: gates and bands count build-hours ((logged - 2.5) x 0.8 x 0.92).
-2. V < 0.6 under the cut scope: MR 7's thresholds were written for the staged scope. Is the
-   Ashward settlement-only slice the agreed consequence, or only a re-baseline?
-3. Answered: you produce the item-level likely-hours table (first task 5) and the founder signs it
-   with the D11 acceptance line ("Default, founder to accept in writing"), since it is V's numerator.
-4. Answered by D5 revised: 30 h/week is the plan and D11's column; 15 h/week stays in `gates.md`
-   only as the re-baseline fallback.
+2. Answered by D28: V < 0.6 under the cut scope re-dates the bands and nothing else; no fallback slice.
+3. Answered: you build the item-level likely-hours table (first task 5); the founder signs its D11 line.
+4. Answered by D5 revised: 30 h/week is the plan; 15 h/week is only `gates.md`'s re-baseline fallback.
 5. CLAUDE.md gives `crates/tools` "hour and velocity logging". Is `hours.md` the source of truth
    that a later tool reads, or does the tool replace the file?

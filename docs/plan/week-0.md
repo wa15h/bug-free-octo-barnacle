@@ -41,8 +41,8 @@ lines, 10 up to 150, 15 above, plus 5 when the founder signs something. The prod
 
 Review uses about 5 of the 12 review hours; nothing in scope is pushed for lack of hours. Latency is
 the risk: W0-02, 06, 07, 16, 17 are five serial merges, so at one founder pass a day a return round
-carries W0-18 and W0-21 into week 1, charged first there. "Pushed to week 1" waits on a week-0 outcome
-or is feature work. If W0-01 to W0-21 have merged and hours remain, pull forward P0-P3 (25 PRs, 2,185 lines).
+carries W0-18 and W0-21 into week 1, charged first there. If W0-01 to W0-21 have merged and hours
+remain, pull forward P0-P3 (25 PRs, 2,185 lines); any not pulled forward wait behind D27's items in week 1.
 
 ## Queue
 
@@ -50,7 +50,7 @@ Class: L = line-by-line, E = evidence, F = founder-authored. Min = founder minut
 
 | ID | Owner | PR | Class | Lines | Min | After | Decisions | ADR-first |
 |---|---|---|---|---|---|---|---|---|
-| W0-01 | producer | Week-0 queue (this file) | E | 200 | 15 | - | D5 D6 D21 D23 | no |
+| W0-01 | producer | Week-0 queue (this file) | E | 200 | 15 | - | D5 D6 D21 D23 D27 | no |
 | W0-02 | devex-engineer | Cargo workspace, six empty crates | L 30 + E | 110 | 20 | - | D3 D17 | no dependency added |
 | W0-03 | producer | ADR template and README | E | 70 | 10 | - | D3 D7 D8 D17 | n/a |
 | W0-04 | devex-engineer | ADR 0001: Rust toolchain and CI action pins | E | 40 | 10 | 03 | D17 | is the ADR |
@@ -62,7 +62,7 @@ Class: L = line-by-line, E = evidence, F = founder-authored. Min = founder minut
 | W0-10 | net-engineer | Week-0 item 3: wire-format spike, ADR 0004 | E | 60 | 20 | 02 03 | D7 | is the ADR |
 | W0-11 | producer | Hours log | E | 55 | 10 | - | D5 D23 | no |
 | W0-12 | client-engineer | Week-0 item 4: engine bake-off plan | E, signed | 120 | 20 | 11 | D4 D10 D17 | no |
-| W0-13 | producer | Gate tracker | E | 160 | 15 | 11 | D2 D5 D10 D11 D19 D23 | no |
+| W0-13 | producer | Gate tracker | E | 160 | 15 | 11 | D2 D5 D10 D11 D19 D23 D28 | no |
 | W0-14 | reviewer | Review checklists (review-log section 1) | E | 190 | 15 | - | D6 D18 D22 | no |
 | W0-15 | reviewer | Founder summary format (section 2) | E | 70 | 10 | 14 | D6 D18 | no |
 | W0-16 | devex-engineer | Pre-push hook and installer | E | 70 | 10 | 07 | D6 D25 | no |
@@ -128,8 +128,8 @@ per client-engineer task 3, plus: the tie rule as a formula with a worked exampl
 founder's machine, logged as founder hours (Q20 default); hours feed W0-11.
 
 **W0-13.** Paths: `docs/plan/gates.md`. Accept per producer task 3, plus: bands at the rolling pace and
-at 15, 20, and 30 h/week, the 30 h/week band reproducing D11; the D5 re-baseline trigger and
-quarterly fatigue check; the review-saturation counter at the D6 revised cap; 200 lines or fewer.
+at 15, 20, and 30 h/week, the 30 h/week band reproducing D11; the D5 re-baseline trigger and quarterly
+fatigue check, re-dating only (D28); the review-saturation counter at the D6 revised cap; 200 lines or fewer.
 
 **W0-14.** Paths: `docs/plan/review-log.md`, section 1. Accept per reviewer task 1, plus: line
 counting follows D22 and the 201-400 band follows Q4's default.
@@ -176,12 +176,13 @@ unless the PR author is `FOUNDER_LOGIN`; red on an agent branch, green on head a
 
 ## Pushed to week 1 (waits on a week-0 outcome, or is feature work)
 
+- D27 first: sim skeleton and ADRs, ledger, the three settler jobs, the test engineer's settlement viewer.
 - server-engineer: the `tokio` ADR, `SIDECAR.md`, the binary skeleton. Wait on ADR 0003 and D8's line.
 - net-engineer: `crates/proto` skeleton; devex-engineer: codegen pipeline, C# solution files,
   `client/global.json`; client-engineer: `client/lib` skeleton. Wait on ADR 0004.
 - devex-engineer: Godot 4.7 and Unity 6 pin-only PRs (rule 8); client-engineer: rung 1 in each engine.
   Wait on W0-12 and `client/lib`; the bake-off hours start there.
-- Feature work: sim skeleton and ADRs, persist save-encoding ADR, test simulator, then old P4 (sim allowlist).
+- Feature work after D27's items: persist save-encoding ADR, test simulator, then old P4 (sim allowlist).
 - reviewer: the dry run with eight planted violations. Needs W0-14 to W0-18 merged.
 - marketing: the devlog outline, built from W0-19. Game-designer, art-director, and marketing tasks 3-4
   start week 1; steam-release and marketing's page-era tasks wait until the page is ~200 build-hours off.
@@ -192,8 +193,7 @@ unless the PR author is `FOUNDER_LOGIN`; red on an agent branch, green on head a
 1. Q14 and Q18 have no written default; W0-10 and W0-08 state this queue's assumption until answered.
 2. Resolved 2026-10-08: the skeptic review's patch was applied with the team (agent files now plan at
    30 h, and `CLAUDE.md` carries the in-week freeze, agent GitHub identity, and eligibility-only add-backs).
-3. D2's add-back trigger fires around week 26 at the D5 pace, but D11 assumes the cut scope. The patch
-   treats it as eligibility only; raise the trigger or confirm.
+3. D2's add-back trigger fires near week 26; D28 makes the cut scope the target. Eligibility only, unless you raise it.
 
 ## Questions
 

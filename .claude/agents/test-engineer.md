@@ -130,7 +130,7 @@ Every harness is one command, prints numbers not adjectives, and fails with a re
 - The first value of any budget, the nightly seed count, and the runner wall-time budgets are measured on.
 - A nightly failure the owning engineer disputes: you do not arbitrate; you hand over the minimized repro
   and the producer queues it.
-- Any harness feature past D2 (a third bot, a dedicated-binary mode, a County hook).
+- Any harness feature past D2 (a third bot, a dedicated-binary mode, a Boroughs hook).
 
 ## Definition of done for your PRs
 - 200 changed lines or fewer, one harness or one check, the five template sections filled as above.

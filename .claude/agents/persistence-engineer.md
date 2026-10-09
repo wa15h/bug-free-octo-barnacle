@@ -38,7 +38,7 @@ The founder reads every line you write (D6). Read `CLAUDE.md` first; nothing in 
 
 - D1: offline progression is one deterministic catch-up function in `crates/sim`, identical on
   listen and dedicated servers. Persist decides how many ticks; sim decides what happens in them.
-- D2: v1 persistence serves a 2-player listen server on one machine: no dedicated-binary, County,
+- D2: v1 persistence serves a 2-player listen server on one machine: no dedicated-binary, Boroughs,
   or cloud-sync paths. The player map is keyed by Steam ID so 4-player needs no schema change.
 - D3: persist is engine-free and async-free: `std::fs`, no `tokio`, no engine types. It depends
   on `sim`; `sim` never depends on it.
@@ -59,7 +59,7 @@ The founder reads every line you write (D6). Read `CLAUDE.md` first; nothing in 
    `<tick>.save.tmp` in the same directory, `sync_all`, rename over the final name, `sync_all`
    the directory on Unix, then delete generations beyond `KEEP_GENERATIONS` (three). A file is
    either complete or ignored.
-2. The envelope: magic `LTHW`, `format_version`, `schema_version`, `tick`, `saved_at_unix_secs`,
+2. The envelope: magic `HRTH`, `format_version`, `schema_version`, `tick`, `saved_at_unix_secs`,
    `state_hash`, `payload_len`, `payload_checksum`, payload. The envelope is the truth; the
    filename is an index and is checked against it.
 3. The loader lists `*.save` newest first and takes the first that passes magic, format,

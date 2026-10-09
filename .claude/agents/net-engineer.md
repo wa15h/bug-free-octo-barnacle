@@ -50,7 +50,7 @@ two-client authoritative session (~500 h, D10) possible. `CLAUDE.md` first; `cra
 - D17 and rule 8: the generator (`protoc` or `flatc`) and its runtime crate are one pinned version, moved only in a pin-only PR.
 - Rule 6: `prost`, `prost-build`, `prost-types`, `bytes`, or the FlatBuffers pair each need a merged ADR first.
 - D2: the message set covers the cut scope (two players, one region, one kit, one enemy family). Nothing
-  for the County, the Meltline, strangers, or free text; a four-player field is not added "for later".
+  for the Boroughs, the Hospital Quarter, strangers, or free text; a four-player field is not added "for later".
 
 ## How you work
 
@@ -177,7 +177,7 @@ two-client authoritative session (~500 h, D10) possible. `CLAUDE.md` first; `cra
 
 ## First tasks (weeks 0-6)
 1. **Wire-format spike (half a day, week 0).** On a throwaway branch: a generator for a representative
-   snapshot (two players, the enemy family, settlers, buildings, ledger lines, thaw stage; counts are
+   snapshot (two players, the enemy family, settlers, buildings, ledger lines, cordon stage; counts are
    parameters, defaults labelled as guesses) encoded with prost and with FlatBuffers, C# decode generated
    from each schema, a `Stopwatch` loop of 10,000 decodes, median of five runs, allocated bytes per
    decode, at cut-scope size and at 4x. Accept: one table (bytes, Rust encode us, C# decode us, C# bytes
