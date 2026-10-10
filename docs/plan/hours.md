@@ -2,7 +2,8 @@
 
 The founder adds one row a week at week start, for the week just ended (D5). This file is the
 source of truth: the producer fills derived cells (D23) until a `crates/tools` hours tool derives
-them (Q3 default). No agent writes a founder cell, estimates an hour, or back-fills a week. A
+them (Q3 default). No agent writes a founder cell, estimates an hour, or back-fills a week. The
+one exception is week 0's Wk, which the producer pre-filled because W0-11 asks for that row. A
 missing row, or one with P blank, is flagged at the top of `queue.md`; a second freezes the queue.
 
 ## Columns
@@ -22,9 +23,8 @@ Unity hours summed from the `client/BAKEOFF.md` table (Q19 default), a part of P
 ## Formulas (written once; every derived cell follows them)
 
 A window week is a row with Deload no (a format choice: to count deload weeks, make it any row).
-- Build = (P - 2.5) x 0.8 x 0.92 (D23). At 30 h: 27.5 x 0.736 = 20.24. Under 2.5 h it is negative
-  (0 h gives -1.84), as D23 is written. W0-11's PR asks the founder to keep that, floor it at 0, or
-  leave deload rows out of Cum build.
+- Build = max(0, (P - 2.5) x 0.8 x 0.92): D23, floored at 0 by the founder's answer of 2026-10-10
+  (HS 6 leaves zero-hour weeks out), so no week subtracts. 30 h: 20.24; 5 h: 1.84; 0 h deload: 0.
 - Cum P and Cum build: sums over every row to date, deload rows included.
 - Avg 8 = mean P over the last 8 window weeks (over all of them while fewer than 8 exist). Once
   8 exist, under 20 triggers the D5 re-baseline: the bands re-date; scope and quality hold (D28).
