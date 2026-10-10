@@ -4,11 +4,12 @@
       "mcp__github__merge_pull_request",
       "mcp__github__enable_pr_auto_merge",
       "mcp__github__issue_write",
+      "mcp__github__label_write",
       "Bash(gh pr merge:*)",
-      "Bash(gh pr review:*)",
       "Bash(gh pr edit:*)",
       "Bash(gh issue edit:*)",
-      "Bash(gh label:*)"
+      "Bash(gh label:*)",
+      "Bash(gh api:*)"
     ]
   }
 }

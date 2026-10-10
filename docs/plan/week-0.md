@@ -105,7 +105,7 @@ has no written default). FAIL is a result, not a slip. Past the 4-hour cap, the 
 to week 1, flagged at the top of its queue, and no transport work starts before D3's line exists.
 
 **W0-09 Sidecar watchdog spike; the outcome writes D8.** Paths: `docs/adr/0003-sidecar-watchdog.md`.
-Code lives on branch `spike/sidecar-watchdog`, never a PR, never merged. Accept: a std-only Rust
+Code lives on branch `claude/spike-sidecar-watchdog`, never a PR, never merged. Accept: a std-only Rust
 parent and child (no new dependency) run on ubuntu and windows by the branch's own workflow, with
 logs and exit codes for spawn and `Ready` over localhost TCP on a parent-chosen port; a silent control
 socket, child exits 2 within `CONTROL_SILENCE_SECS + 1` (Q16 defaults 10 and 2); `Shutdown` exits 0,
@@ -150,11 +150,11 @@ generated C#, engine scene and `.meta` files, `fixtures/`, listed with sizes in 
 sections; a one-word edit to either file goes red naming both; green on head.
 
 **W0-19, founder only (D24).** Paths: `docs/plan/decisions.md`. Accept: D3's outcome from W0-08, D8's
-from ADR 0003, D7's from ADR 0004, each linking its PR; no other row changes; the reviewer
+from ADR 0003, D7's from ADR 0004, each linking its PR; no other row changes; carries `founder-approved` (D29); the reviewer
 pre-reviews. An outcome not in by week end goes in a week-1 founder PR.
 
-**W0-20, founder only (D24), opened after W0-16 merges.** Paths: `.claude/settings.json`. Accept: one
-Stop hook runs `tools/hooks/pre-push` from `$CLAUDE_PROJECT_DIR` with stdin closed, so the hook's JSON
+**W0-20, founder only (D24), opened after W0-16 merges.** Paths: `.claude/settings.json`. Accept: carries
+`founder-approved` (D29); one Stop hook runs `tools/hooks/pre-push` from `$CLAUDE_PROJECT_DIR` with stdin closed, so the hook's JSON
 is not read as git ref lines; a failing check blocks the stop and shows its message to the agent
 (Claude Code blocks only on exit code 2 or a `"decision": "block"` reply, so pre-push's exit 1 is
 mapped); an explicit timeout above two minutes; red and green: a session leaving an unformatted file
@@ -163,7 +163,7 @@ finishes"; the team runs as subagents); the PR says how a repeat block (`stop_ho
 
 **W0-21.** Paths: `tools/checks/protected-paths.sh`, a job in `pr-gates.yml`. Accept: a diff touching
 `.claude/`, `CLAUDE.md`, `docs/research/`, or `decisions.md` fails `RULE D24: <path> is founder-edited`
-unless the PR carries `founder-approved` (D29); red without the label, green with it and on head.
+unless the PR carries `founder-approved` (D29); rechecked on `labeled` and `unlabeled`; red without the label, green once the founder labels the throwaway PR, and green on head.
 
 ## Pull forward only if W0-01 to W0-21 have merged and hours remain
 

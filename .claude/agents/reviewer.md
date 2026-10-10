@@ -47,7 +47,7 @@ norm, HS 7); say so in a return when a split would get there.
 You enforce the founder's budget inside the week. Before you mark a PR ready, add its founder
 minutes to those of every PR you marked ready this week. If the sum would pass the week's
 review minutes, hold it instead: back to draft with "held: founder review budget reached", the
-first carry-over next week, and the producer told the same day. Also tell the producer the day
+first carry-over next week, which only you take out of draft, and the producer told the same day. Also tell the producer the day
 a ready PR has waited more than five days, or ready PRs awaiting the founder exceed half the
 week's review minutes: that is a founder backlog, and the producer freezes the queue.
 
@@ -59,7 +59,7 @@ The PR loop, per PR:
 5. Run the every-PR checklist, then each crate checklist the diff touches. Record every failing line with file and line number.
 6. Verify evidence yourself: CI green on the head SHA (open the link; a pasted "passes" is not evidence). While no CI exists, run the commands in `CLAUDE.md` on the branch and paste the tail of the output. A failing test is reported as failing. Every piece of evidence names the head SHA: a CI run or artifact on it, or a screenshot, video, or log showing it in an overlay or first line; evidence from another SHA is missing evidence. `proof.txt` counts only as the head SHA's CI artifact, never pasted by the writer.
 7. Correct the PR description to the five template sections. Move any line-by-line file that was placed under "Accept on evidence" into "Read line by line". Delete adjectives.
-8. Write the founder summary (review-log section 2) and post it as a "comment" PR review; for a return, also move the PR back to draft with "returned: <reason>". GitHub refuses "request changes" and "approve" from a PR's author, and agents work under the founder's login (D29). Never "approve". Apply the in-week hold above before marking a PR ready.
+8. Write the founder summary (review-log section 2) and post it as a "comment" PR review that opens with `Agent: reviewer`; for a return, also move the PR back to draft with "returned: <reason>". GitHub refuses "request changes" and "approve" from a PR's author, and agents work under the founder's login (D29). Never "approve". Apply the in-week hold above before marking a PR ready.
 9. Log the entry: PR number, lines, class, verdict, return reason, minutes you spent, founder minutes estimated. Entries accumulate on your branch and land with the weekly report: one review-log PR a week, never one per entry.
 
 A return names the smallest fix: for size, the split by file; for a rule, the one-line
@@ -86,7 +86,7 @@ What "evidence" means, per area (evidence described but not linked is missing ev
 - [ ] Any test modified, weakened, or deleted: "needs founder approval" at the top of the summary (HS 7).
 - [ ] Any gate, allowlist, `tools/size-exempt.txt`, bench budget, or review-log checklist line removed or loosened: "needs founder approval" at the top of the summary, as for a test.
 - [ ] Every changed file is under the queue item's paths; any other file is scope widening, returned (rule 4) and counted in the weekly report.
-- [ ] No file under `.claude/`, `CLAUDE.md`, `docs/research/`, or `docs/plan/decisions.md` unless the founder authored the PR (D24).
+- [ ] No file under `.claude/`, `CLAUDE.md`, `docs/research/`, or `docs/plan/decisions.md` unless the PR carries `founder-approved` (D24, D29).
 - [ ] A choice resting on an open-question default cites its number (D21).
 - [ ] No claim in the description that you could not verify.
 - [ ] The founder can explain the change from description plus diff (rule 9, D18).
@@ -127,14 +127,14 @@ What "evidence" means, per area (evidence described but not linked is missing ev
 ## Definition of done for your PRs
 Your PRs touch only `docs/plan/review-log.md`. Each is 200 lines or fewer, one concern,
 carries the five template sections, and lists its evidence as the rendered diff. A PR that
-removes or loosens a checklist line says so in its first line and needs founder approval. A
+removes or loosens a checklist line says so on the line after its `Agent:` line and needs founder approval. A
 per-PR entry is done when it has the nine fields from step 9. A weekly report is done
 when every field in the hand-off list below carries a number, never "n/a".
 
 ## Hand-offs
 - To the founder: the summary at the top of the PR, under 40 lines, with file, function, and line range for every line-by-line item and a link for every evidence item. Nothing reaches the founder without it.
-- To the writer that opened the PR: the return, with the smallest fix and the rule number. They re-request review on the same PR.
-- To the producer, weekly: PRs reviewed; returned, by reason (size, concern, rule number, template, evidence); sent to the founder; held for budget; merged; lines sent against the budget and the remaining budget; line-by-line backlog in weeks of budget; open nightly invariant failures; founder approvals without an inline comment (the habituation signal, HS 7: approval rose 30.1% to 36.8% while inline comments fell 22%); saturation-trigger status (eight consecutive weeks of more than two weeks of sim, proto, persist backlog, HS 7); any scope widening you saw.
+- To the writer that opened the PR: the return, with the smallest fix and the rule number. They push the fix to the same PR and take it out of draft; you review it again.
+- To the producer, weekly: PRs reviewed; returned, by reason (size, concern, rule number, template, evidence); sent to the founder; held for budget; merged; lines sent against the budget and the remaining budget; line-by-line backlog in weeks of budget; open nightly invariant failures; founder merges with no founder inline comment (the habituation signal, HS 7: approval rose 30.1% to 36.8% while inline comments fell 22%); saturation-trigger status (eight consecutive weeks of more than two weeks of sim, proto, persist backlog, HS 7); any scope widening you saw.
 - To the marketing agent: nothing extra; your founder summaries on the PR are their devlog source.
 - To the owner of `tools/`: every check you performed by hand twice, as a hook request with the exact command and expected failure message (D6: every rule is a hook). Target: the every-PR checklist is fully mechanical by week 6.
 

@@ -71,8 +71,8 @@ the CI job call the same script, so local and CI never disagree.
 | 6 | `adr-first.sh`: a new package in `cargo metadata` or a new `PackageReference` must be named by a file in `docs/adr/` on the merge base, not in the diff | PR |
 | 7 | `ci.yml`: fmt, clippy, test, dotnet build and test, matrix ubuntu and windows | hook (touched crates), PR |
 | 8 | `one-pin.sh`: a diff touching `pins.toml` or a mirror file moves exactly one pin and carries the `upgrade` label | PR |
-| HS 7 | `test-guard.sh`: a removed `#[test]`, `proptest!`, `[Fact]`, or `[Theory]`, an added `#[ignore]`, or an edited or deleted file under any `fixtures/` fails unless the founder applied `founder-approved` | PR |
-| HS 7 | `wip-limit.sh`: open non-draft PRs above the `WIP: <n>` on `docs/plan/queue.md`'s first line fail the newest. `claude-md-size.sh`: `CLAUDE.md` over 200 lines fails | PR |
+| HS 7 | `test-guard.sh`: a removed `#[test]`, `proptest!`, `[Fact]`, or `[Theory]`, an added `#[ignore]`, or an edited or deleted file under any `fixtures/` fails unless the PR carries `founder-approved` (D29) | PR |
+| HS 7 | `wip-limit.sh`: open non-draft PRs and `returned:` drafts above the `WIP: <n>` on `docs/plan/queue.md`'s first line fail the newest. `claude-md-size.sh`: `CLAUDE.md` over 200 lines fails | PR |
 | D24 | `protected-paths.sh`: a diff touching `.claude/`, `CLAUDE.md`, `docs/research/`, or `docs/plan/decisions.md` fails unless the PR carries `founder-approved` (D29) | PR |
 | D2 D4 D8 D9 D14 | `never-in-v1.sh`, outside `docs/`: no `bevy*`, `godot*`, or `gdext` package in `cargo metadata`; no `cdylib` or `staticlib` crate-type (gdext, an in-process server); no `*.gdextension` file; no case-sensitive `Predict`, `Extrapolat`, `Reconcil`, `Rollback`, `LagComp` in `client/` or `crates/{proto,net,server}`; no engine netcode (`MultiplayerPeer`, `MultiplayerAPI`, `Unity.Netcode`, `com.unity.netcode`, `using Mirror`, `FishNet`, `GodotSteam`); no Steam lobby search (`RequestLobbyList`), voice (`StartVoiceRecording`), or inventory and microtransaction API (`SteamInventory`, `MicroTxn`) | hook, PR |
 | D17 | `pins.sh`: every mirror file equals `pins.toml`; `cargo tree -d` shows one `steamworks`; redistributable hashes match the pinned SDK; every workflow `uses:` is a full commit SHA | hook, PR |
@@ -80,8 +80,8 @@ the CI job call the same script, so local and CI never disagree.
 
 Rules of the map:
 - A gate has no bypass: no env var, no magic comment. The only override is a label the founder applies.
-  Agents work under the founder's login (D29), so a label event's actor cannot tell them apart; agents
-  never apply these labels, and `.claude/settings.json` denies them the tools that do (CLAUDE.md).
+  Agents work under the founder's login (D29), so a gate checks that the label is present, never who
+  applied it. Agents never apply these labels; `.claude/settings.json` denies the direct tools as a guard.
 - A new gate ships with a red run (a throwaway branch carrying the violation) and a green run, both linked
   under "Accept on evidence". No links, no merge.
 - A false positive is fixed or reverted in a one-file PR the same day; the queue never waits on a gate.

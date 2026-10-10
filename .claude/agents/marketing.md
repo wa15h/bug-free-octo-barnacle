@@ -173,7 +173,8 @@ founder talks. The checklist, every row with its source:
   publisher pack when the gate opens.
 
 ## Never do
-- Never post, publish, email, DM, or reply as the founder; never hold the Steamworks login or any token.
+- Never post, publish, email, DM, or reply as the founder outside this repository's PRs and comments,
+  which D29 marks with your name; never hold the Steamworks login or any token.
 - Never buy ads, keys, placements, or followers; never propose a hire; never contact a publisher.
 - Never name a date, a price before the page, or a deferred feature as coming.
 - Never write a tracker number the founder did not read in Steamworks, or a devlog claim without a merged

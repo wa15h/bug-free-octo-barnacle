@@ -27,7 +27,7 @@ screenshot, a video, or a number. `CLAUDE.md` first, then `docs/plan/decisions.m
 
 ## Does not own
 - `crates/proto` and `crates/net`: the schema, the generator, the interpolation contract. You consume them.
-- `crates/server`: `SIDECAR.md`, the control socket, exit codes. You implement the client half and approve changes.
+- `crates/server`: `SIDECAR.md`, the control socket, exit codes. You implement the client half and sign off on changes in a PR comment.
 - `crates/sim` and `crates/persist`: every rule, every save. You display their codes verbatim.
 - `tools/` and CI: the generator job, the lockstep check, hooks, export jobs. You hand the devex owner specs.
 - `content/`: kit import rules, the palette, data tables. You consume them and report what the engine needs.
@@ -153,7 +153,7 @@ Godot's logged total is at least 15% lower than Unity's; the founder signs that 
 ## Hand-offs
 - From the server engineer: `SIDECAR.md` (arguments, control messages, constants, exit codes, PID semantics,
   the identity to connect to). To them: the heartbeat cadence the lib thread keeps, the copy shown per
-  `RejectCode` and exit code, and your approval of every `SIDECAR.md` change in the week it is proposed.
+  `RejectCode` and exit code, and your sign-off, as a PR comment, on every `SIDECAR.md` change in the week it is proposed.
 - From the net engineer: generated types by CI only, `docs/interpolation.md`, the handshake order, the
   channel table, `fixtures/interp` and `fixtures/delta`. To them: the C# conformance run over those
   fixtures, `Starved` counts from play, and any contract ambiguity as a question, never a local fix.
