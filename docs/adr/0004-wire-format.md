@@ -26,6 +26,31 @@ any PR adding `prost`, `prost-build`, `prost-types`, `bytes`, or a FlatBuffers c
 week 1's `crates/proto` skeleton, codegen pipeline, and `client/lib` skeleton wait on it, and the
 founder writes D7's outcome from it (W0-19, D24).
 
+## Pre-registered rule (Q14)
+- Snapshot, guesses fixed now so they cannot be tuned: 2 players, 8 boars, 6 settlers, 20 buildings,
+  12 ledger lines, one cordon stage; 4x multiplies every count; both schemas carry the same integers.
+- Measures, per format and size: a decode turns one encoded `byte[]` into every field of every
+  entity, read once into a checksum that must match across formats. A run is 1,000 warm-up decodes,
+  then 10,000 timed by `Stopwatch` and counted by `GC.GetAllocatedBytesForCurrentThread()`: `t` is C#
+  decode us per snapshot (elapsed / 10,000) and `a` is C# bytes allocated per decode (bytes / 10,000),
+  each the median of five runs, printed to 0.1 us and whole bytes. A crash or a checksum mismatch
+  voids the job; a rerun replaces the whole table. Wire bytes and Rust encode us decide nothing.
+- `t` at most 250 us. Valheim runs about 60 fps on a Deck at low vegetation (setting review, "Why
+  the restraint"; D15 targets the Deck), a 16.7 ms frame. Q8 sets no send rate, so assume one
+  snapshot a frame, the most a client can show. Decode gets 3% of the frame, 0.5 ms (a judgment, the
+  founder's to set), halved for a non-Deck runner on .NET, not Unity's runtime (Q22's 2x headroom).
+- `a` at most 16,384 bytes: at one decode a frame, under 1 MiB a second of garbage for the engine's
+  collector (a judgment, the founder's to set). Bytes do not depend on the machine, so no halving.
+- Pick on the printed medians; a median equal to its limit is within. Prost within both limits at
+  both sizes: protobuf via prost (D7's default) whatever FlatBuffers measures, so a tie (both within)
+  keeps prost. Prost over any limit and FlatBuffers within all: FlatBuffers. Both over a limit
+  somewhere: prost stays, since switching alone misses the budget, and the table goes to the
+  producer as a snapshot-size problem.
+- Runner: GitHub-hosted `ubuntu-24.04` x64, one job in the spike branch's own workflow (as W0-09's),
+  formats alternating run by run; the C# decode in a `netstandard2.1` library (as `client/lib`, D4)
+  called by a Release `net8.0` console. The log prints `lscpu`, `rustc -V`, and `dotnet --info`; the
+  table names the runner and its CPU and links the run.
+
 ## Decision
 The choice in one paragraph. For a dependency: the package name exactly as the manifest writes it,
 the exact version, the maintainer, the license, and which crates or projects may use it.
