@@ -68,5 +68,7 @@ else
   say "ok: every uses: in .github/workflows and .github/actions is a full commit SHA equal to $P"
 fi
 
-say "skip: the D17 check that flatc, Cargo.lock, and Google.FlatBuffers match flatbuffers (D30); bites when ADR 0004 (W0-10) sets the version and crates/proto and the codegen pipeline add those mirrors in week 1"
+fb=$(pin flatbuffers); m=$( (grep -ls '^name = "flatbuffers"' Cargo.lock; grep -rls --include='*.csproj' Google.FlatBuffers client; grep -rls flatc tools/codegen || true) | paste -sd' ' -)
+[ "$fb" = pending ] && [ -z "$m" ] || fail "$P flatbuffers is \"$fb\", mirrors in: ${m:-none}; pins.sh does not check flatc, Cargo.lock, or Google.FlatBuffers against it yet" "write that check in tools/checks/pins.sh, in the pin-only PR that sets the row to ADR 0004's version (D30, rule 8)"
+say "skip: the D17 check that flatc, Cargo.lock, and Google.FlatBuffers match flatbuffers (D30) is not written; pins.sh fails once the row leaves pending (ADR 0004, W0-10) or a mirror lands (week 1: crates/proto, client/lib, the codegen pipeline)"
 say "skip: dotnet-sdk comes with client/global.json and the codegen pipeline in week 1 (ADR 0004); godot and unity in week 1's pin-only PRs; csharp-binding waits on the client engineer's binding ADR (ADR 0002 open pin task)"
