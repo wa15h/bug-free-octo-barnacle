@@ -26,5 +26,5 @@ Links to the runs, logs, benchmarks, or upstream pages the decision rests on, wi
 version each one used. Evidence described but not linked is missing.
 
 ## Pinned versions touched
-Each pin this ADR sets or moves (D17), with its old and new value, or "none". The pin itself changes
-only in a PR whose sole concern is the upgrade (rule 8).
+Each pin this ADR sets (D17) and its current value, or "none". An upgrade PR (rule 8) edits this ADR
+in place: the new value and a dated line saying why. A changed choice is a new, superseding ADR.

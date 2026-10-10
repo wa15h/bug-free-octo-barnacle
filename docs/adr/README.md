@@ -11,13 +11,13 @@ is carried out, and never edits that file: a changed decision is a row the found
   a workflow or `tools/` script depends on; an art kit only when it brings an importer plugin or a
   shader dependency (Q30 default, D21).
 - D17 pins: choosing a pinned version (the Rust toolchain; the Steamworks SDK with every binding and
-  the redistributable; the engine minor line). A move is an upgrade PR with an upgrade note (rule 8).
-- Inside D3, D7, or D8: a choice of how the decision is carried out, even with no new dependency.
-  D3 is the tokio server binary, SDR transport, the raw-UDP fallback, and the engine-free sim, proto,
-  net, and persist crates; D7 the wire format and C# codegen; D8 the sidecar process and its watchdog.
-  Work in them that makes no such choice and adds no dependency needs none: W0-02's empty crates, the
-  sim skeleton's hand-written PRNG and state hash (sim-engineer rule 6). Nor does work carrying out a
-  merged spike ADR: `SIDECAR.md` (0003), the proto skeleton (0004). Q10 asks if `Fixed` needs one.
+  the redistributable; the engine minor line). An upgrade PR edits that ADR in place (step 3 below).
+- Inside D3, D7, or D8: a design choice of how the area works, such as the runtime setup or the
+  snapshot layout, even with no new dependency (founder, 2026-10-10). D3 is the tokio server binary,
+  SDR transport, the raw-UDP fallback, and the engine-free sim, proto, net, and persist crates; D7
+  the wire format and C# codegen; D8 the sidecar process and its watchdog. Routine work in them with
+  no new dependency needs none: W0-02's empty crates, the sim skeleton, and work carrying out a merged
+  spike ADR (`SIDECAR.md` under 0003, the proto skeleton under 0004). Q10 asks if `Fixed` needs one.
 - The ant-farm viewer in `crates/tools`, even with no dependency (test-engineer, sim-engineer files).
 
 The ADR merges before the PR that needs it. When unsure, ask the producer in the Questions block.
@@ -27,8 +27,8 @@ The ADR merges before the PR that needs it. When unsure, ask the producer in the
 1. The producer opens the ADR PR with the stub: Title, Status (Proposed), Decision log ID, Context.
 2. The owning engineer fills Decision, Consequences, Evidence, and Pinned versions touched in the
    same PR, and sets Status to Accepted. A stub never merges on its own.
-3. A merged ADR changes only its Status line. A changed ADR choice is a new ADR, and the old one's
-   Status becomes "Superseded by NNNN" in the same PR.
+3. An upgrade PR (rule 8) edits the pin's ADR in place: the new version and a dated line saying why.
+   A changed choice is a new ADR; the old one's Status becomes "Superseded by NNNN" in that PR.
 
 ## Numbers reserved by the week-0 queue, `docs/plan/week-0.md` (next free: 0005)
 
