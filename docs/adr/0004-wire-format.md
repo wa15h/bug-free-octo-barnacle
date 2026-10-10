@@ -4,52 +4,37 @@
 Proposed
 
 ## Decision log ID
-D7 (a schema-owned, cross-language wire format: protobuf via prost by default, FlatBuffers if the
-spike shows snapshot decode cost; C# types generated in CI from the schema `crates/proto` owns);
-rule 6. Q14, the decode-cost threshold, has no written default; this PR pre-registers one.
+D7 (protobuf via prost by default, FlatBuffers if the spike shows snapshot decode cost; C# generated
+in CI from the schema `crates/proto` owns); rule 6. Q14 has no written default (set below); Q8.
 
 ## Context
 MR 7 planned postcard, which HS 5 calls Rust-only. With a C# client (D4), HS 5 and 9.2 moved the
-wire to a schema-driven format with C# generated from the one Rust-owned schema, and HS 5 made
-generated C# falling out of lockstep with that schema its replacement top risk, held by a CI check
-(regenerate, compile, version bump). D7 keeps prost unless snapshot decode cost shows; HS 5 gives no
-number. Week-0 item 3 (`decisions.md`) and W0-10 measure it on the throwaway branch
-`claude/spike-wire-format`, which never merges: a representative snapshot (two players, the boar
-sounder, settlers, buildings, ledger lines, cordon stage; counts are parameters, guesses labelled)
-encoded in Rust with each format and decoded in C# generated from each schema, 10,000 decodes a run,
-median of five runs, at cut-scope size and at 4x. One table per format and size gives bytes, Rust
-encode us, C# decode us, and C# bytes allocated per decode, and names the runner. This PR opens as a
-draft: the owner's first commit after this stub pre-registers the C# decode threshold that flips D7,
-and the founder approves or edits it in a PR comment before any result is pushed. No send rate is
-decided (Q8), so a per-decode cost does not yet convert to a per-second one. This ADR merges before
-any PR adding `prost`, `prost-build`, `prost-types`, `bytes`, or a FlatBuffers crate (rule 6);
-week 1's `crates/proto` skeleton, codegen pipeline, and `client/lib` skeleton wait on it, and the
-founder writes D7's outcome from it (W0-19, D24).
+wire to a schema-driven format, C# generated from the one Rust-owned schema; HS 5's new top risk is
+the two drifting apart, held by a CI check. D7 keeps prost unless snapshot decode cost shows; HS 5
+gives no number. Week-0 item 3 measures it on `claude/spike-wire-format`, a branch that never
+merges, by the rule below, which the founder approves or edits in a PR comment before any result is
+pushed. This ADR merges before any PR adding `prost`, `prost-build`, `prost-types`, `bytes`, or a
+FlatBuffers crate (rule 6); week 1's `crates/proto`, codegen, and `client/lib` skeletons wait on it;
+the founder writes D7's outcome from it (W0-19, D24).
 
 ## Pre-registered rule (Q14)
-- Snapshot, guesses fixed now so they cannot be tuned: 2 players, 8 boars, 6 settlers, 20 buildings,
-  12 ledger lines, one cordon stage; 4x multiplies every count; both schemas carry the same integers.
-- Measures, per format and size: a decode turns one encoded `byte[]` into every field of every
-  entity, read once into a checksum that must match across formats. A run is 1,000 warm-up decodes,
-  then 10,000 timed by `Stopwatch` and counted by `GC.GetAllocatedBytesForCurrentThread()`: `t` is C#
-  decode us per snapshot (elapsed / 10,000) and `a` is C# bytes allocated per decode (bytes / 10,000),
-  each the median of five runs, printed to 0.1 us and whole bytes. A crash or a checksum mismatch
-  voids the job; a rerun replaces the whole table. Wire bytes and Rust encode us decide nothing.
-- `t` at most 250 us. Valheim runs about 60 fps on a Deck at low vegetation (setting review, "Why
-  the restraint"; D15 targets the Deck), a 16.7 ms frame. Q8 sets no send rate, so assume one
-  snapshot a frame, the most a client can show. Decode gets 3% of the frame, 0.5 ms (a judgment, the
-  founder's to set), halved for a non-Deck runner on .NET, not Unity's runtime (Q22's 2x headroom).
-- `a` at most 16,384 bytes: at one decode a frame, under 1 MiB a second of garbage for the engine's
-  collector (a judgment, the founder's to set). Bytes do not depend on the machine, so no halving.
-- Pick on the printed medians; a median equal to its limit is within. Prost within both limits at
-  both sizes: protobuf via prost (D7's default) whatever FlatBuffers measures, so a tie (both within)
-  keeps prost. Prost over any limit and FlatBuffers within all: FlatBuffers. Both over a limit
-  somewhere: prost stays, since switching alone misses the budget, and the table goes to the
-  producer as a snapshot-size problem.
-- Runner: GitHub-hosted `ubuntu-24.04` x64, one job in the spike branch's own workflow (as W0-09's),
-  formats alternating run by run; the C# decode in a `netstandard2.1` library (as `client/lib`, D4)
-  called by a Release `net8.0` console. The log prints `lscpu`, `rustc -V`, and `dotnet --info`; the
-  table names the runner and its CPU and links the run.
+- Snapshot (guesses, fixed now): 2 players, 8 boars, 6 settlers, 20 buildings, 12 ledger lines, 1
+  cordon stage; 4x quadruples all but players and cordon stage (D2, D26). Each is one flat message
+  (table) of a `uint32` id and five `sint64` (`long`) fields, the same in both schemas.
+- Measured in C#: `t`, decode us per snapshot, and `a`, bytes allocated per decode, over 10,000
+  decodes after 1,000 warm-up, each reading every field of one `byte[]` into a checksum equal across
+  formats; `t` from `Stopwatch`, `a` from `GC.GetAllocatedBytesForCurrentThread()`.
+- `t` at most 250 us. A Deck frame is 16.7 ms (Valheim runs about 60 fps there at low vegetation:
+  setting review, "Why the restraint"; D15). Q8 sets no send rate, so one snapshot a frame; decode
+  gets 3% (0.5 ms), halved for the runner not being a Deck and .NET 8 not being Unity 6's runtime.
+- `a` at most 16,384 bytes: one decode a frame then makes under 1 MiB of garbage a second. CPU speed
+  does not change allocation, so no halving. 3%, the halving, and 1 MiB are judgments.
+- Pick on the medians of five runs, printed to 0.1 us and whole bytes; nothing else counts. A
+  format passes a size when both its medians are at or under their limits. The format passing more
+  of the two sizes wins; an equal count (2-2, 1-1, 0-0) keeps prost, D7's default.
+- Runner: one GitHub-hosted `ubuntu-24.04` x64 job, formats alternating by run; a `netstandard2.1`
+  decoder (D4) in a Release `net8.0` console; the log prints `lscpu`, `rustc -V`, `dotnet --info`.
+  The first spike-branch job not voided (crash, checksum mismatch) decides; only voided jobs rerun.
 
 ## Decision
 The choice in one paragraph. For a dependency: the package name exactly as the manifest writes it,
