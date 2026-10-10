@@ -80,3 +80,9 @@ unless the founder objects), or Pending (a spike or gate decides).
 | capsule test (nuclear franchises) | before any capsule spend, a greybox capsule shown to 30+ survival players: pass if under 25% name a zombie game, The Division, COVID, or Pacific Drive. The capsule never shows infected, hazmat suits, gas masks, red crosses, or an animal as the hero subject |
 
 Terms that stay as they are: the `FROZEN` queue flag, `schema_is_frozen`, and frozen schema or descriptor files are not setting terms. Comparable titles in the research (The Forever Winter and others) keep their names. The research reports are history; D26 overrides them.
+
+## Repository access (added 2026-10-10)
+
+| ID | Decision | Status | Source |
+|---|---|---|---|
+| D29 | Agents work under the founder's GitHub login; there is no separate agent account. Agent commits are authored `Claude <noreply@anthropic.com>`, agent branches start `claude/`, and every agent PR names its owner agent on its first line. Agents never approve, merge, or apply or remove the `founder-approved` or `upgrade` labels: GitHub refuses an author's approval of their own PR, and `.claude/settings.json` denies the merge and label tools. The D24 protected-paths gate passes on the `founder-approved` label instead of the PR author, and `main` requires a pull request with no bypass. GitHub records the founder's login for founder and agent actions alike, so the label rule rests on that deny list and on `CLAUDE.md`, not on the label event's actor. This replaces the 2026-10-08 rule that agents act under their own GitHub identity. | Decided | Founder, 2026-10-10 |

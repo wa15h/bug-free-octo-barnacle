@@ -59,7 +59,7 @@ The PR loop, per PR:
 5. Run the every-PR checklist, then each crate checklist the diff touches. Record every failing line with file and line number.
 6. Verify evidence yourself: CI green on the head SHA (open the link; a pasted "passes" is not evidence). While no CI exists, run the commands in `CLAUDE.md` on the branch and paste the tail of the output. A failing test is reported as failing. Every piece of evidence names the head SHA: a CI run or artifact on it, or a screenshot, video, or log showing it in an overlay or first line; evidence from another SHA is missing evidence. `proof.txt` counts only as the head SHA's CI artifact, never pasted by the writer.
 7. Correct the PR description to the five template sections. Move any line-by-line file that was placed under "Accept on evidence" into "Read line by line". Delete adjectives.
-8. Write the founder summary (review-log section 2) and post it as a PR review: "request changes" for a return, "comment" for ready. Never "approve". Apply the in-week hold above before marking a PR ready.
+8. Write the founder summary (review-log section 2) and post it as a "comment" PR review; for a return, also move the PR back to draft with "returned: <reason>". GitHub refuses "request changes" and "approve" from a PR's author, and agents work under the founder's login (D29). Never "approve". Apply the in-week hold above before marking a PR ready.
 9. Log the entry: PR number, lines, class, verdict, return reason, minutes you spent, founder minutes estimated. Entries accumulate on your branch and land with the weekly report: one review-log PR a week, never one per entry.
 
 A return names the smallest fix: for size, the split by file; for a rule, the one-line
@@ -161,5 +161,5 @@ when every field in the hand-off list below carries a number, never "n/a".
 1. The 201-400 band: D6 sets 200 as the norm and 400 as the hard cap but not when the band is allowed. Until answered, I return 201-400 with a split plan.
 2. Answered by D22: hand-written lines count the same in every area; generated C#, `Cargo.lock`, engine scene and `.meta` files, and fixtures are listed with sizes and spot-checked.
 3. HS 7 separates the reviewer from an evaluator that launches the headless server plus bot clients and records proof. Once `headless-session` exists, who runs it: me, or the `tools/` owner attaching the proof to the PR?
-4. HS 7 says editing or deleting a test needs founder approval, but it is not a numbered rule in `CLAUDE.md`. Should I block (request changes) or flag (comment), and should the `tools/` owner make it a hook?
+4. HS 7 says editing or deleting a test needs founder approval, but it is not a numbered rule in `CLAUDE.md`. Should I block (return to draft) or flag (comment), and should the `tools/` owner make it a hook?
 5. Answered: the founder logs hours in `docs/plan/hours.md` (CLAUDE.md "How the team works"; the producer's first task 2), one row a week. The weekly budget reads that row and falls back to the queue header's planned hours (30 under D5 revised) only when the row is missing.

@@ -34,7 +34,7 @@ lines, 10 up to 150, 15 above, plus 5 when the founder signs something. The prod
 | Return-round reserve (one round per PR, the reviewer's rule) | 1 h |
 | Writing W0-19 and W0-20 | 1 h |
 | SDR run for W0-08: Linux machine or VM with no Steam client, desktop with Steam, repro, logs | 3 h, cap 4 h |
-| Setup: pinned toolchain, Steam client; after W0-07 and W0-17 protect `main`, require both workflows, create labels `size/over-200`, `founder-approved`, `upgrade`, run `tools/hooks/install.sh`; a GitHub identity for agents that is not yours, and `FOUNDER_LOGIN` for W0-21 | 2 h |
+| Setup: pinned toolchain, Steam client; now, protect `main` (require a pull request, no bypass, no required approvals: GitHub refuses self-approval, D29); after W0-07 and W0-17, require both workflows, create labels `size/over-200`, `founder-approved`, `upgrade`, run `tools/hooks/install.sh` | 2 h |
 | Starting 19 agent items, answering the Questions block, the `hours.md` row and week-end summary | 1 h 45 min |
 | D23 overhead (devlog, Thursday group, community) | 2 h 30 min |
 | Total planned | 15 h 20 min of 30 |
@@ -70,7 +70,7 @@ Class: L = line-by-line, E = evidence, F = founder-authored. Min = founder minut
 | W0-18 | devex-engineer | PR template copy and drift check | E | 45 | 5 | 17 | D6 | no |
 | W0-19 | founder | Spike outcomes into `decisions.md` | F | 10 | 30 | 08 09 10 | D3 D7 D8 D24 | no |
 | W0-20 | founder | D25 Stop hook in `.claude/settings.json` | F | 20 | 30 | 16 | D24 D25 | no |
-| W0-21 | devex-engineer | Protected-paths gate (D24) | E | 55 | 10 | 17 | D24 | no |
+| W0-21 | devex-engineer | Protected-paths gate (D24) | E | 55 | 10 | 17 | D24 D29 | no |
 
 **W0-01.** Paths: `docs/plan/week-0.md`. Accept: every item has ID, owner, paths, class, lines,
 acceptance, decisions, ADR-first; lines at most 3,000 and PRs inside 20-25; each spike names the
@@ -163,7 +163,7 @@ finishes"; the team runs as subagents); the PR says how a repeat block (`stop_ho
 
 **W0-21.** Paths: `tools/checks/protected-paths.sh`, a job in `pr-gates.yml`. Accept: a diff touching
 `.claude/`, `CLAUDE.md`, `docs/research/`, or `decisions.md` fails `RULE D24: <path> is founder-edited`
-unless the PR author is `FOUNDER_LOGIN`; red on an agent branch, green on head and on a founder branch.
+unless the PR carries `founder-approved` (D29); red without the label, green with it and on head.
 
 ## Pull forward only if W0-01 to W0-21 have merged and hours remain
 
@@ -192,7 +192,7 @@ unless the PR author is `FOUNDER_LOGIN`; red on an agent branch, green on head a
 
 1. Q14 and Q18 have no written default; W0-10 and W0-08 state this queue's assumption until answered.
 2. Resolved 2026-10-08: the skeptic review's patch was applied with the team (agent files now plan at
-   30 h, and `CLAUDE.md` carries the in-week freeze, agent GitHub identity, and eligibility-only add-backs).
+   30 h, and `CLAUDE.md` carries the in-week freeze, the agent login rule, replaced by D29 on 2026-10-10, and eligibility-only add-backs).
 3. D2's add-back trigger fires near week 26; D28 makes the cut scope the target. Eligibility only, unless you raise it.
 
 ## Questions
