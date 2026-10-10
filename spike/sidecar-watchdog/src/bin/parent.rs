@@ -4,7 +4,7 @@
 
 use sidecar_watchdog_spike::*;
 use std::io::{BufRead, BufReader, Write};
-use std::net::{TcpListener, TcpStream};
+use std::net::{SocketAddr, TcpListener, TcpStream};
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
 use std::sync::mpsc::{self, Receiver, RecvTimeoutError, Sender};
@@ -15,8 +15,12 @@ use std::{env, fs, io, process};
 /// Spike only: how long the parent waits from spawn to READY.
 const READY_LIMIT: Duration = Duration::from_secs(CONTROL_SILENCE_SECS);
 
+/// lock_race: tries per starting state, and a PID far above any the runners hand out.
+const RACE_TRIES: usize = 100;
+const DEAD_PID: u32 = 4_000_000_000;
+
 type Case = fn(&Path) -> Result<String, String>;
-const CASES: [(&str, Case); 8] = [
+const CASES: [(&str, Case); 9] = [
     ("spawn_ready", spawn_ready),
     ("shutdown", shutdown_exits_0),
     ("silent_control", silent_control),
@@ -25,6 +29,7 @@ const CASES: [(&str, Case); 8] = [
     ("killed_parent", killed_parent),
     ("lock_live", lock_live),
     ("lock_dead", lock_dead),
+    ("lock_race", lock_race),
 ];
 
 /// A running sidecar as the client holds it: the process, its recorded PID and start time, the socket.
@@ -101,42 +106,63 @@ fn err(e: impl std::fmt::Display) -> String {
     e.to_string()
 }
 
-/// Spawn and wait for READY. The parent binds 127.0.0.1:0 first, so the OS picks a free port that
-/// nothing can take before the child connects, and only the child it spawned can reach it.
-fn launch(dir: &Path, extra: &[&str]) -> Result<Launch, String> {
-    let listener = TcpListener::bind("127.0.0.1:0").map_err(err)?;
-    let control = listener.local_addr().map_err(err)?.to_string();
-    let t0 = Instant::now();
-    let mut child = Command::new(child_exe())
-        .args(["--control", &control, "--save-dir"])
+/// Free localhost ports for `--control`: bind 127.0.0.1:0 once per port, all held together so the
+/// ports differ, read the ports the OS gave, then close them.
+fn free_ports(n: usize) -> Result<Vec<SocketAddr>, String> {
+    let probes: Vec<TcpListener> = (0..n)
+        .map(|_| TcpListener::bind("127.0.0.1:0"))
+        .collect::<io::Result<_>>()
+        .map_err(err)?;
+    probes.iter().map(|l| l.local_addr().map_err(err)).collect()
+}
+
+fn spawn_child(
+    dir: &Path,
+    control: SocketAddr,
+    extra: &[&str],
+    logs: Stdio,
+) -> Result<Child, String> {
+    Command::new(child_exe())
+        .args(["--control", &control.to_string(), "--save-dir"])
         .arg(dir)
         .args(extra)
         .stdin(Stdio::null())
         .stdout(Stdio::null())
+        .stderr(logs)
         .spawn()
-        .map_err(|e| format!("spawn: {e}"))?;
-    let pid = child.id();
-    // Recorded before Hello, in memory and in sidecar.pid; readable even if the child already exited.
-    let start = os::Proc::open(pid)
-        .and_then(|p| p.start_time())
-        .ok_or("no start time")?;
-    write_record(&dir.join("sidecar.pid"), pid, start).map_err(err)?;
-    let msg = format!("spawned child pid {pid} --control {control}; sidecar.pid = {pid} {start}");
-    log("parent", &msg);
+        .map_err(|e| format!("spawn: {e}"))
+}
 
-    listener.set_nonblocking(true).map_err(err)?;
+/// Spawn and wait for READY. The parent picks the port; the child takes the save-dir lock, then binds
+/// that port and accepts one connection. The parent connects, retrying, and watches for the child's exit.
+fn launch(dir: &Path, extra: &[&str]) -> Result<Launch, String> {
+    let control = free_ports(1)?[0];
+    let t0 = Instant::now();
+    let mut child = spawn_child(dir, control, extra, Stdio::inherit())?;
+    let pid = child.id();
+    // The start time, read at spawn. Unreadable means the child already exited: read its exit code.
+    let Some(start) = os::Proc::open(pid).and_then(|p| p.start_time()) else {
+        let code = child.wait().map(exit_code).map_err(err)?;
+        log(
+            "parent",
+            &format!("child pid {pid} exited {code} before its start time was read"),
+        );
+        return Ok(Launch::Exited(code));
+    };
+    log(
+        "parent",
+        &format!("spawned child pid {pid} (start {start}) --control {control}"),
+    );
+
     let stream = loop {
-        match listener.accept() {
-            Ok((s, _)) => break s,
-            Err(e) if e.kind() == io::ErrorKind::WouldBlock => {}
-            Err(e) => return Err(format!("accept: {e}")),
+        if let Ok(s) = TcpStream::connect_timeout(&control, Duration::from_millis(100)) {
+            break s;
         }
         if let Some(st) = child.try_wait().map_err(err)? {
             let code = exit_code(st);
-            log(
-                "parent",
-                &format!("child pid {pid} exited {code} before connecting"),
-            );
+            let msg =
+                format!("child pid {pid} exited {code} before accepting; sidecar.pid untouched");
+            log("parent", &msg);
             return Ok(Launch::Exited(code));
         }
         if t0.elapsed() > READY_LIMIT {
@@ -146,7 +172,14 @@ fn launch(dir: &Path, extra: &[&str]) -> Result<Launch, String> {
         }
         thread::sleep(Duration::from_millis(10));
     };
-    stream.set_nonblocking(false).map_err(err)?;
+    // Written after the connect and before Hello. The child binds only once it holds the lock, so an
+    // exit-3 child never gets here and never overwrites a live server's record.
+    write_record(&dir.join("sidecar.pid"), pid, start).map_err(err)?;
+    let ms = t0.elapsed().as_millis();
+    log(
+        "parent",
+        &format!("connected {ms} ms after spawn; sidecar.pid = {pid} {start}"),
+    );
     let (tx, rx) = mpsc::channel();
     let reader = BufReader::new(stream.try_clone().map_err(err)?);
     thread::spawn(move || {
@@ -440,7 +473,8 @@ fn killed_parent(dir: &Path) -> Result<String, String> {
     verdict(ok, detail)
 }
 
-/// A second server on a save dir whose lock a live server holds exits 3 and leaves the lock alone.
+/// A second server on a save dir whose lock a live server holds exits 3 and leaves the lock alone,
+/// and the launcher leaves the live server's `sidecar.pid` alone.
 fn lock_live(dir: &Path) -> Result<String, String> {
     let a = ready(launch(dir, &[]))?;
     let b = match launch(dir, &[])? {
@@ -451,10 +485,11 @@ fn lock_live(dir: &Path) -> Result<String, String> {
         }
     };
     let lock = read_record(&dir.join("server.lock"));
-    let kept = lock == Some((a.pid, a.start));
+    let record = read_record(&dir.join("sidecar.pid"));
+    let kept = lock == Some((a.pid, a.start)) && record == lock;
     let a_pid = a.pid;
     let (_, a_code, _) = shutdown(a);
-    let detail = format!("second child exit {b:?} while pid {a_pid} ran; lock still {lock:?}: {kept}; first child then exit {a_code}");
+    let detail = format!("second child exit {b:?} while pid {a_pid} ran; lock still {lock:?}, sidecar.pid still {record:?}: {kept}; first child then exit {a_code}");
     verdict(b == Some(3) && kept && a_code == 0, detail)
 }
 
@@ -480,4 +515,62 @@ fn lock_dead(dir: &Path) -> Result<String, String> {
     let (_, c_code, _) = shutdown(c);
     let detail = format!("{killed} (exit {a_code}), lock left {left:?}; restart READY then exit {b_code}; lock ({me} {fake}) naming a running pid: READY then exit {c_code}");
     verdict(dead_left && b_code == 0 && c_code == 0, detail)
+}
+
+/// Not one of W0-09's cases: two servers started at once on one save dir, RACE_TRIES times with no
+/// lock and RACE_TRIES times with a dead PID's lock. At most one may take the lock; the other exits 3.
+fn lock_race(dir: &Path) -> Result<String, String> {
+    let lock = dir.join("server.lock");
+    let mut both = [0, 0];
+    for i in 0..2 * RACE_TRIES {
+        let _ = fs::remove_file(&lock);
+        let dead = i % 2 == 1;
+        if dead {
+            write_record(&lock, DEAD_PID, 1).map_err(err)?;
+        }
+        let ports = free_ports(2)?;
+        let mut pair = Vec::new();
+        for &control in &ports {
+            pair.push(spawn_child(dir, control, &[], Stdio::null())?);
+        }
+        // A child that took the lock listens on its port; hold each connection so it stays alive.
+        let mut held = Vec::new();
+        for (child, &control) in pair.iter_mut().zip(&ports) {
+            if let Some(s) = listening(child, control)? {
+                held.push((child.id(), control, s));
+            }
+        }
+        if held.len() > 1 {
+            both[usize::from(dead)] += 1;
+            let who: Vec<_> = held.iter().map(|h| (h.0, h.1)).collect();
+            let msg = format!(
+                "try {i} (dead PID's lock: {dead}): both took the lock, (pid, port) {who:?}"
+            );
+            log("parent", &msg);
+        }
+        for mut child in pair {
+            let _ = child.kill();
+            let _ = child.wait();
+        }
+    }
+    let detail = format!(
+        "both servers took the lock in {} of {RACE_TRIES} tries with no lock, {} of {RACE_TRIES} with a dead PID's lock",
+        both[0], both[1]
+    );
+    verdict(both == [0, 0], detail)
+}
+
+/// The child's control connection once it listens (it took the lock), or None once it exits.
+fn listening(child: &mut Child, control: SocketAddr) -> Result<Option<TcpStream>, String> {
+    let t = Instant::now();
+    while t.elapsed() < READY_LIMIT {
+        if let Ok(s) = TcpStream::connect_timeout(&control, Duration::from_millis(100)) {
+            return Ok(Some(s));
+        }
+        if child.try_wait().map_err(err)?.is_some() {
+            return Ok(None);
+        }
+        thread::sleep(Duration::from_millis(5));
+    }
+    Err(format!("pid {} neither listened nor exited", child.id()))
 }

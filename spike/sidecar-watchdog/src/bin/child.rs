@@ -1,13 +1,13 @@
 //! The stub server. Spawned as `child --control 127.0.0.1:<port> --save-dir <dir> [--hang-on-shutdown]`.
-//! Order: take the save-dir lock (exit 3 if a live server holds it), connect the control socket,
-//! answer `HELLO` with `READY <pid>`, then tick. Every exit path saves between ticks, sends
-//! `EXITING <reason>`, and releases the lock: `SHUTDOWN` exits 0; a closed control socket, or one
-//! silent for `CONTROL_SILENCE_SECS`, exits 2. `--hang-on-shutdown` plays a hung server that the
-//! parent must kill.
+//! Order: take the save-dir lock (exit 3 if a live server holds it), bind the control port the client
+//! chose, accept one connection and stop listening, answer `HELLO` with `READY <pid>`, then tick.
+//! Every exit path saves between ticks, sends `EXITING <reason>`, and releases the lock: `SHUTDOWN`
+//! exits 0; a closed control socket, one silent for `CONTROL_SILENCE_SECS`, or no connection within
+//! it, exits 2. `--hang-on-shutdown` plays a hung server that the parent must kill.
 
 use sidecar_watchdog_spike::{log, read_record, running_start_time, CONTROL_SILENCE_SECS};
 use std::io::{self, BufRead, BufReader, Write};
-use std::net::TcpStream;
+use std::net::{TcpListener, TcpStream};
 use std::path::{Path, PathBuf};
 use std::sync::mpsc::{self, TryRecvError};
 use std::time::{Duration, Instant};
@@ -37,21 +37,20 @@ fn main() {
         );
         process::exit(3);
     }
-    let mut out = match TcpStream::connect(&control) {
-        Ok(s) => s,
+    // Bound only once the lock is held, so a server that exits 3 never listens.
+    let listener = match TcpListener::bind(&control) {
+        Ok(l) => l,
         Err(e) => {
-            log(&who, &format!("control connect failed: {e}"));
-            exit_path(
-                &who,
-                &dir,
-                None,
-                0,
-                2,
-                "watchdog",
-                "control socket unreachable",
-            );
+            log(&who, &format!("control bind {control} failed: {e}"));
+            exit_path(&who, &dir, None, 0, 2, "watchdog", "control port unusable");
         }
     };
+    log(&who, &format!("listening on {control}"));
+    let Some(mut out) = accept_one(listener) else {
+        let why = "no control connection";
+        exit_path(&who, &dir, None, 0, 2, "watchdog", why);
+    };
+    log(&who, "accepted the control connection; no longer listening");
 
     // The socket task forwards each line; None means the socket closed or failed.
     let (tx, rx) = mpsc::channel::<Option<String>>();
@@ -112,6 +111,26 @@ fn main() {
         tick += 1; // the simulation tick would run here
         thread::sleep(TICK);
     }
+}
+
+/// Accept one connection, then drop the listener, so only the first connection can send `SHUTDOWN`.
+/// No connection within `CONTROL_SILENCE_SECS` counts as a silent control socket.
+fn accept_one(listener: TcpListener) -> Option<TcpStream> {
+    listener.set_nonblocking(true).ok()?;
+    let t = Instant::now();
+    while t.elapsed() < Duration::from_secs(CONTROL_SILENCE_SECS) {
+        match listener.accept() {
+            Ok((s, _)) => {
+                s.set_nonblocking(false).ok()?;
+                return Some(s);
+            }
+            Err(e) if e.kind() == io::ErrorKind::WouldBlock => {
+                thread::sleep(Duration::from_millis(10))
+            }
+            Err(_) => return None,
+        }
+    }
+    None
 }
 
 /// Create `server.lock` holding our PID and start time. A lock whose PID is running with the

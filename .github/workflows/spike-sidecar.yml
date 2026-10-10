@@ -23,7 +23,7 @@ jobs:
         shell: bash
         working-directory: spike/sidecar-watchdog
     steps:
-      # actions/checkout v7.0.1 by full SHA, as ADR 0001 (W0-04) pins it.
+      # actions/checkout v7.0.1 by full SHA: the pin W0-04 proposes in ADR 0001 (PR #13, unmerged).
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Toolchain and image
         run: echo "image $ImageOS $ImageVersion" && rustc --version && cargo --version
@@ -54,3 +54,6 @@ jobs:
       - name: "case: lock_dead"
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         run: code=0; ./target/release/parent lock_dead || code=$?; echo "harness exit code $code"; exit $code
+      - name: "case: lock_race (not a W0-09 case: two servers started at once)"
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: code=0; ./target/release/parent lock_race || code=$?; echo "harness exit code $code"; exit $code
