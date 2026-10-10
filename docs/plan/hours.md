@@ -1,17 +1,17 @@
 # Hours log
 
 The founder types one row a week at week start, for the week just ended (D5). This file is the
-source of truth (Q3 default): the producer fills derived cells (D23); a later `crates/tools` hours
-tool only checks and recomputes them. No agent writes a founder cell, estimates an hour, or
-back-fills a week. A missing row is flagged at the top of `queue.md`; a second freezes the queue.
+source of truth: the producer fills derived cells (D23) until a `crates/tools` hours tool derives
+them (Q3 default). No agent writes a founder cell, estimates an hour, or back-fills a week. A
+missing row is flagged at the top of `queue.md`; a second freezes the queue.
 
 ## Columns
 
-Founder cells, under five minutes a week:
-- **Wk**: the week number, deload weeks included. **Dates**: that week's Monday to Sunday.
+The producer adds each blank row with **Wk**, the week number (deload weeks count). Founder cells,
+under five minutes a week:
+- **Dates**: that week's Monday to Sunday.
 - **P**: project hours logged: everything on the project, review and the D23 overhead included.
-- **Total**: all working hours that week, the day job included.
-- **Rev**: review hours, a part of P.
+- **Total**: all working hours that week, the day job included. **Rev**: review hours, a part of P.
 - **Deload**: yes in a D5 deload week (the first fortnight is weeks 12-13), else no.
 - **Fatigue**: yes or no, self-reported. A yes heads the next weekly summary and re-dates the
   bands only (D28). Total and Fatigue feed the quarterly fatigue check (D5).
@@ -22,9 +22,9 @@ Unity hours summed from the `client/BAKEOFF.md` table (Q19 default; a part of P,
 
 ## Formulas (written once; every derived cell follows them)
 
-A project week is a row with Deload no. Rolling windows skip deload rows, because D11's ~850
-build-hours a year is 20.24 x 42 project weeks (D5).
-- Build = max(0, (P - 2.5) x 0.8 x 0.92) (D23). At 30 h: 27.5 x 0.736 = 20.24.
+A project week is a row with Deload no. Rolling windows skip deload rows (a format choice).
+- Build = (P - 2.5) x 0.8 x 0.92 (D23). At 30 h: 27.5 x 0.736 = 20.24. Under 2.5 h it is negative
+  (0 h gives -1.84), as D23 is written; whether to floor it is an open question for the founder.
 - Cum P and Cum build: sums over every row to date, deload rows included.
 - Avg 8 = mean P over the last 8 project weeks (over all of them while fewer than 8 exist). Once
   8 exist, under 20 triggers the D5 re-baseline: the bands re-date; scope and quality hold (D28).
