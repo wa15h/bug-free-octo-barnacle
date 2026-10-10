@@ -1,34 +1,33 @@
 # Architecture decision records
 
-One file per decision, `docs/adr/NNNN-<slug>.md`, copied from `0000-template.md`. Numbers have four
-digits, go in order, and are never reused. An ADR records how a `decisions.md` row is carried out. It
-never edits that file: when an outcome changes a decision, the founder writes the row (D24).
+One file per decision, `docs/adr/NNNN-<slug>.md`, copied from `0000-template.md`; numbers run in
+order and are never reused. An ADR records a dependency choice (rule 6) or how a `decisions.md` row
+is carried out, and never edits that file: a changed decision is a row the founder writes (D24).
 
 ## When an ADR is required
 
 - Rule 6, a new dependency: a package new to `cargo metadata` (dev- and build-dependencies included),
   a new `PackageReference`, an engine package or plugin, a third-party GitHub Action, or anything else
-  a workflow or `tools/` script depends on. An art kit needs one only when it brings an importer
-  plugin or a shader dependency (Q30 default, D21).
+  a workflow or `tools/` script depends on; an art kit only when it brings an importer plugin or a
+  shader dependency (Q30 default, D21).
 - D17 pins: choosing a pinned version (the Rust toolchain; the Steamworks SDK with every binding and
-  the redistributable; the engine minor line), or moving one in a way its ADR did not already decide.
-- Anything inside D3 (the server binary, SDR transport, the raw-UDP fallback), D7 (the wire format
-  and C# codegen), or D8 (the sidecar process and its watchdog), even with no new dependency.
+  the redistributable; the engine minor line).
+- Anything inside D3 (the server binary, SDR transport, the raw-UDP fallback, the engine-free sim,
+  proto, net, and persist crates), D7 (the wire format and C# codegen), or D8 (the sidecar process
+  and its watchdog), even with no new dependency.
 
-The ADR merges before the PR that needs it. When unsure, ask the producer in the item's Questions block.
+The ADR merges before the PR that needs it. Moving a pin is an upgrade PR (rule 8, devex-engineer)
+that carries an upgrade note in its own diff. When unsure, ask the producer in the Questions block.
 
 ## Who writes it
 
-1. The producer queues the item and opens the ADR PR with the stub: Title, Status (Proposed),
-   Decision log ID, and Context.
+1. The producer opens the ADR PR with the stub: Title, Status (Proposed), Decision log ID, Context.
 2. The owning engineer fills Decision, Consequences, Evidence, and Pinned versions touched in the
    same PR, and sets Status to Accepted. A stub never merges on its own.
 3. A merged ADR changes only its Status line. A changed decision is a new ADR, and the old one's
    Status becomes "Superseded by NNNN" in the same PR.
 
-## Reserved numbers
-
-The week-0 queue (`docs/plan/week-0.md`) reserves 0001-0004. The next free number is 0005.
+## Numbers reserved by the week-0 queue, `docs/plan/week-0.md` (next free: 0005)
 
 | Number | File | Queue item | Owner |
 |---|---|---|---|
