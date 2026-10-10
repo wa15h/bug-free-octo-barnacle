@@ -1,0 +1,13 @@
+# W0-10 wire-format spike (ADR 0004). Lives only on claude/spike-wire-format; never merged.
+# Its own workspace, so it is not a member of the root workspace. flatbuffers matches flatc and
+# the Google.FlatBuffers NuGet package at one version (D17).
+[package]
+name = "wire-format-spike"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[workspace]
+
+[dependencies]
+flatbuffers = "=25.2.10"

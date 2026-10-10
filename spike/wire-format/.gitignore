@@ -1,0 +1,6 @@
+/out/
+/rust/target/
+/rust/generated/
+/cs/Decoder/generated/
+bin/
+obj/

@@ -1,0 +1,11 @@
+<!-- W0-10 wire-format spike (ADR 0004). Lives only on claude/spike-wire-format; never merged.
+     The Release net8.0 console that times the netstandard2.1 decoder. -->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Decoder/Decoder.csproj" />
+  </ItemGroup>
+</Project>

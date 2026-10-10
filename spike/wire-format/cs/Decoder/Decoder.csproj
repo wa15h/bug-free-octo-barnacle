@@ -1,0 +1,11 @@
+<!-- W0-10 wire-format spike (ADR 0004). Lives only on claude/spike-wire-format; never merged.
+     The decoder as client/lib would hold it: netstandard2.1 (D4), the types flatc generates into
+     generated/ in CI (never committed), and the runtime at flatc's exact version (D17). -->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Google.FlatBuffers" Version="[25.2.10]" />
+  </ItemGroup>
+</Project>

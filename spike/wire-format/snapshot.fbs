@@ -1,0 +1,20 @@
+// W0-10 wire-format spike (ADR 0004). Lives only on claude/spike-wire-format; never merged.
+// The snapshot ADR 0004 measures: one id-sorted list of flat tables, each a uint32 id and five
+// 64-bit fields. Players, boars, settlers, buildings, ledger lines, and the cordon stage all have
+// that one shape here, so one table serves all six.
+namespace Spike;
+
+table Entity {
+  id: uint32;
+  v0: int64;
+  v1: int64;
+  v2: int64;
+  v3: int64;
+  v4: int64;
+}
+
+table Snapshot {
+  entities: [Entity];
+}
+
+root_type Snapshot;

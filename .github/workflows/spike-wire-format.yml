@@ -1,0 +1,61 @@
+# W0-10 wire-format spike (ADR 0004). Lives only on claude/spike-wire-format; never merged.
+# Generates Rust and C# from spike/wire-format/snapshot.fbs with the pinned flatc, times the Rust
+# encode and the C# decode of the cut-scope and 4x snapshots, and prints the table ADR 0004 cites.
+name: spike-wire-format
+
+on:
+  push:
+    branches: [claude/spike-wire-format]
+
+permissions:
+  contents: read
+
+env:
+  # flatc, the flatbuffers crate, and the Google.FlatBuffers package are one version (D17).
+  FLATC_VERSION: "25.2.10"
+  FLATC_ZIP: Linux.flatc.binary.g++-13.zip
+  FLATC_SHA256: "0000000000000000000000000000000000000000000000000000000000000000"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  DOTNET_NOLOGO: "1"
+
+jobs:
+  measure:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+        working-directory: spike/wire-format
+    steps:
+      # actions/checkout v7.0.1 by full SHA (ADR 0001).
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Runner, CPU, and toolchains
+        run: |
+          echo "runner image $ImageOS $ImageVersion, $RUNNER_ENVIRONMENT, $RUNNER_ARCH"
+          lscpu
+          rustc -V
+          cargo -V
+          dotnet --info
+      - name: Download flatc and check its SHA-256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/flatc.zip" \
+            "https://github.com/google/flatbuffers/releases/download/v$FLATC_VERSION/$FLATC_ZIP"
+          sha256sum "$RUNNER_TEMP/flatc.zip"
+          echo "release API digest: $(gh api "repos/google/flatbuffers/releases/tags/v$FLATC_VERSION" \
+            --jq ".assets[] | select(.name == \"$FLATC_ZIP\") | .digest")"
+          echo "$FLATC_SHA256  $RUNNER_TEMP/flatc.zip" | sha256sum -c -
+          unzip -o -d "$RUNNER_TEMP/flatc" "$RUNNER_TEMP/flatc.zip"
+          echo "$RUNNER_TEMP/flatc" >> "$GITHUB_PATH"
+      - name: Generate Rust, C#, and the reflection schema from snapshot.fbs
+        run: |
+          flatc --version
+          flatc --rust -o rust/generated snapshot.fbs
+          flatc --csharp -o cs/Decoder/generated snapshot.fbs
+          flatc --binary --schema -o out snapshot.fbs
+          find rust/generated cs/Decoder/generated out -type f | sort | xargs wc -c
+      - name: Rust encode
+        run: cargo run --release --locked --manifest-path rust/Cargo.toml -- out
+      - name: C# decode
+        run: dotnet run -c Release --project cs/Bench/Bench.csproj -- out
