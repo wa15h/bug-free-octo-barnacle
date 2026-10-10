@@ -6,9 +6,10 @@ checklists. Sections 2 and 3, the per-PR entries, and the weekly reports are add
 ## 1. Review checklists
 
 The six checklists from the reviewer agent file, as blocks to paste into a PR review. The check
-text is unchanged except for a citation added where a check had none; every check carries a hook
-tag. Per PR, paste the every-PR block and the block for each crate or area the diff touches, tick
-what passes, and give every failing check its file and line number (reviewer loop, step 5).
+text is unchanged except for citations added where a check had no rule number or decision ID;
+every check carries a hook tag. Per PR, paste the every-PR block and the block for each crate or
+area the diff touches, tick what passes, and give every failing check its file and line number
+(reviewer loop, step 5).
 
 ### Counting lines (D22) and the size bands (D6, Q4)
 
@@ -23,8 +24,8 @@ what passes, and give every failing check its file and line number (reviewer loo
 
 - `hook: exists`: a hook or CI gate on `main` runs the check. As of 2026-10-10 none does.
 - `hook: requested`: the reviewer asks the `tools/` owner for this hook. The tag names the week-0
-  queue item, or the script in the devex engineer's gate map (`.claude/agents/devex-engineer.md`),
-  that would run it. The tag becomes `exists` once that hook is on `main`.
+  queue item, or the script or workflow in `.claude/agents/devex-engineer.md`, that would run it.
+  The tag becomes `exists` once that hook is on `main`.
 - `hook: manual`: no hook is requested; the reviewer checks it by hand.
 - A requested hook covers the mechanical part of a check; the reviewer checks the rest by hand.
 
@@ -44,10 +45,10 @@ what passes, and give every failing check its file and line number (reviewer loo
 - [ ] New dependency: its ADR in `docs/adr/` is already merged (rule 6).
   `hook: requested` (`adr-first.sh`)
 - [ ] Any test modified, weakened, or deleted: "needs founder approval" at the top of the summary
-  (HS 7; D6, Q7). `hook: requested` (`test-guard.sh`)
+  (HS 7; Q7, no written default; D6 for the merge gate). `hook: requested` (`test-guard.sh`)
 - [ ] Any gate, allowlist, `tools/size-exempt.txt`, bench budget, or review-log checklist line
-  removed or loosened: "needs founder approval" at the top of the summary, as for a test (D6,
-  D22). `hook: manual`
+  removed or loosened: "needs founder approval" at the top of the summary, as for a test (D6
+  for every rule a hook, D22 for the exempt list). `hook: manual`
 - [ ] Every changed file is under the queue item's paths; any other file is scope widening,
   returned (rule 4) and counted in the weekly report. `hook: manual`
 - [ ] No file under `.claude/`, `CLAUDE.md`, `docs/research/`, or `docs/plan/decisions.md` unless
@@ -65,7 +66,7 @@ what passes, and give every failing check its file and line number (reviewer loo
   `hook: requested` (`sim-deps.sh`)
 - [ ] No wall clock: no `Instant`, `SystemTime`, `chrono`, `time` on any path (rule 1).
   `hook: requested` (`sim-deps.sh`)
-- [ ] No I/O: no `std::fs`, `std::net`, `std::env`, `println!` outside tests (rule 2, D3).
+- [ ] No I/O: no `std::fs`, `std::net`, `std::env`, `println!` outside tests (rule 2).
   `hook: requested` (`sim-deps.sh`)
 - [ ] RNG is seeded and passed in; no `thread_rng`, `rand::random`, `OsRng` (rule 2).
   `hook: requested` (`sim-deps.sh`)
