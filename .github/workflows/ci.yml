@@ -1,7 +1,7 @@
 # Rule 7 on Linux and Windows (D15), then the D17 pins gate. Actions and toolchain per ADR 0001.
-# Trigger: every branch push runs once. A PR to main shows its head branch's run (no forks: D29),
-# and runs on main seed the cache that other branches restore. No Steam client, app ID, or secret.
-# No dotnet job yet: client/ holds no C# project and no dotnet-sdk pin until week 1 (client/global.json).
+# Trigger: every branch push runs once. A PR to main shows its head branch's run (every team branch is
+# in this repo, under one login: D29), and runs on main seed the cache. Windows on every push: Q21 default.
+# No dotnet job: no C# project and no dotnet-sdk pin (client/global.json) until week 1. No Steam or secret.
 name: ci
 
 on:
@@ -42,14 +42,23 @@ jobs:
           restore-keys: cargo-${{ runner.os }}-${{ hashFiles('rust-toolchain.toml') }}-
       - name: Install the rust-toolchain.toml toolchain with the runner's rustup
         run: rustup toolchain install --no-self-update && rustc --version && cargo clippy --version
-      - name: cargo fmt --all --check
+      - name: cargo fmt --all --check (rule 7)
         if: runner.os == 'Linux'
-        run: cargo fmt --all --check
-      - name: cargo fetch --locked (Cargo.lock is current)
-        run: cargo fetch --locked
-      - name: cargo clippy --workspace --all-targets --locked -- -D warnings
-        run: cargo clippy --workspace --all-targets --locked -- -D warnings
-      - name: cargo test --workspace --locked
-        run: cargo test --workspace --locked
+        run: |
+          cargo fmt --all --check ||
+            { echo "::error::RULE 7: unformatted Rust (files in the Diff in lines above) -- run cargo fmt --all and commit"; exit 1; }
+      - name: cargo fetch --locked, Cargo.lock is current (rule 7)
+        run: |
+          cargo fetch --locked ||
+            { echo "::error::RULE 7: Cargo.lock is stale, or a download failed (cargo's error above says which) --" \
+              "if stale, run cargo fetch and commit Cargo.lock, keeping --locked; if a download, re-run the job"; exit 1; }
+      - name: cargo clippy --workspace --all-targets --locked -- -D warnings (rule 7)
+        run: |
+          cargo clippy --workspace --all-targets --locked -- -D warnings ||
+            { echo "::error::RULE 7: clippy warning (file and line in each --> line above) -- fix each, then rerun clippy"; exit 1; }
+      - name: cargo test --workspace --locked (rule 7)
+        run: |
+          cargo test --workspace --locked ||
+            { echo "::error::RULE 7: a test failed (named above, with its file) -- fix the code until cargo test passes"; exit 1; }
       - name: tools/checks/pins.sh (D17)
         run: tools/checks/pins.sh
