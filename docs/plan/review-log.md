@@ -1,7 +1,8 @@
 # Review log
 
 Owned by the reviewer (`.claude/agents/reviewer.md`, "Owns"). Section 1 holds the review
-checklists. Sections 2 and 3, the per-PR entries, and the weekly reports are added by later PRs.
+checklists, section 2 the founder summary format. Section 3, the per-PR entries, and the weekly
+reports are added by later PRs.
 
 ## 1. Review checklists
 
@@ -135,4 +136,95 @@ row the devex gate map files it under.
   `hook: manual`
 - [ ] `client/lib` references no engine namespace; the engine projects hold presentation only (D4).
   `hook: requested` (the client engineer's no-engine grep)
+```
+
+## 2. Founder summary format
+
+One summary per reviewed PR, posted as a "comment" PR review (reviewer loop, step 8; D29: GitHub
+refuses "approve" and "request changes" from a PR's author). Under 40 lines, written from the
+diff, the description, and the queue entry only (step 2), with no praise and no adjectives.
+
+### 2.1 Fields
+
+- Line 1 is `Agent: reviewer` (D29). Line 2 is the verdict: `ready for founder review`,
+  `returned: <reason>`, or `held: founder review budget reached`; a return or a hold moves the PR
+  back to draft. The reason is a weekly-report category: `size`, `concern`, `rule <n>` (a rule
+  number or decision ID), `template`, or `evidence`.
+- When either founder-approval check in section 1.1 applies, line 2 ends `; needs founder approval`.
+- A return puts the smallest fix on line 3 after `Fix:`: the change and its rule number; for
+  size or concern, the files for each new PR; for evidence, the exact command or artifact.
+- Founder minutes and the week's review minutes use the reviewer file's formulas ("How you
+  work"), with hours from `hours.md`, else the queue's planned hours. "Left" subtracts every PR
+  marked ready this week, this one included; a PR that would take it below zero is held.
+
+```markdown
+Agent: reviewer
+<verdict>[; needs founder approval]
+Fix: <returns only>
+
+**Size** <n> counted lines (D22): <l> line-by-line, <e> evidence; excluded <files with lines,
+spot-checked | none>; founder minutes <arithmetic = m>.
+**Budget** week <w>, <h> h (<source>): <used> of <total> review minutes marked ready, this PR
+included; <left> left. <sent> of <line budget> lines.
+**Concern** <queue ID>: <one sentence>. <Matches the queue entry | Differs: how>.
+**Read line by line** <none, or one item per function, each with file and line range>
+- `<path>:<start>-<end>` `<function>`: <the one thing to check>.
+**Accept on evidence** <none, or one link per piece, on the head SHA (step 6)>
+- <what> on head `<sha>`: <link>.
+**Rules touched** <rule n: the test, hook, or run that proves it>.
+**Flags** <cause of a founder approval, open-question default (D21), scope widening | none>.
+**Risk and rollback** <what breaks, how it shows, how to revert>.
+**Checked, not found**
+- <section 1 block number>: <each check in it that passed>.
+```
+
+### 2.2 Over-400 return notice
+
+Over 400 counted lines, the review is these three lines, the last being the one-line notice; the
+diff stays unopened, not even to plan the split (step 1).
+
+```markdown
+Agent: reviewer
+returned: size
+Not read: <n> counted lines (D22), over the 400 hard cap (D6). Split into PRs of 200 or fewer (Q4).
+```
+
+### 2.3 Filled example (hypothetical)
+
+A hypothetical `crates/sim` ledger PR: queue ID, files, lines, SHA, and numbers are invented.
+
+```markdown
+Agent: reviewer
+ready for founder review
+
+**Size** 115 counted lines (D22): 115 line-by-line, 0 evidence; excluded none; founder minutes
+115 / 250 x 60 = 28.
+**Budget** week 1, 30 h (`hours.md`): 466 of 720 review minutes marked ready, this PR included;
+254 left. 1,640 of 3,000 lines.
+**Concern** W1-99: `Ledger::transfer` moves money between two accounts and refuses an
+overdraft. Matches the queue entry.
+**Read line by line**
+- `crates/sim/src/lib.rs:7` module list: adds `pub mod ledger;` and nothing else.
+- `crates/sim/src/ledger.rs:1-12` `struct Ledger`: balances are `Money` (fixed-point) in a
+  `BTreeMap`; no float.
+- `crates/sim/src/ledger.rs:14-41` `Ledger::transfer`: both `checked_` calls run before either
+  balance changes, so an overdraft returns `Err(Overdraft)` and leaves both untouched.
+- `crates/sim/src/ledger.rs:43-58` `Ledger::total`: sums the `BTreeMap` in key order.
+- `crates/sim/src/systems.rs:22-24` `ORDER`: `ledger_settle` runs after `jobs_tick`.
+- `crates/sim/tests/ledger_props.rs:1-52` `transfer_conserves_total`: 1,000 seeds through
+  `SimRng`; the total is unchanged after every transfer, refused or not.
+**Accept on evidence**
+- `ci.yml` fmt, clippy, and test, green on head `a1b2c3d`: <run link>.
+**Rules touched** Rule 1: the 1.2 checks below. Rule 2: `transfer_conserves_total`. Rule 7: the
+CI run above.
+**Flags** The nightly invariant run is not built yet and the PR says so (1.2); until it is, this
+test is the only proof that transfers conserve money.
+**Risk and rollback** A transfer that debits without crediting breaks conservation; the
+property test fails on it. Revert the PR; no message or save format changes.
+**Checked, not found**
+- 1.1: size, one concern, template, rule 7, no new dependency, no test edited, no gate loosened,
+  files in the queue paths, no protected path, no open-question default, claims verified,
+  explainable from description and diff.
+- 1.2: no engine type, `async`, thread, wall clock, I/O, or unseeded RNG; no float; no `HashMap`
+  or `HashSet` iteration; property test present.
 ```
