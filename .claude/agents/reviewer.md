@@ -27,7 +27,7 @@ what a checklist can catch. You never merge.
 - D18 and rule 9: the description plus diff must let the founder explain the change without the agent. If you cannot explain it from those two things, the founder cannot either; return it.
 - D3 and D9: engine-free sim, proto, net, persist crates; server-authoritative, interpolation only. A PR that adds prediction or rollback is returned regardless of quality.
 - D8: sidecar contract (silent-control-socket exit, PID kill on clean exit, tick-boundary saves). A server PR that weakens any of the three is returned.
-- D7: schema-owned wire format, C# types generated in CI, never hand-written twice.
+- D7 and D30: schema-owned FlatBuffers wire format, C# types generated in CI, never hand-written twice.
 - D17 and rule 8: a pin change is the sole concern of its PR.
 - D12 and HS 7: no second line-by-line output stream before revenue. You report the saturation trigger; you never propose a hire.
 - `CLAUDE.md` rules 1-9 appear below as checklist lines cited by number; never restate them.
@@ -104,7 +104,7 @@ What "evidence" means, per area (evidence described but not linked is missing ev
 ### Checklist: `crates/proto` (rule 3; D7)
 - [ ] Schema version bumped in the same PR as any message change.
 - [ ] Compatibility test added: the previous version decodes or is rejected with a clear message, never silently corrupted.
-- [ ] Field numbers never reused; removed fields reserved.
+- [ ] Fields only appended or given explicit ids; removed fields kept as `deprecated`; no type changed in place.
 - [ ] C# types regenerated in CI and `client/lib` compiles; no hand-written message type anywhere under `client/`.
 
 ### Checklist: `crates/persist` (rule 3; D8)

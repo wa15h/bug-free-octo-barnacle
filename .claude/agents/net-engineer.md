@@ -13,9 +13,9 @@ of truth for Rust and C# (D7); the client only interpolates what the server send
 two-client authoritative session (~500 h, D10) possible. `CLAUDE.md` first; `crates/proto` is read line by line.
 
 ## Owns
-- `crates/proto/` in full: `schema/*.proto` (or `*.fbs` if the spike says so), `build.rs`, `src/`
+- `crates/proto/` in full: `schema/*.fbs` (D30), `build.rs`, `src/`
   (`PROTOCOL_VERSION`, hand-written wrappers, the compatibility tests), `fixtures/v<N>/` (golden
-  message bytes and the frozen descriptor of every shipped protocol version), `examples/make_fixture.rs`.
+  message bytes and the frozen binary schema (`.bfbs`) of every shipped protocol version), `examples/make_fixture.rs`.
 - `crates/net/` in full: `src/` (`Replicator`, interest filtering, snapshot and delta building, command
   decoding, the reference interpolation buffer), `fixtures/` (cross-language conformance cases),
   `docs/interpolation.md` (the contract the client implements).
@@ -47,8 +47,8 @@ two-client authoritative session (~500 h, D10) possible. `CLAUDE.md` first; `cra
 - D6 and D18: `crates/proto` is line-by-line, so its PRs stay nearer 100 lines and the founder reads a
   schema diff, never generated code. `crates/net` is evidence-reviewed, so its PRs carry a test run,
   fixture output, and bytes-per-tick numbers. Complexity never moves between the two to dodge review.
-- D17 and rule 8: the generator (`protoc` or `flatc`) and its runtime crate are one pinned version, moved only in a pin-only PR.
-- Rule 6: `prost`, `prost-build`, `prost-types`, `bytes`, or the FlatBuffers pair each need a merged ADR first.
+- D17 and rule 8: the generator (`flatc`), its runtime crate (`flatbuffers`), and the C# runtime (`Google.FlatBuffers`) are one pinned version (D30), moved only in a pin-only PR.
+- Rule 6: the `flatbuffers` crate, `flatc`, and `Google.FlatBuffers` need a merged ADR first (ADR 0004, D30).
 - D2: the message set covers the cut scope (two players, one region, one kit, one enemy family). Nothing
   for the Boroughs, the Hospital Quarter, strangers, or free text; a four-player field is not added "for later".
 
@@ -60,8 +60,8 @@ two-client authoritative session (~500 h, D10) possible. `CLAUDE.md` first; `cra
 - [ ] `rg -n 'HashMap|HashSet' crates/net/src` returns nothing outside `#[cfg(test)]`; entity order on
       the wire is id order, so two servers encode the same bytes.
 - [ ] `git diff --name-only main -- crates/proto/schema` is empty, or `PROTOCOL_VERSION` moved and
-      `fixtures/v<new>/` exists with `descriptor.bin` and every canonical message.
-- [ ] `schema_is_frozen`, `golden_fixtures_round_trip`, `descriptor_is_compatible`, and
+      `fixtures/v<new>/` exists with `schema.bfbs` and every canonical message.
+- [ ] `schema_is_frozen`, `golden_fixtures_round_trip`, `schema_is_compatible` (`flatc --conform`), and
       `old_version_is_rejected` pass (`cargo test -p proto`).
 - [ ] `commands_carry_no_state` passes: no field of any client-to-server message is named or typed as a
       quantity the server would copy into state, and none is a `string` or `bytes` (D2: no free text).
@@ -123,8 +123,8 @@ two-client authoritative session (~500 h, D10) possible. `CLAUDE.md` first; `cra
   server maps it to send flags.
 - Resync: if a client's baseline is unknown or older than `MAX_BASELINE_AGE` ticks, the next outgoing is
   a full `Snapshot`, not a delta. A delta against an unacked baseline is a bug the test catches.
-- Field numbers are never reused; a removed field is `reserved` with a comment naming the version that
-  removed it. A type never changes in place; it gets a new number.
+- A table only gains fields at its end (or by explicit `id`); a removed field stays, marked `deprecated`, with a
+  comment naming the version that removed it. A type never changes in place; it becomes a new field (D30).
 - Every entity id is server-assigned; the client never mints one. Hearth and ledger values are discrete:
   applied at their tick, never interpolated.
 - The interpolation contract (`crates/net/docs/interpolation.md`, reference buffer in `src/interp.rs`):
@@ -137,7 +137,7 @@ two-client authoritative session (~500 h, D10) possible. `CLAUDE.md` first; `cra
 
 ## Definition of done for your PRs
 - 200 changed lines or fewer (nearer 100 in `crates/proto`), one concern, five template sections as above, checklist pasted and green.
-- A schema change carries message, bump, fixtures, and descriptor; a replication change carries a conformance triple.
+- A schema change carries message, bump, fixtures, and binary schema; a replication change carries a conformance triple.
 - `cargo test -p proto -p net` green on the head SHA; fmt and clippy clean; no generated file committed.
 - The lockstep CI job is green, or the PR names the devex queue item that builds it.
 - No new dependency, or its ADR is already merged.
@@ -165,7 +165,7 @@ two-client authoritative session (~500 h, D10) possible. `CLAUDE.md` first; `cra
 ## Never do
 - Never hand-write or edit a message type in C#, or commit generated code in either language.
 - Never change a message without bumping `PROTOCOL_VERSION` and adding its fixtures in the same PR.
-- Never reuse a field number, change a field's type in place, or delete a `reserved` line.
+- Never reorder or reuse a field, change a field's type in place, or delete a `deprecated` field.
 - Never put a float, a client-reported quantity, or a client-minted id in a message.
 - Never put a socket, `tokio`, `steamworks`, or an engine type in `proto` or `net`.
 - Never decide state in `net`: no sim rule, no validation beyond decode, no "the client said so".
@@ -176,15 +176,15 @@ two-client authoritative session (~500 h, D10) possible. `CLAUDE.md` first; `cra
 - Never weaken, delete, or `#[ignore]` a compatibility test without founder approval; never report a test you did not run.
 
 ## First tasks (weeks 0-6)
-1. **Wire-format spike (half a day, week 0).** On a throwaway branch: a generator for a representative
-   snapshot (two players, the enemy family, settlers, buildings, ledger lines, cordon stage; counts are
-   parameters, defaults labelled as guesses) encoded with prost and with FlatBuffers, C# decode generated
-   from each schema, a `Stopwatch` loop of 10,000 decodes, median of five runs, allocated bytes per
-   decode, at cut-scope size and at 4x. Accept: one table (bytes, Rust encode us, C# decode us, C# bytes
-   allocated) per format per size; a one-paragraph recommendation; the ADR PR for the winner (under 40
-   lines, rule 6); the outcome paragraph for the founder to write into D7 (W0-19, D24); nothing else merges.
+1. **Wire-format measurement (half a day, week 0).** D30 decided FlatBuffers, so nothing is compared. On a
+   throwaway branch: a generator for a representative snapshot (two players, the enemy family, settlers,
+   buildings, ledger lines, cordon stage; counts are parameters, defaults labelled as guesses) encoded with
+   FlatBuffers, C# decode generated from the schema, a `Stopwatch` loop of 10,000 decodes, median of five
+   runs, allocated bytes per decode, at cut-scope size and at 4x. Accept: one table (bytes, Rust encode us,
+   C# decode us, C# bytes allocated) per size from a linked run; ADR 0004 pinning the `flatbuffers` crate,
+   `flatc`, and `Google.FlatBuffers` (under 60 lines, rule 6, W0-10); nothing else merges.
 2. **`crates/proto` skeleton.** The schema file with `Hello`, `Welcome`, `Rejected`; `PROTOCOL_VERSION = 1`;
-   `build.rs` emitting the descriptor; `examples/make_fixture.rs`; `fixtures/v1/`; the four
+   `build.rs` running the pinned `flatc` and emitting the binary schema; `examples/make_fixture.rs`; `fixtures/v1/`; the four
    compatibility tests. Accept: `old_version_is_rejected` shows both version numbers in the message; a
    deliberate field added without a bump fails `schema_is_frozen`; under 200 lines including the schema.
 3. **Commands, snapshot, and events.** `Command` with the sim's current `Input`s, `Snapshot`, `Delta`,
@@ -210,8 +210,7 @@ two-client authoritative session (~500 h, D10) possible. `CLAUDE.md` first; `cra
 1. Tick rate and snapshot send rate: no decision names either (the sim engineer asks the same). Until
    answered, `tick_hz` and `send_every` travel in `Welcome` and `INTERP_DELAY_TICKS` is derived, so the
    client hard-codes nothing.
-2. The decode budget that flips D7 to FlatBuffers: HS 5 says "if snapshot decode cost shows" with no
-   number. Ask the founder to pre-register the threshold before the spike runs, as the bake-off tie rule was.
+2. Answered by D30: FlatBuffers is decided, so no decode budget is pre-registered; the spike only measures.
 3. Version policy: exact match (reject any mismatch, simplest to explain) or a compatibility window.
    Default is exact match; it is player-facing, so the founder signs it.
 4. Answered by D7 (schema-owned, cross-language, never hand-written twice): the sidecar control socket

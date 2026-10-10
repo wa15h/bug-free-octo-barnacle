@@ -45,9 +45,8 @@ wins over anything you remember about this project. The research behind it is in
 - Simulation: engine-free Rust crates shared by every deployment. Fixed-point economy
   math, explicitly ordered systems, seeded RNG, no floating point crossing a platform
   boundary, replayable from an append-only input log.
-- Wire format: schema-owned and cross-language. Protobuf via `prost` by default;
-  FlatBuffers if the spike shows snapshot decode cost. The Rust `proto` crate owns the
-  schema; C# types are generated from it in CI. Never hand-write message types twice.
+- Wire format: schema-owned and cross-language FlatBuffers (D30). The Rust `proto` crate
+  owns the schema; C# types are generated from it in CI. Never hand-write message types twice.
 - Client: C# on an engine-agnostic .NET Standard 2.1 class library (protocol decode,
   Steam via Steamworks.NET or Facepunch.Steamworks, interpolation buffers, sidecar
   launch and watchdog, typed events). The engine project is a thin presentation layer.

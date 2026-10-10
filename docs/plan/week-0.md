@@ -59,7 +59,7 @@ Class: L = line-by-line, E = evidence, F = founder-authored. Min = founder minut
 | W0-07 | devex-engineer | CI: fmt, clippy, test on Linux and Windows | E | 90 | 10 | 06 | D6 D15 D17 | 0001 |
 | W0-08 | server-engineer | Week-0 item 1: SDR spike on app 480 | E | 150 | 15 | 05 07 | D3 | 0002 |
 | W0-09 | server-engineer | Week-0 item 2: sidecar watchdog spike, ADR 0003 | E | 60 | 15 | 02 03 | D8 | is the ADR |
-| W0-10 | net-engineer | Week-0 item 3: wire-format spike, ADR 0004 | E | 60 | 20 | 02 03 | D7 | is the ADR |
+| W0-10 | net-engineer | Week-0 item 3: wire-format measurement, ADR 0004 | E | 60 | 20 | 02 03 | D7 D30 | is the ADR |
 | W0-11 | producer | Hours log | E | 55 | 10 | - | D5 D23 | no |
 | W0-12 | client-engineer | Week-0 item 4: engine bake-off plan | E, signed | 120 | 20 | 11 | D4 D10 D17 | no |
 | W0-13 | producer | Gate tracker | E | 160 | 15 | 11 | D2 D5 D10 D11 D19 D23 D28 | no |
@@ -114,10 +114,10 @@ parent's child exits by watchdog; a dead-PID lock is cleared on restart, a live 
 under 60 lines: a result table per OS, run links, what the C# launcher must copy, the D8 paragraph.
 The client engineer reviews the parent-side findings.
 
-**W0-10 Wire-format spike; the outcome writes D7.** Paths: `docs/adr/0004-wire-format.md`. Accept per
-net-engineer task 1, with the ADR under 60 lines, plus: the ADR PR opens as a draft whose first commit
-pre-registers the C# decode-cost threshold that flips D7 (Q14 has no written default); the founder
-approves or edits it in a PR comment before results are pushed; the runner is named in the table.
+**W0-10 Wire-format measurement; D30 decided FlatBuffers.** Paths: `docs/adr/0004-wire-format.md`. Accept
+per net-engineer task 1 as D30 narrows it: FlatBuffers only, no comparison and no threshold (Q14 answered);
+the ADR under 60 lines pins the `flatbuffers` crate, `flatc`, and `Google.FlatBuffers` at one version;
+the table carries the measured numbers from a linked run and names the runner.
 
 **W0-11.** Paths: `docs/plan/hours.md`. Accept per producer task 2, plus: a rolling 8-week average
 column (D5's re-baseline trigger, under 20), bake-off hours per engine summed from `client/BAKEOFF.md`
@@ -150,7 +150,7 @@ generated C#, engine scene and `.meta` files, `fixtures/`, listed with sizes in 
 line and the five sections; a one-word edit to either file goes red naming both; green on head.
 
 **W0-19, founder only (D24).** Paths: `docs/plan/decisions.md`. Accept: D3's outcome from W0-08, D8's
-from ADR 0003, D7's from ADR 0004, each linking its PR; no other row changes; carries `founder-approved` (D29); the reviewer
+from ADR 0003, each linking its PR (D7's outcome is D30, written 2026-10-10); no other row changes; carries `founder-approved` (D29); the reviewer
 pre-reviews. An outcome not in by week end goes in a week-1 founder PR.
 
 **W0-20, founder only (D24), opened after W0-16 merges.** Paths: `.claude/settings.json`. Accept: carries
@@ -190,7 +190,7 @@ unless the PR carries `founder-approved` (D29); rechecked on `labeled` and `unla
 
 ## Open questions for the founder
 
-1. Q14 and Q18 have no written default; W0-10 and W0-08 state this queue's assumption until answered.
+1. Q18 has no written default; W0-08 states this queue's assumption until answered. Q14 is answered by D30.
 2. Resolved 2026-10-08: the skeptic review's patch was applied with the team (agent files now plan at
    30 h, and `CLAUDE.md` carries the in-week freeze, the agent login rule, replaced by D29 on 2026-10-10, and eligibility-only add-backs).
 3. D2's add-back trigger fires near week 26; D28 makes the cut scope the target. Eligibility only, unless you raise it.

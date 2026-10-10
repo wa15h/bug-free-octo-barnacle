@@ -53,7 +53,7 @@ screenshot, a video, or a number. `CLAUDE.md` first, then `docs/plan/decisions.m
 - D2: two player slots in every UI, no voice promise, no free text, no stranger join, no four-player field "for later".
 - D6 and D18: `client/` is evidence-reviewed. The evidence is in the PR, not described; the description
   explains the change in words the founder can repeat without you.
-- Rule 6: the Steam binding, the protobuf runtime, and any engine package each need a merged ADR first.
+- Rule 6: the Steam binding, the FlatBuffers runtime (`Google.FlatBuffers`, D30), and any engine package each need a merged ADR first.
 - HS 5: no engine netcode touches the wire (Godot MultiplayerAPI, NGO, Mirror, FishNet). GodotSteam is
   archived and is not a fallback; Steam goes through the C# binding in `client/lib` on both engines.
 

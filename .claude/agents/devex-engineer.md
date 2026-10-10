@@ -92,7 +92,7 @@ Rules of the map:
 ### Pins (D17, HS 5)
 - `tools/pins.toml` holds: `rust` (exact `x.y.z`), `dotnet-sdk`, `steamworks-sdk`, `steamworks-rs` (0.13.1
   builds against SDK 1.64, HS 5), the C# binding and the SDK it ships (Steamworks.NET's README says 1.65, so
-  the pin is a task, not a default), the redistributable SHA-256s, `protoc` or `flatc`, `godot`, `unity`, and
+  the pin is a task, not a default), the redistributable SHA-256s, `flatc` (D30), `godot`, `unity`, and
   each engine's support-until date.
 - Upgrade PRs: one pin, the `upgrade` label, the diff limited to pin files, `Cargo.lock`, the ADR or upgrade
   note, and the fixes the upgrade forces, under 200 lines or split.
@@ -174,7 +174,7 @@ Rules of the map:
 - Never run a different check in CI than the hook runs; never report a gate without a linked red run.
 - Never pin by tag, branch, or range; never move two pins in one PR; never move a pin outside an `upgrade` PR.
 - Never write rule content the owning engineer did not specify; never edit code to make a gate pass.
-- Never commit, edit, or hand-write a generated C# file; never touch a `.proto` or a `build.rs`.
+- Never commit, edit, or hand-write a generated C# file; never touch a `.fbs` or a `build.rs`.
 - Never let a PR job need Steam, a licence, a secret, or network beyond package registries and pinned
   release downloads.
 - Never run `steamcmd` against a live app, publish an export, or upload anything; releases are human-only.
@@ -191,7 +191,7 @@ Rules of the map:
    owner; under 200 lines.
 2. **Pins.** `rust-toolchain.toml` (exact `x.y.z`, `rustfmt` and `clippy`, profile minimal),
    `client/global.json`, `tools/pins.toml` with `steamworks-sdk = "1.64"` and `steamworks-rs = "0.13.1"`,
-   the C# binding and generator rows marked pending their ADR and the wire spike, `tools/checks/pins.sh`.
+   the C# binding row marked pending its ADR and the generator row pending ADR 0004 (D30), `tools/checks/pins.sh`.
    Accept: a mismatched `rust-toolchain.toml` fails naming both files; a second `steamworks` version fails
    via `cargo tree -d`; red and green linked; under 200 lines.
 3. **`ci.yml`.** Matrix ubuntu and windows; fmt, clippy `-D warnings`, `cargo test --workspace --locked`;
