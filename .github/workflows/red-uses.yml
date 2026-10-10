@@ -1,0 +1,8 @@
+# Throwaway red for W0-06 (not for merge): a tag-pinned uses: that tools/checks/pins.sh must fail.
+name: red-uses
+on: workflow_dispatch
+jobs:
+  red:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
