@@ -50,7 +50,7 @@ Run [38065990593](https://github.com/wa15h/bug-free-octo-barnacle/actions/runs/3
 | same job | 4x | 187 | 9,768 | 7.6 | 13.5 | 72 |
 
 Nothing gates on these (D30). The draft's limits, for reference only and no longer binding: `t` 250 us, `a` 16,384 bytes.
-Upstream: [crate](https://crates.io/crates/flatbuffers/25.2.10), [NuGet](https://www.nuget.org/packages/Google.FlatBuffers/25.2.10) (its nuspec names the tag commit), [release](https://github.com/google/flatbuffers/releases/tag/v25.2.10), [licence](https://github.com/google/flatbuffers/blob/v25.2.10/LICENSE).
+Upstream: [crate](https://crates.io/crates/flatbuffers/25.2.10) and its dependencies [bitflags](https://crates.io/crates/bitflags/2.13.2), [rustc_version](https://crates.io/crates/rustc_version/0.4.1), [semver](https://crates.io/crates/semver/1.0.28) (line 28's owners and licences), [NuGet](https://www.nuget.org/packages/Google.FlatBuffers/25.2.10) (its nuspec names the tag commit), [release](https://github.com/google/flatbuffers/releases/tag/v25.2.10), [licence](https://github.com/google/flatbuffers/blob/v25.2.10/LICENSE).
 
 ## Pinned versions touched
 - `flatc` = `25.2.10`, set 2026-10-10: one pin, the one generator row in `tools/pins.toml` (D17). It moves only in a pin-only PR (rule 8) that moves every mirror and hash below with it.
