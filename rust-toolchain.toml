@@ -1,0 +1,5 @@
+# Mirror of `rust` in tools/pins.toml (ADR 0001); tools/checks/pins.sh fails if they differ.
+[toolchain]
+channel = "1.99.0"
+components = ["rustfmt", "clippy"]
+profile = "minimal"
