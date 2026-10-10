@@ -5,11 +5,11 @@ checklists. Sections 2 and 3, the per-PR entries, and the weekly reports are add
 
 ## 1. Review checklists
 
-The six checklists from the reviewer agent file, as blocks to paste into a PR review. The check
-text is unchanged except for citations added where a check had no rule number or decision ID;
-every check carries a hook tag. Per PR, paste the every-PR block and the block for each crate or
-area the diff touches, tick what passes, and give every failing check its file and line number
-(reviewer loop, step 5).
+The six checklists from the reviewer agent file as D29 amended it, as blocks to paste into a PR
+review. The check text is unchanged except for citations added where a check had no rule number
+or decision ID; every check carries a hook tag. Per PR, paste the every-PR block and the block for
+each crate or area the diff touches, tick what passes, and give every failing check its file and
+line number (reviewer loop, step 5).
 
 ### Counting lines (D22) and the size bands (D6, Q4)
 
@@ -44,21 +44,26 @@ area the diff touches, tick what passes, and give every failing check its file a
   PR. `hook: requested` (W0-07 `ci.yml`, W0-16 `pre-push`; the dotnet job once `client/` exists)
 - [ ] New dependency: its ADR in `docs/adr/` is already merged (rule 6).
   `hook: requested` (`adr-first.sh`)
-- [ ] Any test modified, weakened, or deleted: "needs founder approval" at the top of the summary
-  (HS 7; Q7, no written default; D6 for the merge gate). `hook: requested` (`test-guard.sh`)
+- [ ] Any test modified, weakened, or deleted: "needs founder approval" on the line after
+  `Agent: reviewer` in the summary (HS 7; Q7, no written default; D6 for the merge gate).
+  `hook: requested` (`test-guard.sh`)
 - [ ] Any gate, allowlist, `tools/size-exempt.txt`, bench budget, or review-log checklist line
-  removed or loosened: "needs founder approval" at the top of the summary, as for a test (D6
-  for every rule a hook, D22 for the exempt list). `hook: manual`
+  removed or loosened: "needs founder approval" on the line after `Agent: reviewer` in the
+  summary, as for a test (D6 for every rule a hook, D22 for the exempt list). `hook: manual`
 - [ ] Every changed file is under the queue item's paths; any other file is scope widening,
   returned (rule 4) and counted in the weekly report. `hook: manual`
 - [ ] No file under `.claude/`, `CLAUDE.md`, `docs/research/`, or `docs/plan/decisions.md` unless
-  the founder authored the PR (D24). `hook: requested` (W0-21 `protected-paths.sh`)
+  the PR carries `founder-approved` (D24, D29). `hook: requested` (W0-21 `protected-paths.sh`)
 - [ ] A choice resting on an open-question default cites its number (D21). `hook: manual`
 - [ ] No claim in the description that you could not verify (rule 5). `hook: manual`
 - [ ] The founder can explain the change from description plus diff (rule 9, D18). `hook: manual`
 ```
 
 ### 1.2 `crates/sim`
+
+The I/O, RNG, fixed-point, and order checks cite rule 2, the two-process determinism they protect.
+`sim-deps.sh` greps their identifiers from `sim-forbidden.txt` and reports a hit as `RULE 1`, the
+row the devex gate map files it under.
 
 ```markdown
 **Checklist: `crates/sim` (rules 1, 2; D3)**
