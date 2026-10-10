@@ -14,7 +14,7 @@ env:
   # flatc, the flatbuffers crate, and the Google.FlatBuffers package are one version (D17).
   FLATC_VERSION: "25.2.10"
   FLATC_ZIP: Linux.flatc.binary.g++-13.zip
-  FLATC_SHA256: "0000000000000000000000000000000000000000000000000000000000000000"
+  FLATC_SHA256: "6f01258d7475806f375d6da66a61df47add8016edd73f1774673f37b80b9a711"
   DOTNET_CLI_TELEMETRY_OPTOUT: "1"
   DOTNET_NOLOGO: "1"
 
@@ -43,9 +43,14 @@ jobs:
           curl -fsSL -o "$RUNNER_TEMP/flatc.zip" \
             "https://github.com/google/flatbuffers/releases/download/v$FLATC_VERSION/$FLATC_ZIP"
           sha256sum "$RUNNER_TEMP/flatc.zip"
-          echo "release API digest: $(gh api "repos/google/flatbuffers/releases/tags/v$FLATC_VERSION" \
-            --jq ".assets[] | select(.name == \"$FLATC_ZIP\") | .digest")"
           echo "$FLATC_SHA256  $RUNNER_TEMP/flatc.zip" | sha256sum -c -
+          # Cross-check: the digest flatbuffers' own release job recorded in its SLSA provenance.
+          gh api "repos/google/flatbuffers/releases/tags/v$FLATC_VERSION" --jq '.assets[] | "\(.name) \(.size)"'
+          gh release download "v$FLATC_VERSION" -R google/flatbuffers -p '*.intoto.jsonl' -D "$RUNNER_TEMP/prov" || true
+          for f in "$RUNNER_TEMP"/prov/*.intoto.jsonl; do
+            jq -r '.payload' "$f" | base64 -d \
+              | jq -r --arg n "$FLATC_ZIP" '.subject[] | select(.name == $n) | "provenance: \(.digest.sha256)  \(.name)"' || true
+          done
           unzip -o -d "$RUNNER_TEMP/flatc" "$RUNNER_TEMP/flatc.zip"
           echo "$RUNNER_TEMP/flatc" >> "$GITHUB_PATH"
       - name: Generate Rust, C#, and the reflection schema from snapshot.fbs
