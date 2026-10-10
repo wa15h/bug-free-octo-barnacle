@@ -4,7 +4,7 @@
 Accepted
 
 ## Decision log ID
-D30 (founder, 2026-10-10; supersedes D7, answers Q14); rule 6; D17 for the pins. Q8 stays open.
+D30 (founder, 2026-10-10; D7's format clause superseded; answers Q14); rule 6; D17 for the pins. Q8 stays open.
 
 ## Context
 D7 kept protobuf via prost unless snapshot decode cost showed; this ADR's draft pre-registered a C#
@@ -32,13 +32,13 @@ LLC), Apache-2.0, tag `v25.2.10` at commit `1c514626e83c20fffa8557e75641848e1e15
 
 ## Consequences
 - `crates/proto`: the schema is `schema/*.fbs`; `build.rs` runs flatc (failing unless it reports
-  25.2.10) into `OUT_DIR`; nothing generated is committed. Each shipped version freezes its `.bfbs` in
-  `fixtures/v<N>/`, replacing protobuf's `descriptor.bin`; `descriptor_is_compatible` runs `flatc --conform`
-  on it. Evolution: append a field at its table's end or mark it `(deprecated)`, keeping its slot;
-  never remove, reorder, or retype one. The spike run shows `--conform` rejecting a removal and a retype.
+  25.2.10) into `OUT_DIR`; nothing generated is committed. Each shipped version freezes its `.bfbs` as
+  `fixtures/v<N>/schema.bfbs`, replacing protobuf's `descriptor.bin`; `schema_is_compatible` runs `flatc --conform`
+  against it and compares each shipped struct's size, which `--conform` does not. Evolution is D30's rule: append a table field or mark it
+  `(deprecated)`, keeping its slot; never remove or reorder a field, change its type or default, change a shipped struct, or remove or renumber an enum or union value. The spike run shows `--conform` rejecting a removal and a retype.
 - Codegen: CI installs flatc from its OS's zip by SHA-256 and generates C# into `client/lib/Generated/`
   (gitignored) for the lockstep job. Follow-ups: devex, that install on both CI runners from the zips pinned below, and the same flatc on PATH on clones (with `tools/codegen/gen-csharp.sh`) so `cargo build` and `cargo test --workspace` run there (rule 7);
-  client engineer, `packages.lock.json` if the founder wants a NuGet hash mirror (its contentHash, `z3ykbSRsy6oqMzeZ84a+K8rnMJ/ysVikar8r2yUhHz0HSxIjBpj53mZvpu6LjLEm5fLLWQsCdelJwL1nu7lloA==`, leaves out the signature); reviewer, `review-log.md` 1.3 says deprecated, not reserved; producer, `docs/adr/README.md` names D30 for the wire format.
+  client engineer, `packages.lock.json` if the founder wants a NuGet hash mirror (its contentHash, `z3ykbSRsy6oqMzeZ84a+K8rnMJ/ysVikar8r2yUhHz0HSxIjBpj53mZvpu6LjLEm5fLLWQsCdelJwL1nu7lloA==`, leaves out the signature); producer, `docs/adr/README.md` names D30 for the wire format.
 - `client/lib`: accessors are structs over the received `byte[]`; a decode allocated only the `ByteBuffer` and its allocator (72 bytes).
 
 ## Evidence
@@ -53,7 +53,7 @@ Nothing gates on these (D30). The draft's limits, for reference only and no long
 Upstream: [crate](https://crates.io/crates/flatbuffers/25.2.10) and its dependencies [bitflags](https://crates.io/crates/bitflags/2.13.2), [rustc_version](https://crates.io/crates/rustc_version/0.4.1), [semver](https://crates.io/crates/semver/1.0.28) (line 28's owners and licences), [NuGet](https://www.nuget.org/packages/Google.FlatBuffers/25.2.10) (its nuspec names the tag commit), [release](https://github.com/google/flatbuffers/releases/tag/v25.2.10), [licence](https://github.com/google/flatbuffers/blob/v25.2.10/LICENSE).
 
 ## Pinned versions touched
-- `flatc` = `25.2.10`, set 2026-10-10: one pin, the one generator row in `tools/pins.toml` (D17). It moves only in a pin-only PR (rule 8) that moves every mirror and hash below with it.
+- `flatbuffers` = `25.2.10`, set 2026-10-10: one pin, the `flatbuffers` row in `tools/pins.toml` (D17, D30). It moves only in a pin-only PR (rule 8) that moves every mirror and hash below with it.
 - Mirror, `Cargo.lock`: `flatbuffers` 25.2.10, crates.io SHA-256 `1045398c1bfd89168b5fd3f1fc11f6e70b34f6f66300c87d44d3de849463abf1`.
-- Hashes, held in `tools/pins.toml` beside the `flatc` row as the redistributable's are, and checked by the CI install: the flatc zips by SHA-256 (the release publishes no digest, so these hash the bytes received on 2026-10-10): [`Linux.flatc.binary.g++-13.zip`](https://github.com/google/flatbuffers/releases/download/v25.2.10/Linux.flatc.binary.g++-13.zip) `6f01258d7475806f375d6da66a61df47add8016edd73f1774673f37b80b9a711` (checked by run 38065990593, `flatc.zip: OK`); [`Windows.flatc.binary.zip`](https://github.com/google/flatbuffers/releases/download/v25.2.10/Windows.flatc.binary.zip) `bd9b3cb6bf5ab8009f1927b6e00207db968c3d5c93e3bc215dae084cc681249a` (downloaded 2026-10-10; no run checks it until the devex Windows CI install).
+- Mirror, the `flatc` download, with hashes held in `tools/pins.toml` beside the `flatbuffers` row as the redistributable's are, and checked by the CI install: the flatc zips by SHA-256 (the release publishes no digest, so these hash the bytes received on 2026-10-10): [`Linux.flatc.binary.g++-13.zip`](https://github.com/google/flatbuffers/releases/download/v25.2.10/Linux.flatc.binary.g++-13.zip) `6f01258d7475806f375d6da66a61df47add8016edd73f1774673f37b80b9a711` (checked by run 38065990593, `flatc.zip: OK`); [`Windows.flatc.binary.zip`](https://github.com/google/flatbuffers/releases/download/v25.2.10/Windows.flatc.binary.zip) `bd9b3cb6bf5ab8009f1927b6e00207db968c3d5c93e3bc215dae084cc681249a` (downloaded 2026-10-10; no run checks it until the devex Windows CI install).
 - Mirror, the `.csproj`: `Google.FlatBuffers` `[25.2.10]`, the version only (a `PackageReference` holds no hash). For reference, not a mirror: the nuget.org [catalog](https://api.nuget.org/v3/catalog0/data/2025.02.11.04.33.13/google.flatbuffers.25.2.10.json) SHA-512 of the signed package, `+VZF2UrDEVsImRwzS2owEQ79JivOtw78SzLwYaoTr1BvWBUNanlOh7Yp1ozotZdWp+BcbxeG4OXWH659cwcODA==`.
