@@ -1,7 +1,7 @@
 # 0003: Sidecar watchdog and process lifecycle
 
 ## Status
-Proposed
+Accepted
 
 ## Decision log ID
 D8 (the listen server is a sidecar process the client spawns, with a watchdog: silent-control-socket
@@ -13,28 +13,47 @@ inside D8 (`README.md`), not by rule 6: the spike is std-only. Relies on Q16's d
 HS 5 names the sidecar's lifecycle a top risk: a process from Godot's `OS.create_process` "will not
 terminate when Godot terminates", and .NET's `Process.Start` behaves the same, so a client crash
 orphans a listen server holding the save. HS 5 and 9.3 answer with D8's watchdog and drop the
-in-process server, even for solo play, which is the same sidecar on localhost. Week-0 item 2
-(`decisions.md`, one day) and W0-09 prove it on `claude/spike-sidecar-watchdog`, never merged: a
-std-only Rust parent and child, run on ubuntu and windows by that branch's workflow, check spawn and
-`Ready` over localhost TCP; exit 2 within `CONTROL_SILENCE_SECS + 1` of a silent control socket;
-exit 0 on `Shutdown`, else a kill by recorded PID and start time, since an OS reuses a dead PID; a
-killed parent's child exiting by watchdog; and a dead PID's save-dir lock cleared on restart, a live
-one's exit 3. Options considered: an in-process server (D8 removes it); stdin/stdout pipes instead
-of TCP (Q16); a kill by PID alone. Tick-boundary saves need a tick loop, so the server's tick-loop
-work proves them, not this spike. The founder writes the outcome as D8's line (W0-19, D24);
-`SIDECAR.md`, the server skeleton, and the client's sidecar launcher wait on it.
+in-process server, even for solo play, which is the same sidecar on localhost. Week-0 item 2 (W0-09)
+proves it with a std-only Rust parent and child on `claude/spike-sidecar-watchdog`, never merged, run
+on ubuntu and windows by that branch's workflow. Options considered: an in-process server (D8 removes
+it); stdin/stdout pipes (Q16); the server listening on a port the client picked; a kill by PID alone.
+Tick-boundary saves need a tick loop, so server task 4 proves them, not this spike.
 
 ## Decision
-The choice in one paragraph. For a dependency: the package name exactly as the manifest writes it,
-the exact version, the maintainer, the license, and which crates or projects may use it.
+The server is its own process on every path and ends itself. The client binds `127.0.0.1:0` and
+passes the OS-given port as `--control`; the server takes the save-dir lock, then connects. No process
+can take the port first, and the server listens on nothing, so nothing else can send it `Shutdown`.
+`Hello` gets `Ready` with the server's PID. The server saves, sends `Exiting`, frees the lock, and
+exits 2 when the socket closes or is silent for `CONTROL_SILENCE_SECS`, or 0 on `Shutdown`. It exits
+3 if `server.lock` names a running PID with its recorded start time, else it clears the lock. The C#
+launcher (`client/lib` `Sidecar/`, client-engineer task 2) copies [`parent.rs`](https://github.com/wa15h/bug-free-octo-barnacle/blob/54ef4ca6f35047f9258c736ed179a8915cd89dd3/spike/sidecar-watchdog/src/bin/parent.rs):
+1. Bind `127.0.0.1:0` before spawning; accept one connection; check `Ready` names the spawned PID.
+2. Before `Hello`, record PID and start time in memory and `sidecar.pid` (none if it already exited 3).
+3. Heartbeat every `HEARTBEAT_SECS` from a dedicated thread; stop and join it before `Shutdown`.
+4. After `Shutdown` wait the grace (here `CONTROL_SILENCE_SECS + 1`), then kill only if the start time
+   still matches: on Windows read it and kill through one process handle; on Linux read it
+   (`/proc/<pid>/stat` field 22) immediately before the kill.
+5. On exit 3 another server holds the save: tell the player and kill nothing.
+
+> D8 outcome, for the founder to write (W0-19, D24): the sidecar watchdog spike passed on ubuntu and
+> windows (ADR 0003): `Ready` over localhost TCP; exit 2 within `CONTROL_SILENCE_SECS + 1` of a silent
+> or closed control socket, a killed client's orphan included; exit 0 on `Shutdown`, else a kill by
+> recorded PID and start time, never a reused PID; a live save-dir lock exits 3, a dead one is cleared.
 
 ## Consequences
-What becomes easier, what becomes harder or forbidden, and any follow-up item for the queue.
+`SIDECAR.md` takes this lifecycle, exit codes 0, 2, 3, and a grace constant no decision names yet; the
+C# launcher passes these eight cases. Not proven here: tick-boundary saves, `crates/proto` messages.
 
 ## Evidence
-Links to the runs, logs, benchmarks, or upstream pages the decision rests on, with the commit SHA or
-version each one used. Evidence described but not linked is missing.
+[Run 38035133893](https://github.com/wa15h/bug-free-octo-barnacle/actions/runs/38035133893) at spike head `54ef4ca`, both jobs green; cells summarize each case's `RESULT` line (Ready: from spawn, then 12 s alive on heartbeats; seconds: from the last heartbeat or the kill).
+
+| [ubuntu-latest](https://github.com/wa15h/bug-free-octo-barnacle/actions/runs/38035133893/job/114163889675), rustc 1.99.0 | Ready | `Shutdown` | silent socket | ignored `Shutdown` | reused PID | killed parent | live lock | dead lock |
+|---|---|---|---|---|---|---|---|---|
+| image ubuntu24 20261004.327.1 | PASS, 101 ms | PASS, exit 0 | PASS, exit 2 at 10.02 s | PASS, killed at 11 s (137) | PASS, not killed | PASS, exit 2 at 0.10 s | PASS, exit 3 | PASS, cleared |
+
+| [windows-latest](https://github.com/wa15h/bug-free-octo-barnacle/actions/runs/38035133893/job/114163889792), rustc 1.98.1 | Ready | `Shutdown` | silent socket | ignored `Shutdown` | reused PID | killed parent | live lock | dead lock |
+|---|---|---|---|---|---|---|---|---|
+| image win25-vs2026 20260925.250.1 | PASS, 117 ms | PASS, exit 0 | PASS, exit 2 at 10.05 s | PASS, killed at 11 s (1) | PASS, not killed | PASS, exit 2 at 0.10 s | PASS, exit 3 | PASS, cleared |
 
 ## Pinned versions touched
-Each pin this ADR sets (D17) and its current value, or "none". An upgrade PR (rule 8) edits this ADR
-in place: the new value and a dated line saying why. A changed choice is a new, superseding ADR.
+None: std only. The spike workflow used `actions/checkout` at ADR 0001's SHA `3d3c42e5` (v7.0.1).
