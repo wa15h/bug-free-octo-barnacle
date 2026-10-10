@@ -61,7 +61,7 @@ screenshot, a video, or a number. `CLAUDE.md` first, then `docs/plan/decisions.m
 
 ### Client checklist (run before every PR; paste the output under "Rules touched")
 - [ ] `rg -n 'using Godot|using UnityEngine|Godot\.|UnityEngine\.' client/lib client/lib.Tests` returns nothing.
-- [ ] `rg -n 'IFlatbufferObject' client --glob '!**/Generated/**'` returns nothing (no hand-written message type, D30).
+- [ ] `rg -n ':\s*IFlatbufferObject' client --glob '!**/Generated/**'` returns nothing (no hand-written message type, D30).
 - [ ] `rg -n 'Command\.(Create|Start)Command' client --glob '!**/Generated/**' --glob '!client/lib/Input/**'` returns nothing.
 - [ ] `rg -n 'Predict|Extrapolat|Reconcil|Rollback' client` returns nothing outside a comment that says "never".
 - [ ] `rg -n 'MultiplayerPeer|NetworkManager|Mirror|FishNet|GodotSteam' client` returns nothing.

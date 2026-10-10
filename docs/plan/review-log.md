@@ -89,14 +89,15 @@ row the devex gate map files it under.
 ### 1.3 `crates/proto`
 
 ```markdown
-**Checklist: `crates/proto` (rule 3; D7)**
+**Checklist: `crates/proto` (rule 3; D7, D30)**
 - [ ] Schema version bumped in the same PR as any message change (rule 3).
   `hook: requested` (`lockstep.sh`)
 - [ ] Compatibility test added: the previous version decodes or is rejected with a clear message,
   never silently corrupted (rule 3). `hook: requested` (`lockstep.sh`)
 - [ ] Table fields are only appended (a new field takes the next id); a removed table field stays,
   marked `deprecated`; a shipped struct never changes; no field's type or default changes in place;
-  new tables and new trailing union members are allowed (rule 3, D30). `hook: manual`
+  an enum or union value is never removed or renumbered; new tables, structs, and enums, new trailing
+  enum values, and new trailing union members are allowed (rule 3, D30). `hook: manual`
 - [ ] C# types regenerated in CI and `client/lib` compiles; no hand-written message type anywhere
   under `client/` (D7). `hook: requested` (`lockstep.yml`)
 ```

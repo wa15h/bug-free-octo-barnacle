@@ -75,7 +75,7 @@ the CI job call the same script, so local and CI never disagree.
 | HS 7 | `wip-limit.sh`: open non-draft PRs and `returned:` drafts above the `WIP: <n>` on `docs/plan/queue.md`'s first line fail the newest. `claude-md-size.sh`: `CLAUDE.md` over 200 lines fails | PR |
 | D24 | `protected-paths.sh`: a diff touching `.claude/`, `CLAUDE.md`, `docs/research/`, or `docs/plan/decisions.md` fails unless the PR carries `founder-approved` (D29) | PR |
 | D2 D4 D8 D9 D14 | `never-in-v1.sh`, outside `docs/`: no `bevy*`, `godot*`, or `gdext` package in `cargo metadata`; no `cdylib` or `staticlib` crate-type (gdext, an in-process server); no `*.gdextension` file; no case-sensitive `Predict`, `Extrapolat`, `Reconcil`, `Rollback`, `LagComp` in `client/` or `crates/{proto,net,server}`; no engine netcode (`MultiplayerPeer`, `MultiplayerAPI`, `Unity.Netcode`, `com.unity.netcode`, `using Mirror`, `FishNet`, `GodotSteam`); no Steam lobby search (`RequestLobbyList`), voice (`StartVoiceRecording`), or inventory and microtransaction API (`SteamInventory`, `MicroTxn`) | hook, PR |
-| D17 | `pins.sh`: every mirror file equals `pins.toml`; `cargo tree -d` shows one `steamworks`; redistributable hashes match the pinned SDK; every workflow `uses:` is a full commit SHA | hook, PR |
+| D17 | `pins.sh`: every mirror file equals `pins.toml`; `cargo tree -d` shows one `steamworks`; `flatc`, `Cargo.lock`, and `Google.FlatBuffers` match `flatbuffers`; redistributable hashes match the pinned SDK; every workflow `uses:` is a full commit SHA | hook, PR |
 | client | the client engineer's greps (no engine types in `client/lib`, no hand-written message type, no `Command` outside `Input/`) and the engine-file line-count report in the job summary | PR |
 
 Rules of the map:
@@ -92,9 +92,8 @@ Rules of the map:
 ### Pins (D17, HS 5)
 - `tools/pins.toml` holds: `rust` (exact `x.y.z`), `dotnet-sdk`, `steamworks-sdk`, `steamworks-rs` (0.13.1
   builds against SDK 1.64, HS 5), the C# binding and the SDK it ships (Steamworks.NET's README says 1.65, so
-  the pin is a task, not a default), the redistributable SHA-256s, `flatc`, the `flatbuffers` crate, and `Google.FlatBuffers` (one version, D30;
-  `pins.sh` asserts all three match), `godot`, `unity`, and
-  each engine's support-until date.
+  the pin is a task, not a default), the redistributable SHA-256s, `flatbuffers` (one version, D30, mirrored by the `flatc` download,
+  `Cargo.lock`, and the `Google.FlatBuffers` reference), `godot`, `unity`, and each engine's support-until date.
 - Upgrade PRs: one pin, the `upgrade` label, the diff limited to pin files, `Cargo.lock`, the ADR or upgrade
   note, and the fixes the upgrade forces, under 200 lines or split.
 - Engine minors: at most two a year, 8-20 founder hours each, queued by the producer, never a line that has
@@ -192,7 +191,7 @@ Rules of the map:
    owner; under 200 lines.
 2. **Pins.** `rust-toolchain.toml` (exact `x.y.z`, `rustfmt` and `clippy`, profile minimal),
    `client/global.json`, `tools/pins.toml` with `steamworks-sdk = "1.64"` and `steamworks-rs = "0.13.1"`,
-   the C# binding row marked pending its ADR and the generator row pending ADR 0004 (D30), `tools/checks/pins.sh`.
+   the C# binding row marked pending its ADR and the `flatbuffers` row pending ADR 0004 (D30), `tools/checks/pins.sh`.
    Accept: a mismatched `rust-toolchain.toml` fails naming both files; a second `steamworks` version fails
    via `cargo tree -d`; red and green linked; under 200 lines.
 3. **`ci.yml`.** Matrix ubuntu and windows; fmt, clippy `-D warnings`, `cargo test --workspace --locked`;

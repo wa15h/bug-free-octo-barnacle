@@ -116,7 +116,7 @@ The client engineer reviews the parent-side findings.
 
 **W0-10 Wire-format measurement; D30 decided FlatBuffers.** Paths: `docs/adr/0004-wire-format.md`. Accept
 per net-engineer task 1 as D30 narrows it: FlatBuffers only, no comparison and no threshold (Q14 answered);
-the ADR under 60 lines pins the `flatbuffers` crate, `flatc`, and `Google.FlatBuffers` at one version;
+the ADR under 60 lines (not task 1's 40) pins the `flatbuffers` crate, `flatc`, and `Google.FlatBuffers` at one version;
 the table carries the measured numbers from a linked run and names the runner.
 
 **W0-11.** Paths: `docs/plan/hours.md`. Accept per producer task 2, plus: a rolling 8-week average

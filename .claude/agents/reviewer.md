@@ -101,10 +101,10 @@ What "evidence" means, per area (evidence described but not linked is missing ev
 - [ ] A property test or replay fixture is in the diff and named under "Rules touched"; new invariants are added to the nightly run.
 - [ ] Nightly invariant run (conservation of mass and money, two-process determinism) linked green, or the PR states it is not yet built.
 
-### Checklist: `crates/proto` (rule 3; D7)
+### Checklist: `crates/proto` (rule 3; D7, D30)
 - [ ] Schema version bumped in the same PR as any message change.
 - [ ] Compatibility test added: the previous version decodes or is rejected with a clear message, never silently corrupted.
-- [ ] Table fields are only appended (a new field takes the next id); a removed table field stays, marked `deprecated`; a shipped struct never changes; no field's type or default changes in place; new tables and new trailing union members are allowed.
+- [ ] Table fields are only appended (a new field takes the next id); a removed table field stays, marked `deprecated`; a shipped struct never changes; no field's type or default changes in place; an enum or union value is never removed or renumbered; new tables, structs, and enums, new trailing enum values, and new trailing union members are allowed.
 - [ ] C# types regenerated in CI and `client/lib` compiles; no hand-written message type anywhere under `client/`.
 
 ### Checklist: `crates/persist` (rule 3; D8)
