@@ -1,0 +1,22 @@
+# The one version table (D17, HS 5). Every mirror must equal its row; tools/checks/pins.sh checks it.
+# A pin moves only in a pin-only PR labelled `upgrade`, one pin per PR, editing its ADR (rule 8).
+# Values are exact: no range, tag, branch, `stable`, or `latest`. "pending": no ADR has chosen it yet.
+
+# Rust toolchain, ADR 0001. Mirror: `channel` in rust-toolchain.toml.
+rust = "1.99.0"
+
+# GitHub Actions, ADR 0001, at full commit SHAs. Mirror: every `uses:` in .github/workflows/.
+"actions/checkout" = "3d3c42e5aac5ba805825da76410c181273ba90b1" # v7.0.1
+"actions/cache" = "55cc8345863c7cc4c66a329aec7e433d2d1c52a9" # v6.1.0
+
+# Steamworks, ADR 0002. Mirrors: Cargo.lock, and the SDK vendored in steamworks-sys.
+steamworks-sdk = "1.64"
+steamworks-rs = "0.13.1" # the `steamworks` crate
+steamworks-sys = "0.13.0"
+# SDK 1.64 redistributable SHA-256s, by path under the SDK's redistributable_bin/.
+"redist/win64/steam_api64.dll" = "eb17909a76668cf9ae0b92a618a34a50f6c73d3a6787cb4dd8ce36a8b10bfb75"
+"redist/linux64/libsteam_api.so" = "ec4797f76a206eb0af627af0f0788eb5a2eabf5dee38ee0a6affbaa44a645f4e"
+
+# Pending their ADR and the wire spike (W0-10, PR #15).
+csharp-binding = "pending" # Steamworks.NET or Facepunch.Steamworks on steamworks-sdk (ADR 0002 open task)
+codegen = "pending" # protoc or flatc and its version (ADR 0004)
