@@ -144,7 +144,9 @@ One summary per review, posted as a "comment" PR review (reviewer loop, step 8: 
 "approve" and "request changes" from a PR's author, and agents work under the founder's login,
 D29). Under 40 lines, with no praise (Never do). Write it from what step 2 allows (the diff, the
 description, the queue entry, and the files the diff touches), the Budget sources in 2.1, and the
-evidence you verified on the head SHA (step 6); never from the writer's transcript.
+evidence you verified on the head SHA (step 6); never from the writer's transcript. The section 1
+blocks go into it in short form: passes under "Checked, not found", and each failing check after
+`Fix:` with its file and line (step 5).
 
 ### 2.1 Fields
 
@@ -173,8 +175,8 @@ spot-checked | none>; founder minutes <arithmetic = m>; queue entry <class>, <li
 **Read line by line** <none, or one item per function, each with file and line range>
 - `<path>:<start>-<end>` `<function>`: <the one thing to check>.
 **Accept on evidence** <none, or one link per piece, on the head SHA (step 6)>
-- <what> on head `<sha>`: <link>.
-**Rules touched** <rule n: the test, hook, or run that proves it>.
+- <what> on head `<sha>`: <link, or while no CI exists, the pasted output tail (step 6)>.
+**Rules touched** <rule n: the test, hook, or run that proves it, or the 1.x block by hand>.
 **Flags** <cause of a founder approval, open-question default (D21), scope widening | none>.
 **Risk and rollback** <what breaks, how it shows, how to revert>.
 **Checked, not found**
@@ -207,18 +209,17 @@ ready for founder review
 **Concern** W1-99: `Ledger::transfer` moves money between two accounts and refuses an
 overdraft. Matches the queue entry.
 **Read line by line**
-- `crates/sim/src/ledger.rs:30-57` `Ledger::transfer`: amounts are `Money` (fixed-point, no
-  float); both `checked_` calls run before either balance changes, so an overdraft returns
-  `Err(Overdraft)` and leaves both untouched.
+- `crates/sim/src/ledger.rs:30-57` `Ledger::transfer`: both `checked_` calls run before either
+  balance changes, so an overdraft returns `Err(Overdraft)` and leaves both untouched.
 - `crates/sim/src/ledger.rs:59-66` `Ledger::total`: sums the `BTreeMap` in key order.
 - `crates/sim/src/systems.rs:22-30` `order`: `ledger_settle` runs after `jobs_tick`.
-- `crates/sim/tests/ledger_props.rs:1-52` `transfer_conserves_total`: 1,000 seeds through
-  `SimRng`; the total is the same after every transfer, refused or not.
+- `crates/sim/tests/ledger_props.rs:1-52` `transfer_conserves_total`: the total is the same after
+  every transfer, refused or not.
 **Accept on evidence**
 - `ci.yml` fmt, clippy, and test, green on head `a1b2c3d`:
   https://github.com/<owner>/<repo>/actions/runs/1234567890
-**Rules touched** Rule 1: the 1.2 checks below. Rule 2: `transfer_conserves_total`. Rule 7: the
-CI run above.
+**Rules touched** Rule 1: the 1.2 block by hand (`sim-deps.sh` not yet on `main`). Rule 2:
+`transfer_conserves_total`. Rule 7: the CI run above.
 **Flags** none.
 **Risk and rollback** A transfer that debits without crediting breaks conservation; the
 property test fails on it. Revert the PR; no message or save format changes.
