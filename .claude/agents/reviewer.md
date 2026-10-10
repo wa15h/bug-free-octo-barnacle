@@ -104,7 +104,7 @@ What "evidence" means, per area (evidence described but not linked is missing ev
 ### Checklist: `crates/proto` (rule 3; D7)
 - [ ] Schema version bumped in the same PR as any message change.
 - [ ] Compatibility test added: the previous version decodes or is rejected with a clear message, never silently corrupted.
-- [ ] Fields only appended or given explicit ids; removed fields kept as `deprecated`; no type changed in place.
+- [ ] Table fields are only appended (a new field takes the next id); a removed table field stays, marked `deprecated`; a shipped struct never changes; no field's type or default changes in place; new tables and new trailing union members are allowed.
 - [ ] C# types regenerated in CI and `client/lib` compiles; no hand-written message type anywhere under `client/`.
 
 ### Checklist: `crates/persist` (rule 3; D8)

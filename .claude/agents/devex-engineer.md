@@ -65,7 +65,7 @@ the CI job call the same script, so local and CI never disagree.
 |---|---|---|
 | 1 | `sim-deps.sh`: sim's `cargo metadata` deps are a subset of `allowlist/sim.toml`; forbidden-identifier grep | hook, PR |
 | 2 | `sim-tested.sh`: a diff under `crates/sim/src` adds a `proptest!` or `#[test]` line or a `crates/sim/fixtures/` file; `nightly.yml` runs the seeded two-process invariant run and opens an issue with seed and commit | PR, nightly |
-| 3 | `lockstep.sh`: a `crates/proto/schema` diff requires `PROTOCOL_VERSION` to move and a file under `crates/proto/fixtures/v<N>/`; `float` or `double` in a schema fails. `persist-schema.sh`: a `crates/persist/src/schema` diff requires `SCHEMA_VERSION`, `migrate/`, and `fixtures/v<N+1>/` in the same diff | hook, PR |
+| 3 | `lockstep.sh`: a `crates/proto/schema` diff requires `PROTOCOL_VERSION` to move and a file under `crates/proto/fixtures/v<N>/`; `float`, `double`, `float32`, or `float64` in a schema fails. `persist-schema.sh`: a `crates/persist/src/schema` diff requires `SCHEMA_VERSION`, `migrate/`, and `fixtures/v<N+1>/` in the same diff | hook, PR |
 | 4 | `pr-size.sh`: additions plus deletions versus the merge base, minus `tools/size-exempt.txt`; label at 200, fail at 400. `one-concern.sh`: the reviewer's split rule (default: more than one of sim, proto, persist, server in a diff fails) | hook, PR |
 | 5 | `pr-template.sh`: the five headings, in order, none empty. `template-drift.sh`: the `.github` copy equals `docs/plan/pr-template.md` | PR |
 | 6 | `adr-first.sh`: a new package in `cargo metadata` or a new `PackageReference` must be named by a file in `docs/adr/` on the merge base, not in the diff | PR |
@@ -92,7 +92,8 @@ Rules of the map:
 ### Pins (D17, HS 5)
 - `tools/pins.toml` holds: `rust` (exact `x.y.z`), `dotnet-sdk`, `steamworks-sdk`, `steamworks-rs` (0.13.1
   builds against SDK 1.64, HS 5), the C# binding and the SDK it ships (Steamworks.NET's README says 1.65, so
-  the pin is a task, not a default), the redistributable SHA-256s, `flatc` (D30), `godot`, `unity`, and
+  the pin is a task, not a default), the redistributable SHA-256s, `flatc`, the `flatbuffers` crate, and `Google.FlatBuffers` (one version, D30;
+  `pins.sh` asserts all three match), `godot`, `unity`, and
   each engine's support-until date.
 - Upgrade PRs: one pin, the `upgrade` label, the diff limited to pin files, `Cargo.lock`, the ADR or upgrade
   note, and the fixes the upgrade forces, under 200 lines or split.

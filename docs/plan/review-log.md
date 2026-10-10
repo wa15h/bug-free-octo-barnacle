@@ -94,8 +94,9 @@ row the devex gate map files it under.
   `hook: requested` (`lockstep.sh`)
 - [ ] Compatibility test added: the previous version decodes or is rejected with a clear message,
   never silently corrupted (rule 3). `hook: requested` (`lockstep.sh`)
-- [ ] Fields only appended or given explicit ids; removed fields kept as `deprecated`; no type changed in place (rule 3, D30).
-  `hook: manual`
+- [ ] Table fields are only appended (a new field takes the next id); a removed table field stays,
+  marked `deprecated`; a shipped struct never changes; no field's type or default changes in place;
+  new tables and new trailing union members are allowed (rule 3, D30). `hook: manual`
 - [ ] C# types regenerated in CI and `client/lib` compiles; no hand-written message type anywhere
   under `client/` (D7). `hook: requested` (`lockstep.yml`)
 ```

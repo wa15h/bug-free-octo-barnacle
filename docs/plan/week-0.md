@@ -68,7 +68,7 @@ Class: L = line-by-line, E = evidence, F = founder-authored. Min = founder minut
 | W0-16 | devex-engineer | Pre-push hook and installer | E | 70 | 10 | 07 | D6 D25 | no |
 | W0-17 | devex-engineer | PR size gate | E | 120 | 15 | 16 | D6 D22 | 0001 |
 | W0-18 | devex-engineer | PR template copy and drift check | E | 45 | 5 | 17 | D6 | no |
-| W0-19 | founder | Spike outcomes into `decisions.md` | F | 10 | 30 | 08 09 10 | D3 D7 D8 D24 D29 | no |
+| W0-19 | founder | Spike outcomes into `decisions.md` | F | 10 | 30 | 08 09 | D3 D8 D24 D29 | no |
 | W0-20 | founder | D25 Stop hook in `.claude/settings.json` | F | 20 | 30 | 16 | D24 D25 D29 | no |
 | W0-21 | devex-engineer | Protected-paths gate (D24) | E | 55 | 10 | 17 | D24 D29 | no |
 

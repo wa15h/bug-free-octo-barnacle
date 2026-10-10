@@ -2,7 +2,8 @@
 
 Every entry cites the report and section it came from. `docs/research/market-research.md`
 is MR; `docs/research/hiring-and-stack.md` is HS. Status is Decided, Default (decided
-unless the founder objects), or Pending (a spike or gate decides).
+unless the founder objects), Pending (a spike or gate decides), or Partly superseded (a later
+decision replaces the named clause; the rest holds).
 
 | ID | Decision | Status | Source |
 |---|---|---|---|
@@ -12,7 +13,7 @@ unless the founder objects), or Pending (a spike or gate decides).
 | D4 | Client is C# on an engine-agnostic .NET Standard 2.1 library. Engine chosen by a weeks 0-6 bake-off between Godot 4.7 C# and Unity 6 on logged founder hours; tie within 15% goes to Unity 6. Bevy and Unreal are out. No Rust GDExtension on the critical path. | Pending bake-off | HS 5, 9.2 |
 | D5 | Hours: 30 a week on the project, by founder decision on 2026-10-08 (revised from a 15-hour base). The founder accepted the health risk that HS 6 names for 70+ total weekly hours with a day job. Guardrails: 42 project weeks a year, a deload fortnight every 12 weeks, the founder logs hours weekly, and the producer runs a quarterly fatigue check. If the rolling 8-week average falls under 20, the producer re-baselines the bands; that is a re-plan, not a failure. | Decided | Founder; HS 6, 9.5 |
 | D6 | Review budget: 8-15 PRs a week at 15 founder hours, scaling with logged review hours to about 20-25 a week at 30 hours (HS 7 budgets ~40% of founder time for review), each at 200 changed lines or fewer (hard cap 400). Line-by-line review in sim, proto, persist, and server authority paths; evidence review elsewhere. Every rule is a hook. An evaluator agent sits in the merge gate. Releases are human-only. | Decided | HS 7, 9.6 |
-| D7 | Wire format is schema-owned and cross-language: protobuf via prost by default, FlatBuffers if the spike shows snapshot decode cost. C# types generated from the Rust-owned schema in CI. | Superseded by D30 | HS 5, 9.2 |
+| D7 | Wire format is schema-owned and cross-language: protobuf via prost by default, FlatBuffers if the spike shows snapshot decode cost. C# types generated from the Rust-owned schema in CI. | Partly superseded by D30 (format clause) | HS 5, 9.2 |
 | D8 | Listen server is a sidecar process spawned by the client, with a watchdog (silent-control-socket exit, PID kill on clean exit, tick-boundary saves). The in-process listen server is removed from the roadmap. | Decided | HS 5, 9.3 |
 | D9 | Netcode is server-authoritative with interpolation only, tuned for 80-150 ms. No client prediction or rollback in v1. | Decided | MR 7 |
 | D10 | Gates are cumulative-hour triggers: ant farm fun alone at ~250 h; velocity gate at ~400 h; two-client authoritative session at ~500 h; engine confirmation at ~600 h; 30-minute run fun alone at ~900 h; Thursday group day-7 return over 30% at ~1,100 h; a 90-day post-page wishlist-velocity gate replaces the old 25-30k wishlist gate. | Decided | HS 6, 9.1 |
@@ -79,7 +80,7 @@ unless the founder objects), or Pending (a spike or gate decides).
 | plague door marks, FEMA X-codes | ATC-20-style rectangular door placards: green INSPECTED, yellow RESTRICTED USE, red UNSAFE. Never a cross shape, never red on white (the Red Cross emblem) |
 | capsule test (nuclear franchises) | before any capsule spend, a greybox capsule shown to 30+ survival players: pass if under 25% name a zombie game, The Division, COVID, or Pacific Drive. The capsule never shows infected, hazmat suits, gas masks, red crosses, or an animal as the hero subject |
 
-Terms that stay as they are: the `FROZEN` queue flag, `schema_is_frozen`, and frozen schema or descriptor files are not setting terms. Comparable titles in the research (The Forever Winter and others) keep their names. The research reports are history; D26 overrides them.
+Terms that stay as they are: the `FROZEN` queue flag, `schema_is_frozen`, and frozen schema or binary schema (`.bfbs`) files are not setting terms. Comparable titles in the research (The Forever Winter and others) keep their names. The research reports are history; D26 overrides them.
 
 ## Repository access (added 2026-10-10)
 
@@ -91,4 +92,4 @@ Terms that stay as they are: the `FROZEN` queue flag, `schema_is_frozen`, and fr
 
 | ID | Decision | Status | Source |
 |---|---|---|---|
-| D30 | The wire format is FlatBuffers, decided before any spike result. This replaces D7's protobuf (prost) default and its spike-decides clause; the rest of D7 holds: the Rust `proto` crate owns the schema, and C# types are generated from it in CI, never hand-written. The week-0 spike becomes a FlatBuffers-only measurement for ADR 0004's evidence, with no comparison and no gating threshold (Q14 answered). The `flatbuffers` crate, `flatc`, and the C# `Google.FlatBuffers` runtime are pinned at one matching version (D17). A schema evolves only by appending fields or marking them `deprecated`, and each shipped protocol version freezes its binary schema (`.bfbs`). | Decided | Founder, 2026-10-10, in chat; drafted by Claude at the founder's request |
+| D30 | The wire format is FlatBuffers, decided before any spike result. This replaces D7's protobuf (prost) default and its spike-decides clause; the rest of D7 holds: the Rust `proto` crate owns the schema, and C# types are generated from it in CI, never hand-written. The week-0 spike becomes a FlatBuffers-only measurement for ADR 0004's evidence, with no comparison and no gating threshold (Q14 answered). The `flatbuffers` crate, `flatc`, and the C# `Google.FlatBuffers` runtime are pinned at one matching version (D17). A schema evolves only this way: table fields are only appended (a new field takes the next id); a removed table field stays, marked `deprecated`; a shipped struct never changes; no field's type or default changes in place; new tables and new trailing union members are allowed. Each shipped protocol version freezes its binary schema (`.bfbs`). | Decided | Founder, 2026-10-10, in chat; drafted by Claude at the founder's request |

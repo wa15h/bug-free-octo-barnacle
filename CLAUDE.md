@@ -60,7 +60,8 @@ wins over anything you remember about this project. The research behind it is in
 - Camera: third-person follow camera by default, with the top-down diorama as the
   settlement management view; locked by a prototype of both at about 400 logged hours.
 - Pins: one Rust toolchain, one Steamworks SDK version across the Rust binding, the C#
-  binding, and the redistributable, one engine minor line. At most two engine minor
+  binding, and the redistributable, one FlatBuffers version across `flatc`, the crate, and
+  the C# runtime (D30), one engine minor line. At most two engine minor
   upgrades a year, 8-20 hours each, never shipping on a line that has lost patch support.
 
 ## Repository layout
