@@ -11,13 +11,14 @@ is carried out, and never edits that file: a changed decision is a row the found
   a workflow or `tools/` script depends on; an art kit only when it brings an importer plugin or a
   shader dependency (Q30 default, D21).
 - D17 pins: choosing a pinned version (the Rust toolchain; the Steamworks SDK with every binding and
-  the redistributable; the engine minor line).
-- Anything inside D3 (the server binary, SDR transport, the raw-UDP fallback, the engine-free sim,
-  proto, net, and persist crates), D7 (the wire format and C# codegen), or D8 (the sidecar process
-  and its watchdog), even with no new dependency.
+  the redistributable; the engine minor line). A move is an upgrade PR with an upgrade note (rule 8).
+- Inside D3, D7, or D8: a choice of how the decision is carried out, even with no new dependency.
+  D3 is the tokio server binary, SDR transport, the raw-UDP fallback, and the engine-free sim, proto,
+  net, and persist crates; D7 the wire format and C# codegen; D8 the sidecar process and its watchdog.
+  Work in them that makes no such choice and adds no dependency needs none: W0-02's empty crates, the
+  sim skeleton's hand-written PRNG and state hash (sim-engineer rule 6). Q10 asks if `Fixed` does.
 
-The ADR merges before the PR that needs it. Moving a pin is an upgrade PR (rule 8, devex-engineer)
-that carries an upgrade note in its own diff. When unsure, ask the producer in the Questions block.
+The ADR merges before the PR that needs it. When unsure, ask the producer in the Questions block.
 
 ## Who writes it
 
