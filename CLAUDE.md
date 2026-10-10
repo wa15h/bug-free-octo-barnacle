@@ -45,9 +45,8 @@ wins over anything you remember about this project. The research behind it is in
 - Simulation: engine-free Rust crates shared by every deployment. Fixed-point economy
   math, explicitly ordered systems, seeded RNG, no floating point crossing a platform
   boundary, replayable from an append-only input log.
-- Wire format: schema-owned and cross-language. Protobuf via `prost` by default;
-  FlatBuffers if the spike shows snapshot decode cost. The Rust `proto` crate owns the
-  schema; C# types are generated from it in CI. Never hand-write message types twice.
+- Wire format: schema-owned and cross-language FlatBuffers (D30). The Rust `proto` crate
+  owns the schema; C# types are generated from it in CI. Never hand-write message types twice.
 - Client: C# on an engine-agnostic .NET Standard 2.1 class library (protocol decode,
   Steam via Steamworks.NET or Facepunch.Steamworks, interpolation buffers, sidecar
   launch and watchdog, typed events). The engine project is a thin presentation layer.
@@ -61,7 +60,8 @@ wins over anything you remember about this project. The research behind it is in
 - Camera: third-person follow camera by default, with the top-down diorama as the
   settlement management view; locked by a prototype of both at about 400 logged hours.
 - Pins: one Rust toolchain, one Steamworks SDK version across the Rust binding, the C#
-  binding, and the redistributable, one engine minor line. At most two engine minor
+  binding, and the redistributable, one FlatBuffers version across `flatc`, the crate, and
+  the C# runtime (D30), one engine minor line. At most two engine minor
   upgrades a year, 8-20 hours each, never shipping on a line that has lost patch support.
 
 ## Repository layout

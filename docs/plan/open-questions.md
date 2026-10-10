@@ -21,7 +21,7 @@ Two questions where agents disagreed are already resolved in `decisions.md` as D
 11. Save encoding: a serde crate owned by persist (team default; the sim engineer's task 2 ADR derives serde on State) or proto messages; and text fixtures (readable, inflate line counts) or binary (opaque)? The persist task 1 ADR needs this first. (persist)
 12. Is a guest's character world-bound (stored in the host's save keyed by Steam ID, the default) or player-bound (travels with the guest, needing a second save file and a merge rule)? (persist)
 13. Is Steam Cloud sync of the host save in v1? It creates cross-machine conflicts the generation scheme does not resolve. (persist)
-14. Pre-register the C# decode-cost threshold that flips D7 to FlatBuffers before the wire-format spike runs. (net)
+14. Answered (D30): FlatBuffers is decided, so no decode-cost threshold is pre-registered; the week-0 spike only measures FlatBuffers. (net)
 15. Protocol version policy: exact match (default, simplest to explain) or a compatibility window; it is player-facing. (net)
 16. Sidecar timing and transport: CONTROL_SILENCE_SECS and HEARTBEAT_SECS (defaults 10 and 2) and localhost TCP on a client-chosen port (default) versus stdin/stdout pipes. (server)
 17. Raw-UDP identity: Steam auth session tickets over raw UDP, or LAN-only unverified peers refused unless --allow-unverified (default). (server)
