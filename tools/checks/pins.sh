@@ -16,7 +16,7 @@ pin() { v=$(echo "$pins" | sed -n "s|^\"\{0,1\}$1\"\{0,1\} *= *\"\([^\"]*\)\".*|
 bad=$(echo "$pins" | grep -nE '^[^#].*=' | grep -vE '= "([0-9]+(\.[0-9]+){1,2}|[0-9a-f]{40}|[0-9a-f]{64}|pending)"( *#.*)?$' || true)
 [ -z "$bad" ] || fail "$P line ${bad%%:*} is not an exact version, full SHA, or \"pending\"" "write one exact value"
 rels=(win64/steam_api64.dll linux64/libsteam_api.so)
-for r in rust actions/checkout actions/cache steamworks-sdk steamworks-rs steamworks-sys "${rels[@]/#/redist/}" csharp-binding codegen; do pin "$r" >/dev/null; done
+for r in rust actions/checkout actions/cache steamworks-sdk steamworks-rs steamworks-sys "${rels[@]/#/redist/}" csharp-binding flatbuffers; do pin "$r" >/dev/null; done
 rust=$(pin rust)
 [ ! -e rust-toolchain ] || fail "rust-toolchain exists, and rustup reads it before rust-toolchain.toml" "delete rust-toolchain; rust-toolchain.toml is the one mirror (ADR 0001)"
 ch=$(sed -n 's/^channel *= *"\([^"]*\)".*/\1/p' rust-toolchain.toml 2>/dev/null || true)
@@ -68,4 +68,5 @@ else
   say "ok: every uses: in .github/workflows and .github/actions is a full commit SHA equal to $P"
 fi
 
-say "skip: dotnet-sdk comes with client/global.json and the codegen pipeline in week 1 (ADR 0004); godot and unity in week 1's pin-only PRs; codegen waits on ADR 0004 (W0-10), csharp-binding on the client engineer's binding ADR (ADR 0002 open pin task)"
+say "skip: the D17 check that flatc, Cargo.lock, and Google.FlatBuffers match flatbuffers (D30); bites when ADR 0004 (W0-10) sets the version and crates/proto and the codegen pipeline add those mirrors in week 1"
+say "skip: dotnet-sdk comes with client/global.json and the codegen pipeline in week 1 (ADR 0004); godot and unity in week 1's pin-only PRs; csharp-binding waits on the client engineer's binding ADR (ADR 0002 open pin task)"

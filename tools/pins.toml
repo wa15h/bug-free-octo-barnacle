@@ -5,7 +5,7 @@
 # Rust toolchain, ADR 0001. Mirror: `channel` in rust-toolchain.toml.
 rust = "1.99.0"
 
-# GitHub Actions, ADR 0001, at full commit SHAs. Mirror: every `uses:` in .github/workflows/.
+# GitHub Actions, ADR 0001, at full commit SHAs. Mirror: every `uses:` in .github/workflows/ and .github/actions/.
 "actions/checkout" = "3d3c42e5aac5ba805825da76410c181273ba90b1" # v7.0.1
 "actions/cache" = "55cc8345863c7cc4c66a329aec7e433d2d1c52a9" # v6.1.0
 
@@ -17,6 +17,6 @@ steamworks-sys = "0.13.0"
 "redist/win64/steam_api64.dll" = "eb17909a76668cf9ae0b92a618a34a50f6c73d3a6787cb4dd8ce36a8b10bfb75"
 "redist/linux64/libsteam_api.so" = "ec4797f76a206eb0af627af0f0788eb5a2eabf5dee38ee0a6affbaa44a645f4e"
 
-# Pending: codegen on ADR 0004 (W0-10, PR #15); csharp-binding on the client engineer's binding ADR.
+# Pending: flatbuffers on ADR 0004 (W0-10, PR #15); csharp-binding on the client engineer's binding ADR.
 csharp-binding = "pending" # Steamworks.NET or Facepunch.Steamworks on steamworks-sdk (ADR 0002 open task)
-codegen = "pending" # protoc or flatc and its version (ADR 0004)
+flatbuffers = "pending" # one version for the `flatc` download, the `flatbuffers` crate in Cargo.lock, and the `Google.FlatBuffers` reference (D30), set by ADR 0004 (W0-10, PR #15)
