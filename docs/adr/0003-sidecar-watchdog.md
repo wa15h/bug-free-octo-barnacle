@@ -35,8 +35,8 @@ The C# launcher (`client/lib` `Sidecar/`, client-engineer task 2) copies [`paren
 > D8 outcome, for the founder to write (W0-19, D24): the sidecar watchdog spike passed its eight cases on ubuntu and
 > windows (ADR 0003): `Ready` over localhost TCP on a client-chosen port; exit 2 within `CONTROL_SILENCE_SECS + 1` of
 > a silent or closed control socket, a killed client's orphan included; exit 0 on `Shutdown`, else a kill by recorded
-> PID and start time, never a reused PID; a second server exits 3 on a live server's lock, and a dead server's lock is
-> cleared. Two servers starting at once both took the spike's lock, so `SIDECAR.md` needs an atomic one.
+> PID and start time, never a reused PID; a second server exits 3 on a lock already holding a live server's record,
+> and a dead server's is cleared. Two servers started at once both took the lock, so `SIDECAR.md` needs an atomic one.
 
 ## Consequences
 `SIDECAR.md` takes this lifecycle and exit codes 0, 2, 3, and names what no decision does: the grace, the
