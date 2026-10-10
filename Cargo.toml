@@ -1,0 +1,15 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/sim",
+    "crates/proto",
+    "crates/net",
+    "crates/persist",
+    "crates/server",
+    "crates/tools",
+]
+
+[workspace.package]
+version = "0.0.0"
+edition = "2021"
+publish = false

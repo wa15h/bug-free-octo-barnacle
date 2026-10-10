@@ -1,0 +1,2 @@
+# rustfmt defaults. This file also stops a personal rustfmt config from applying here.
+edition = "2021"

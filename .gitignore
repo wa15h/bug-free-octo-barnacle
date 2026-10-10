@@ -11,3 +11,17 @@
 
 # Local env
 .env
+
+# Generated C# types: built in CI from crates/proto, never committed (D7)
+/client/lib/Generated/
+
+# .NET user files
+*.user
+
+# Engine caches
+/client/godot/.godot/
+/client/unity/Library/
+/client/unity/Temp/
+/client/unity/Logs/
+/client/unity/UserSettings/
+/client/unity/obj/
