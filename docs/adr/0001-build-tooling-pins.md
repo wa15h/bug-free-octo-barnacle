@@ -19,10 +19,10 @@ pins come in week 1.
 
 ## Decision
 Rust `1.99.0` from the Rust project (MIT or Apache-2.0), with `rustfmt` and `clippy`, profile `minimal`,
-for every crate, installed by each runner's own rustup from `rust-toolchain.toml`. Two Actions, both
-GitHub's (MIT): `actions/checkout` in `ci.yml` and `pr-gates.yml` (every job needs the code, `pr-size.sh`
-the merge base) and `actions/cache` in `ci.yml` (cargo registry, `target/`); `pr-gates.yml` labels with
-the runner's `gh`. Rejected: `dtolnay/rust-toolchain`, `Swatinem/rust-cache`, third-party and redundant.
+for every crate, installed by each runner's own rustup from `rust-toolchain.toml`. Two Actions by GitHub
+(MIT): `actions/checkout` `v7.0.1` in `ci.yml` and `pr-gates.yml` (every job needs the code, `pr-size.sh`
+the merge base) and `actions/cache` `v6.1.0` in `ci.yml` (cargo registry, `target/`); `pr-gates.yml` labels
+with the runner's `gh`. Rejected: `dtolnay/rust-toolchain`, `Swatinem/rust-cache`, third-party and redundant.
 
 ## Consequences
 Both CI runners and every clone use one compiler, rustfmt, and clippy (the images alone ship 1.99.0 and
@@ -31,9 +31,9 @@ Action needs its ADR first (rule 6). Not pinned: the `-latest` images, with thei
 
 ## Evidence
 [Stable manifest](https://static.rust-lang.org/dist/channel-rust-1.99.0.toml), equal to `channel-rust-stable.toml` on 2026-10-10: `date = "2026-10-01"`, `rust 1.99.0`.
-[Runner images](https://github.com/actions/runner-images/tree/8197087fc536320d1441203fdb5da9ae1b44b863/images): rustup 1.29.1 and `gh` on both; Rust 1.99.0 (Ubuntu 24.04), 1.98.1 (Windows 2025).
+Runner images at `8197087`: [Ubuntu 24.04](https://github.com/actions/runner-images/blob/8197087fc536320d1441203fdb5da9ae1b44b863/images/ubuntu/Ubuntu2404-Readme.md) (`ubuntu-latest`) Rust 1.99.0; [Windows 2025 VS2026](https://github.com/actions/runner-images/blob/8197087fc536320d1441203fdb5da9ae1b44b863/images/windows/Windows2025-VS2026-Readme.md) (`windows-latest`, per the [README](https://github.com/actions/runner-images/blob/8197087fc536320d1441203fdb5da9ae1b44b863/README.md)) Rust 1.98.1; rustup 1.29.1 and `gh` on both.
 
 ## Pinned versions touched
 - `rust` = `1.99.0`, set 2026-10-10.
-- `actions/checkout` = [`3d3c42e5aac5ba805825da76410c181273ba90b1`](https://github.com/actions/checkout/commit/3d3c42e5aac5ba805825da76410c181273ba90b1), lightweight tag `v7.0.1` (`git ls-remote`).
-- `actions/cache` = [`55cc8345863c7cc4c66a329aec7e433d2d1c52a9`](https://github.com/actions/cache/commit/55cc8345863c7cc4c66a329aec7e433d2d1c52a9), lightweight tag `v6.1.0` (`git ls-remote`).
+- `actions/checkout` = [`3d3c42e5aac5ba805825da76410c181273ba90b1`](https://github.com/actions/checkout/commit/3d3c42e5aac5ba805825da76410c181273ba90b1), lightweight tag `v7.0.1` (`git ls-remote`), [MIT](https://github.com/actions/checkout/blob/3d3c42e5aac5ba805825da76410c181273ba90b1/LICENSE).
+- `actions/cache` = [`55cc8345863c7cc4c66a329aec7e433d2d1c52a9`](https://github.com/actions/cache/commit/55cc8345863c7cc4c66a329aec7e433d2d1c52a9), lightweight tag `v6.1.0` (`git ls-remote`), [MIT](https://github.com/actions/cache/blob/55cc8345863c7cc4c66a329aec7e433d2d1c52a9/LICENSE).
