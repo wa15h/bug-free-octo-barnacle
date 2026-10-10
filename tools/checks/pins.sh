@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # D17 gate; the pre-push hook (W0-16) and CI run this same file. Each mirror must equal tools/pins.toml:
-# rust-toolchain.toml (no legacy rust-toolchain); Cargo.lock (one crates.io steamworks and steamworks-sys;
-# `cargo tree -d --depth 0` lists only duplicates); the vendored redistributable SHA-256s, STEAM_SDK_LOCATION
-# unset; every `uses:` under .github/workflows and .github/actions. CRLF reads as LF. Rows are read before
-# any skip, so a missing row fails now. A check with nothing to check yet says so, names the item that
+# rust-toolchain.toml (no legacy rust-toolchain); Cargo.lock (one steamworks and one steamworks-sys, each from
+# crates.io; `cargo tree -d --depth 0` lists only duplicates); the vendored redistributable SHA-256s, STEAM_SDK_LOCATION
+# unset; every `uses:` under .github/workflows and .github/actions. CRLF reads as LF. The first loop reads every row
+# before any check runs, so a missing row fails now. A check with nothing to check yet says so, names the item that
 # makes it bite, and passes. The first failure exits 1: `RULE D17: <what> -- <fix>`.
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
@@ -15,6 +15,8 @@ pin() { v=$(echo "$pins" | sed -n "s|^\"\{0,1\}$1\"\{0,1\} *= *\"\([^\"]*\)\".*|
 
 bad=$(echo "$pins" | grep -nE '^[^#].*=' | grep -vE '= "([0-9]+(\.[0-9]+){1,2}|[0-9a-f]{40}|[0-9a-f]{64}|pending)"( *#.*)?$' || true)
 [ -z "$bad" ] || fail "$P line ${bad%%:*} is not an exact version, full SHA, or \"pending\"" "write one exact value"
+rels=(win64/steam_api64.dll linux64/libsteam_api.so)
+for r in rust actions/checkout actions/cache steamworks-sdk steamworks-rs steamworks-sys "${rels[@]/#/redist/}" csharp-binding codegen; do pin "$r" >/dev/null; done
 rust=$(pin rust)
 [ ! -e rust-toolchain ] || fail "rust-toolchain exists, and rustup reads it before rust-toolchain.toml" "delete rust-toolchain; rust-toolchain.toml is the one mirror (ADR 0001)"
 ch=$(sed -n 's/^channel *= *"\([^"]*\)".*/\1/p' rust-toolchain.toml 2>/dev/null || true)
@@ -22,25 +24,24 @@ echo "$rust" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$' || fail "$P rust \"$rust\" is
 [ "$ch" = "$rust" ] || fail "rust-toolchain.toml channel \"$ch\" differs from $P rust \"$rust\"" "make both the ADR 0001 version in one pin-only PR (rule 8)"
 say "ok: rust-toolchain.toml channel $ch equals $P rust"
 
-tree=$(cargo tree -d --depth 0 --all-features --target all --locked --prefix none 2>&1) || fail "cargo tree -d --locked failed: $(echo "$tree" | tail -1)" "fix Cargo.lock, then rerun"
+tree=$(cargo tree -d --depth 0 --all-features --target all --locked --prefix none 2>&1) || fail "cargo tree -d --locked failed: $(grep -m1 '^error' <<< "$tree" || tail -n1 <<< "$tree")" "fix Cargo.lock, then rerun"
 for name in steamworks steamworks-sys; do
   if [ "$name" = steamworks ]; then row=steamworks-rs; want=$(pin "$row"); fix="depend on steamworks = \"=$want\" in crates/server alone (ADR 0002)"
   else row=$name; want=$(pin "$row"); fix="let only crates/server's steamworks bring it, then cargo update -p steamworks-sys --precise $want (ADR 0002)"; fi
   dup=$(echo "$tree" | sed -n "s/^$name \(v[^ ]*\).*/\1/p" | sort -u | paste -sd' ' -)
   [ -z "$dup" ] || fail "cargo tree -d shows more than one $name in Cargo.lock: $dup" "$fix"
   have=$(grep -A1 "^name = \"$name\"" Cargo.lock | sed -n 's/^version = "\([^"]*\)".*/\1/p' | paste -sd' ' - || true)
-  if [ -z "$have" ]; then say "skip: no $name in Cargo.lock yet; bites when W0-08 adds steamworks to crates/server"
-  elif [ "$have" != "$want" ]; then fail "Cargo.lock has $name $have, $P $row is $want" "$fix"
-  else say "ok: Cargo.lock has one $name, $have, equal to $P $row"; fi
+  if [ -z "$have" ]; then say "skip: no $name in Cargo.lock yet; bites when W0-08 adds steamworks to crates/server"; continue; fi
+  [ "$have" = "$want" ] || fail "Cargo.lock has $name $have, $P $row is $want" "$fix"
+  src=$(grep -A2 "^name = \"$name\"" Cargo.lock | sed -n 's/^source = "\([^"]*\)".*/\1/p' || true)
+  [ "$src" = registry+https://github.com/rust-lang/crates.io-index ] || fail "Cargo.lock takes $name from ${src:-a path}, not crates.io" "take $name from crates.io: no [patch], git, or path source (ADR 0002)"
+  say "ok: Cargo.lock has one $name, $have from crates.io, equal to $P $row"
 done
 
-sys=$(pin steamworks-sys); sdk=$(pin steamworks-sdk); rels=(win64/steam_api64.dll linux64/libsteam_api.so)
-for rel in "${rels[@]}"; do pin "redist/$rel" >/dev/null; done
+sys=$(pin steamworks-sys); sdk=$(pin steamworks-sdk)
 if ! grep -q '^name = "steamworks-sys"' Cargo.lock; then
   say "skip: no steamworks-sys in Cargo.lock, so no redistributable to hash; bites when W0-08 adds steamworks"
 else
-  src=$(grep -A2 '^name = "steamworks-sys"' Cargo.lock | sed -n 's/^source = "\([^"]*\)".*/\1/p' || true)
-  [ "$src" = "registry+https://github.com/rust-lang/crates.io-index" ] || fail "Cargo.lock takes steamworks-sys from ${src:-a path}, not crates.io" "take steamworks-sys from crates.io: no [patch], git, or path source (ADR 0002)"
   if [ -n "${STEAM_SDK_LOCATION:-}" ] || grep -qs STEAM_SDK_LOCATION .cargo/config.toml .cargo/config; then
     fail "STEAM_SDK_LOCATION is set (environment or .cargo/config.toml), so steamworks-sys builds another SDK" "unset it; ship the SDK $sdk vendored in steamworks-sys $sys (ADR 0002)"; fi
   dir=$(cargo metadata --format-version 1 --locked | grep -o "\"manifest_path\":\"[^\"]*steamworks-sys-${sys}[^\"]*\"" |
