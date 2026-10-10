@@ -140,9 +140,11 @@ row the devex gate map files it under.
 
 ## 2. Founder summary format
 
-One summary per reviewed PR, posted as a "comment" PR review (reviewer loop, step 8; D29: GitHub
-refuses "approve" and "request changes" from a PR's author). Under 40 lines, written from the
-diff, the description, and the queue entry only (step 2), with no praise and no adjectives.
+One summary per review, posted as a "comment" PR review (reviewer loop, step 8: GitHub refuses
+"approve" and "request changes" from a PR's author, and agents work under the founder's login,
+D29). Under 40 lines, with no praise (Never do). Write it from what step 2 allows (the diff, the
+description, the queue entry, and the files the diff touches), the Budget sources in 2.1, and the
+evidence you verified on the head SHA (step 6); never from the writer's transcript.
 
 ### 2.1 Fields
 
@@ -153,9 +155,10 @@ diff, the description, and the queue entry only (step 2), with no praise and no 
 - When either founder-approval check in section 1.1 applies, line 2 ends `; needs founder approval`.
 - A return puts the smallest fix on line 3 after `Fix:`: the change and its rule number; for
   size or concern, the files for each new PR; for evidence, the exact command or artifact.
-- Founder minutes and the week's review minutes use the reviewer file's formulas ("How you
-  work"), with hours from `hours.md`, else the queue's planned hours. "Left" subtracts every PR
-  marked ready this week, this one included; a PR that would take it below zero is held.
+- Founder minutes use the queue's formula, plus 5 when the founder signs something (reviewer "How
+  you work"; `week-0.md`, "Budget"). Hours come from `hours.md`, else the queue's planned hours.
+  "Used" counts the PRs marked ready this week, this one only when this review marks it ready; a
+  PR that would take "used" past the week's review minutes is held.
 
 ```markdown
 Agent: reviewer
@@ -163,9 +166,9 @@ Agent: reviewer
 Fix: <returns only>
 
 **Size** <n> counted lines (D22): <l> line-by-line, <e> evidence; excluded <files with lines,
-spot-checked | none>; founder minutes <arithmetic = m>.
+spot-checked | none>; founder minutes <arithmetic = m>; queue entry <class>, <lines> lines.
 **Budget** week <w>, <h> h (<source>): <used> of <total> review minutes marked ready, this PR
-included; <left> left. <sent> of <line budget> lines.
+<included | not added>; <left> left. <sent> of <line budget> lines.
 **Concern** <queue ID>: <one sentence>. <Matches the queue entry | Differs: how>.
 **Read line by line** <none, or one item per function, each with file and line range>
 - `<path>:<start>-<end>` `<function>`: <the one thing to check>.
@@ -180,45 +183,43 @@ included; <left> left. <sent> of <line budget> lines.
 
 ### 2.2 Over-400 return notice
 
-Over 400 counted lines, the review is these three lines, the last being the one-line notice; the
-diff stays unopened, not even to plan the split (step 1).
+Over 400 counted lines, the review is these three lines; line 3 is the one-line notice (step 1).
+Its fix names no files: the diff stays unopened, not even to plan the split (step 1; Never do).
 
 ```markdown
 Agent: reviewer
 returned: size
-Not read: <n> counted lines (D22), over the 400 hard cap (D6). Split into PRs of 200 or fewer (Q4).
+Fix: split into PRs of 200 or fewer (Q4). Not read: <n> counted lines (D22), over 400 (D6).
 ```
 
 ### 2.3 Filled example (hypothetical)
 
-A hypothetical `crates/sim` ledger PR: queue ID, files, lines, SHA, and numbers are invented.
+A hypothetical `crates/sim` ledger PR: queue ID, files, lines, SHA, link, and numbers are invented.
 
 ```markdown
 Agent: reviewer
 ready for founder review
 
 **Size** 115 counted lines (D22): 115 line-by-line, 0 evidence; excluded none; founder minutes
-115 / 250 x 60 = 28.
+115 / 250 x 60 = 28; queue entry L, 120 lines.
 **Budget** week 1, 30 h (`hours.md`): 466 of 720 review minutes marked ready, this PR included;
 254 left. 1,640 of 3,000 lines.
 **Concern** W1-99: `Ledger::transfer` moves money between two accounts and refuses an
 overdraft. Matches the queue entry.
 **Read line by line**
-- `crates/sim/src/lib.rs:7` module list: adds `pub mod ledger;` and nothing else.
-- `crates/sim/src/ledger.rs:1-12` `struct Ledger`: balances are `Money` (fixed-point) in a
-  `BTreeMap`; no float.
-- `crates/sim/src/ledger.rs:14-41` `Ledger::transfer`: both `checked_` calls run before either
-  balance changes, so an overdraft returns `Err(Overdraft)` and leaves both untouched.
-- `crates/sim/src/ledger.rs:43-58` `Ledger::total`: sums the `BTreeMap` in key order.
-- `crates/sim/src/systems.rs:22-24` `ORDER`: `ledger_settle` runs after `jobs_tick`.
+- `crates/sim/src/ledger.rs:30-57` `Ledger::transfer`: amounts are `Money` (fixed-point, no
+  float); both `checked_` calls run before either balance changes, so an overdraft returns
+  `Err(Overdraft)` and leaves both untouched.
+- `crates/sim/src/ledger.rs:59-66` `Ledger::total`: sums the `BTreeMap` in key order.
+- `crates/sim/src/systems.rs:22-30` `order`: `ledger_settle` runs after `jobs_tick`.
 - `crates/sim/tests/ledger_props.rs:1-52` `transfer_conserves_total`: 1,000 seeds through
-  `SimRng`; the total is unchanged after every transfer, refused or not.
+  `SimRng`; the total is the same after every transfer, refused or not.
 **Accept on evidence**
-- `ci.yml` fmt, clippy, and test, green on head `a1b2c3d`: <run link>.
+- `ci.yml` fmt, clippy, and test, green on head `a1b2c3d`:
+  https://github.com/<owner>/<repo>/actions/runs/1234567890
 **Rules touched** Rule 1: the 1.2 checks below. Rule 2: `transfer_conserves_total`. Rule 7: the
 CI run above.
-**Flags** The nightly invariant run is not built yet and the PR says so (1.2); until it is, this
-test is the only proof that transfers conserve money.
+**Flags** none.
 **Risk and rollback** A transfer that debits without crediting breaks conservation; the
 property test fails on it. Revert the PR; no message or save format changes.
 **Checked, not found**
@@ -226,5 +227,5 @@ property test fails on it. Revert the PR; no message or save format changes.
   files in the queue paths, no protected path, no open-question default, claims verified,
   explainable from description and diff.
 - 1.2: no engine type, `async`, thread, wall clock, I/O, or unseeded RNG; no float; no `HashMap`
-  or `HashSet` iteration; property test present.
+  or `HashSet` iteration; property test present; nightly run not built, and the PR says so.
 ```
