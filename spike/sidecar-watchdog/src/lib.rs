@@ -16,10 +16,7 @@ pub const SHUTDOWN_GRACE_SECS: u64 = CONTROL_SILENCE_SECS + 1;
 
 /// One log line on stderr, stamped with UTC wall time so parent and child lines interleave in order.
 pub fn log(who: &str, msg: &str) {
-    let ms = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .map(|d| d.as_millis())
-        .unwrap_or(0);
+    let ms = unix_ms();
     let s = ms / 1000;
     let line = format!(
         "{:02}:{:02}:{:02}.{:03} [{who}] {msg}\n",
@@ -30,6 +27,14 @@ pub fn log(who: &str, msg: &str) {
     );
     // One write per line, so lines from the parent and the child never split each other.
     let _ = io::stderr().write_all(line.as_bytes());
+}
+
+/// Wall time in Unix milliseconds: log stamps, and the shared instant `lock_race` starts servers at.
+pub fn unix_ms() -> u128 {
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|d| d.as_millis())
+        .unwrap_or(0)
 }
 
 /// A process record, `<pid> <start time>`: the client's `sidecar.pid` and the server's `server.lock`.

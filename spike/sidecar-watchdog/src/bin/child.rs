@@ -1,11 +1,12 @@
-//! The stub server. Spawned as `child --control 127.0.0.1:<port> --save-dir <dir> [--hang-on-shutdown]`.
+//! The stub server. Spawned as `child --control 127.0.0.1:<port> --save-dir <dir> [--hang-on-shutdown]`
+//! (`lock_race` adds `--take-lock-at <unix ms>`).
 //! Order: take the save-dir lock (exit 3 if a live server holds it), bind the control port the client
 //! chose, accept one connection and stop listening, answer `HELLO` with `READY <pid>`, then tick.
 //! Every exit path saves between ticks, sends `EXITING <reason>`, and releases the lock: `SHUTDOWN`
 //! exits 0; a closed control socket, one silent for `CONTROL_SILENCE_SECS`, or no connection within
 //! it, exits 2. `--hang-on-shutdown` plays a hung server that the parent must kill.
 
-use sidecar_watchdog_spike::{log, read_record, running_start_time, CONTROL_SILENCE_SECS};
+use sidecar_watchdog_spike::{log, read_record, running_start_time, unix_ms, CONTROL_SILENCE_SECS};
 use std::io::{self, BufRead, BufReader, Write};
 use std::net::{TcpListener, TcpStream};
 use std::path::{Path, PathBuf};
@@ -30,6 +31,12 @@ fn main() {
         &format!("started: --control {control} --save-dir {}", dir.display()),
     );
 
+    // lock_race only: wait for an instant shared with a second server, so both take the lock at once.
+    if let Some(at) = arg("--take-lock-at").and_then(|a| a.parse::<u128>().ok()) {
+        while unix_ms() < at {
+            std::hint::spin_loop();
+        }
+    }
     if let Err(holder) = take_lock(&dir, &who) {
         log(
             &who,

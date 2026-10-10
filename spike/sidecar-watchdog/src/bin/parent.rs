@@ -15,8 +15,10 @@ use std::{env, fs, io, process};
 /// Spike only: how long the parent waits from spawn to READY.
 const READY_LIMIT: Duration = Duration::from_secs(CONTROL_SILENCE_SECS);
 
-/// lock_race: tries per starting state, and a PID far above any the runners hand out.
+/// lock_race: tries per starting state; how far ahead the shared start instant is, so both servers
+/// are running and waiting for it; and a PID far above any the runners hand out.
 const RACE_TRIES: usize = 100;
+const RACE_START_MS: u128 = 150;
 const DEAD_PID: u32 = 4_000_000_000;
 
 type Case = fn(&Path) -> Result<String, String>;
@@ -517,8 +519,9 @@ fn lock_dead(dir: &Path) -> Result<String, String> {
     verdict(dead_left && b_code == 0 && c_code == 0, detail)
 }
 
-/// Not one of W0-09's cases: two servers started at once on one save dir, RACE_TRIES times with no
-/// lock and RACE_TRIES times with a dead PID's lock. At most one may take the lock; the other exits 3.
+/// Not one of W0-09's cases: two servers on one save dir take the lock at the same instant, RACE_TRIES
+/// times with no lock and RACE_TRIES times with a dead PID's lock. At most one may take it; the other
+/// must exit 3.
 fn lock_race(dir: &Path) -> Result<String, String> {
     let lock = dir.join("server.lock");
     let mut both = [0, 0];
@@ -529,9 +532,11 @@ fn lock_race(dir: &Path) -> Result<String, String> {
             write_record(&lock, DEAD_PID, 1).map_err(err)?;
         }
         let ports = free_ports(2)?;
+        let at = (unix_ms() + RACE_START_MS).to_string();
         let mut pair = Vec::new();
         for &control in &ports {
-            pair.push(spawn_child(dir, control, &[], Stdio::null())?);
+            let extra = ["--take-lock-at", at.as_str()];
+            pair.push(spawn_child(dir, control, &extra, Stdio::null())?);
         }
         // A child that took the lock listens on its port; hold each connection so it stays alive.
         let mut held = Vec::new();
