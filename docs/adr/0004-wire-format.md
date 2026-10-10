@@ -1,53 +1,58 @@
-# 0004: Protobuf via prost or FlatBuffers as the wire format
+# 0004: FlatBuffers as the wire format
 
 ## Status
-Proposed
+Accepted
 
 ## Decision log ID
-D7 (protobuf via prost by default, FlatBuffers if the spike shows snapshot decode cost; C# generated
-in CI from the schema `crates/proto` owns); rule 6. Q14 has no written default (set below); Q8.
+D30 (founder, 2026-10-10; supersedes D7, answers Q14); rule 6; D17 for the pins. Q8 stays open.
 
 ## Context
-MR 7 planned postcard, which HS 5 calls Rust-only. With a C# client (D4), HS 5 and 9.2 moved the
-wire to a schema-driven format, C# generated from the one Rust-owned schema; HS 5's new top risk is
-the two drifting apart, held by a CI check. D7 keeps prost unless snapshot decode cost shows; HS 5
-gives no number. Week-0 item 3 measures it on `claude/spike-wire-format`, a branch that never
-merges, by the rule below, which the founder approves or edits in a PR comment before any result is
-pushed. This ADR merges before any PR adding `prost`, `prost-build`, `prost-types`, `bytes`, or a
-FlatBuffers crate (rule 6); week 1's `crates/proto`, codegen, and `client/lib` skeletons wait on it;
-the founder writes D7's outcome from it (W0-19, D24).
+D7 kept protobuf via prost unless snapshot decode cost showed; this ADR's draft pre-registered a C#
+threshold to decide it. D30 picks FlatBuffers now and drops the comparison and the threshold. The
+spike still measures it, so this ADR has real numbers and the C# codegen path is proven. It merges
+before any PR adding `flatbuffers` or `Google.FlatBuffers` (rule 6); week 1's `crates/proto`, codegen, and `client/lib` skeletons wait on it.
 
-## Pre-registered rule (Q14)
-- Snapshot (guesses): 2 players, 8 boars, 6 settlers, 20 buildings, 12 ledger lines, 1 cordon stage;
-  4x quadruples all but players and stage (D2, D26). Each is one flat message (table): `uint32` id 1
-  to n, five `sint64` fields uniform over `i32` from seed 1; one id-sorted list (net's `Snapshot`).
-- Measured in C#: `t`, decode us per snapshot, and `a`, bytes allocated per decode, over 10,000
-  decodes after 1,000 warm-up, each reading every field of one `byte[]` into a checksum equal across
-  formats; `t` from `Stopwatch`, `a` from `GC.GetAllocatedBytesForCurrentThread()`.
-- `t` at most 250 us. A Deck frame is 16.7 ms (Valheim runs about 60 fps there at low vegetation:
-  setting review, "Why the restraint"; D15). No send rate is decided (Q8), so assume one snapshot a
-  frame. Decode gets 3% (0.5 ms), halved: the test runs neither on a Deck nor inside a D4 engine.
-- `a` at most 16,384 bytes: one decode a frame then makes under 1 MiB of garbage a second. CPU speed
-  does not change allocation, so no halving. Judgments: one snapshot a frame, the 1,000 warm-up, the
-  `i32` range, 3%, the halving, 1 MiB, and keeping prost on a 1-1 or 0-0 tie (below).
-- Pick on medians of five runs, printed to 0.1 us, whole bytes; nothing else counts. A format passes
-  a size if both medians are at or under limits; more sizes passed wins; a tie keeps prost (D7).
-- Runner: one GitHub-hosted `ubuntu-24.04` x64 job, runs alternating formats; a `netstandard2.1`
-  decoder generated from each schema (D4, D7) in a Release `net8.0` console; the log prints `lscpu`,
-  `rustc -V`, `dotnet --info`; the table names runner and CPU. Only a job voided by a crash, missing
-  row, or checksum mismatch reruns; the first non-void job after the approval comment decides.
+## Measurement
+- Snapshot (guesses): 2 players, 8 boars, 6 settlers, 20 buildings, 12 ledger lines, 1 cordon stage
+  (49); 4x quadruples all but players and stage (187) (D2, D26). Each is one table: `uint32` id 1 to
+  n, five `int64` fields uniform over `i32` from seed 1; one id-sorted vector (net's `Snapshot`).
+- Per snapshot, median of five runs of 10,000 after 1,000 warm-up: Rust encode us; C# `t`, decode us
+  (`Stopwatch`), and `a`, bytes allocated (`GC.GetAllocatedBytesForCurrentThread()`). A decode wraps
+  one `byte[]` and reads every field into Rust's checksum, in flatc's `netstandard2.1` decoder run by a Release `net8.0` console.
 
 ## Decision
-The choice in one paragraph. For a dependency: the package name exactly as the manifest writes it,
-the exact version, the maintainer, the license, and which crates or projects may use it.
+FlatBuffers, by D30, at one version, `25.2.10` (D17), from the google/flatbuffers project (Google
+LLC), Apache-2.0, tag `v25.2.10` at commit `1c514626e83c20fffa8557e75641848e1e15cd5e`:
+- `flatbuffers = "=25.2.10"` (crates.io, FlatBuffers maintainers) in `crates/proto` only; `net` uses
+  `proto`'s re-export. It brings `bitflags` 2.13.2 and, build-only, `rustc_version` 0.4.1 and `semver` 1.0.28 (spike lock), each MIT OR Apache-2.0.
+- `flatc` 25.2.10 (`Linux.flatc.binary.g++-13.zip`) in `crates/proto`'s build and in CI only.
+- `Google.FlatBuffers` `[25.2.10]` (NuGet, authors Google LLC) in `client/lib` only. Not used:
+  `prost`, `prost-build`, `prost-types`, `bytes`. Another FlatBuffers library is a new ADR.
 
 ## Consequences
-What becomes easier, what becomes harder or forbidden, and any follow-up item for the queue.
+- `crates/proto`: the schema is `schema/*.fbs`; `build.rs` runs flatc (failing unless it reports
+  25.2.10) into `OUT_DIR`; nothing generated is committed. Each shipped version freezes its `.bfbs` in
+  `fixtures/v<N>/`, replacing protobuf's `descriptor.bin`; `descriptor_is_compatible` runs `flatc --conform`
+  on it. Evolution: append a field at its table's end or mark it `(deprecated)`, keeping its slot;
+  never remove, reorder, or retype one. The spike run shows `--conform` rejecting a removal and a retype.
+- Codegen: CI installs flatc from the zip by SHA-256 and generates C# into `client/lib/Generated/`
+  (gitignored) for the lockstep job. Follow-up (devex): that install on both CI runners, with the
+  Windows zip's SHA-256 added to this ADR's pins, and a `tools/` script for clones.
+- `client/lib`: accessors are structs over the received `byte[]`; a decode allocated only the
+  `ByteBuffer` and its allocator (72 bytes). The three pins move together, in one pin-only PR (rule 8).
 
 ## Evidence
-Links to the runs, logs, benchmarks, or upstream pages the decision rests on, with the commit SHA or
-version each one used. Evidence described but not linked is missing.
+Run [38065990593](https://github.com/wa15h/bug-free-octo-barnacle/actions/runs/38065990593) on `claude/spike-wire-format` (never merged) head [`e43f01ba182a1e614fa96f303f30f9f19ae0629d`](https://github.com/wa15h/bug-free-octo-barnacle/tree/e43f01ba182a1e614fa96f303f30f9f19ae0629d/spike/wire-format): rustc 1.99.0, .NET SDK 10.0.401 running .NET 8.0.31, flatc 25.2.10.
+
+| Runner | Size | Entities | Bytes | Rust encode us | C# decode us `t` | C# bytes allocated `a` |
+|---|---|---|---|---|---|---|
+| `ubuntu-24.04` 20261004.327.1, AMD EPYC 9V74, 4 vCPU | cut scope | 49 | 2,592 | 2.0 | 3.6 | 72 |
+| same job | 4x | 187 | 9,768 | 7.6 | 13.5 | 72 |
+
+Nothing gates on these (D30). The draft's limits, for reference only and no longer binding: `t` 250 us, `a` 16,384 bytes.
+Upstream: [crate](https://crates.io/crates/flatbuffers/25.2.10), [NuGet](https://www.nuget.org/packages/Google.FlatBuffers/25.2.10) (its nuspec names the tag commit), [release](https://github.com/google/flatbuffers/releases/tag/v25.2.10), [licence](https://github.com/google/flatbuffers/blob/v25.2.10/LICENSE).
 
 ## Pinned versions touched
-Each pin this ADR sets (D17) and its current value, or "none". An upgrade PR (rule 8) edits this ADR
-in place: the new value and a dated line saying why. A changed choice is a new, superseding ADR.
+- `flatbuffers` (crate) = `25.2.10`, crates.io SHA-256 `1045398c1bfd89168b5fd3f1fc11f6e70b34f6f66300c87d44d3de849463abf1`, set 2026-10-10.
+- `flatc` = `25.2.10`, `Linux.flatc.binary.g++-13.zip` SHA-256 `6f01258d7475806f375d6da66a61df47add8016edd73f1774673f37b80b9a711`, set 2026-10-10; the release publishes no digest, so this is the SHA-256 of the bytes spike run 1 received.
+- `Google.FlatBuffers` = `25.2.10`, NuGet SHA-512 `+VZF2UrDEVsImRwzS2owEQ79JivOtw78SzLwYaoTr1BvWBUNanlOh7Yp1ozotZdWp+BcbxeG4OXWH659cwcODA==`, set 2026-10-10.
