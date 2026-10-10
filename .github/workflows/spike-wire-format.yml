@@ -36,21 +36,13 @@ jobs:
           rustc -V
           cargo -V
           dotnet --info
+      # The release publishes no digest or provenance for this zip (run 2 of this workflow), so
+      # the pin is the SHA-256 of the bytes GitHub served to run 1.
       - name: Download flatc and check its SHA-256
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           curl -fsSL -o "$RUNNER_TEMP/flatc.zip" \
             "https://github.com/google/flatbuffers/releases/download/v$FLATC_VERSION/$FLATC_ZIP"
-          sha256sum "$RUNNER_TEMP/flatc.zip"
           echo "$FLATC_SHA256  $RUNNER_TEMP/flatc.zip" | sha256sum -c -
-          # Cross-check: the digest flatbuffers' own release job recorded in its SLSA provenance.
-          gh api "repos/google/flatbuffers/releases/tags/v$FLATC_VERSION" --jq '.assets[] | "\(.name) \(.size)"'
-          gh release download "v$FLATC_VERSION" -R google/flatbuffers -p '*.intoto.jsonl' -D "$RUNNER_TEMP/prov" || true
-          for f in "$RUNNER_TEMP"/prov/*.intoto.jsonl; do
-            jq -r '.payload' "$f" | base64 -d \
-              | jq -r --arg n "$FLATC_ZIP" '.subject[] | select(.name == $n) | "provenance: \(.digest.sha256)  \(.name)"' || true
-          done
           unzip -o -d "$RUNNER_TEMP/flatc" "$RUNNER_TEMP/flatc.zip"
           echo "$RUNNER_TEMP/flatc" >> "$GITHUB_PATH"
       - name: Generate Rust, C#, and the reflection schema from snapshot.fbs
@@ -64,3 +56,19 @@ jobs:
         run: cargo run --release --locked --manifest-path rust/Cargo.toml -- out
       - name: C# decode
         run: dotnet run -c Release --project cs/Bench/Bench.csproj -- out
+      # The .bfbs is the frozen artifact: an appended or deprecated field conforms to it; a removed
+      # or retyped field does not.
+      - name: Schema evolution against the frozen .bfbs
+        run: |
+          sed 's/  v4: int64;/  v4: int64;\n  v5: int64;/' snapshot.fbs > "$RUNNER_TEMP/append.fbs"
+          sed 's/  v2: int64;/  v2: int64 (deprecated);/' snapshot.fbs > "$RUNNER_TEMP/deprecate.fbs"
+          sed '/  v2: int64;/d' snapshot.fbs > "$RUNNER_TEMP/remove.fbs"
+          sed 's/  v2: int64;/  v2: int32;/' snapshot.fbs > "$RUNNER_TEMP/retype.fbs"
+          for c in append deprecate remove retype; do
+            if cmp -s snapshot.fbs "$RUNNER_TEMP/$c.fbs"; then echo "$c: variant unchanged"; exit 1; fi
+          done
+          for c in append deprecate; do flatc --conform out/snapshot.bfbs "$RUNNER_TEMP/$c.fbs"; echo "$c: conforms"; done
+          for c in remove retype; do
+            if flatc --conform out/snapshot.bfbs "$RUNNER_TEMP/$c.fbs"; then echo "$c: conforms, expected a rejection"; exit 1; fi
+            echo "$c: rejected"
+          done

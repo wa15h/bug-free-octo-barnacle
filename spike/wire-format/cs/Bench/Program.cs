@@ -14,6 +14,7 @@ const int Warmup = 1_000, Timed = 10_000, Runs = 5;
 var dir = args[0];
 var inv = CultureInfo.InvariantCulture;
 var ok = true;
+Console.WriteLine("runtime: " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
 var rows = new System.Collections.Generic.List<string>();
 
 foreach (var size in new[] { "cut", "4x" })
