@@ -1,7 +1,8 @@
 # Pull request template
 
 Every PR description has these five sections, in this order. The reviewer agent fills
-in or corrects them before the founder sees the PR.
+in or corrects them before the founder sees the PR. An agent's PR description opens with one
+line above them: `Agent: <owner agent> (<queue ID>)` (D29).
 
 ## What this changes
 One paragraph. One concern. If a second concern crept in, split the PR.

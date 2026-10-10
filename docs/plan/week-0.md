@@ -34,7 +34,7 @@ lines, 10 up to 150, 15 above, plus 5 when the founder signs something. The prod
 | Return-round reserve (one round per PR, the reviewer's rule) | 1 h |
 | Writing W0-19 and W0-20 | 1 h |
 | SDR run for W0-08: Linux machine or VM with no Steam client, desktop with Steam, repro, logs | 3 h, cap 4 h |
-| Setup: pinned toolchain, Steam client; after W0-07 and W0-17 protect `main`, require both workflows, create labels `size/over-200`, `founder-approved`, `upgrade`, run `tools/hooks/install.sh`; a GitHub identity for agents that is not yours, and `FOUNDER_LOGIN` for W0-21 | 2 h |
+| Setup: pinned toolchain, Steam client; now, protect `main` (require a pull request, no bypass, no required approvals: GitHub refuses self-approval, D29) and create labels `size/over-200`, `founder-approved`, `upgrade`; after W0-07 and W0-17, require both workflows, run `tools/hooks/install.sh` | 2 h |
 | Starting 19 agent items, answering the Questions block, the `hours.md` row and week-end summary | 1 h 45 min |
 | D23 overhead (devlog, Thursday group, community) | 2 h 30 min |
 | Total planned | 15 h 20 min of 30 |
@@ -68,9 +68,9 @@ Class: L = line-by-line, E = evidence, F = founder-authored. Min = founder minut
 | W0-16 | devex-engineer | Pre-push hook and installer | E | 70 | 10 | 07 | D6 D25 | no |
 | W0-17 | devex-engineer | PR size gate | E | 120 | 15 | 16 | D6 D22 | 0001 |
 | W0-18 | devex-engineer | PR template copy and drift check | E | 45 | 5 | 17 | D6 | no |
-| W0-19 | founder | Spike outcomes into `decisions.md` | F | 10 | 30 | 08 09 10 | D3 D7 D8 D24 | no |
-| W0-20 | founder | D25 Stop hook in `.claude/settings.json` | F | 20 | 30 | 16 | D24 D25 | no |
-| W0-21 | devex-engineer | Protected-paths gate (D24) | E | 55 | 10 | 17 | D24 | no |
+| W0-19 | founder | Spike outcomes into `decisions.md` | F | 10 | 30 | 08 09 10 | D3 D7 D8 D24 D29 | no |
+| W0-20 | founder | D25 Stop hook in `.claude/settings.json` | F | 20 | 30 | 16 | D24 D25 D29 | no |
+| W0-21 | devex-engineer | Protected-paths gate (D24) | E | 55 | 10 | 17 | D24 D29 | no |
 
 **W0-01.** Paths: `docs/plan/week-0.md`. Accept: every item has ID, owner, paths, class, lines,
 acceptance, decisions, ADR-first; lines at most 3,000 and PRs inside 20-25; each spike names the
@@ -105,7 +105,7 @@ has no written default). FAIL is a result, not a slip. Past the 4-hour cap, the 
 to week 1, flagged at the top of its queue, and no transport work starts before D3's line exists.
 
 **W0-09 Sidecar watchdog spike; the outcome writes D8.** Paths: `docs/adr/0003-sidecar-watchdog.md`.
-Code lives on branch `spike/sidecar-watchdog`, never a PR, never merged. Accept: a std-only Rust
+Code lives on branch `claude/spike-sidecar-watchdog`, never a PR, never merged. Accept: a std-only Rust
 parent and child (no new dependency) run on ubuntu and windows by the branch's own workflow, with
 logs and exit codes for spawn and `Ready` over localhost TCP on a parent-chosen port; a silent control
 socket, child exits 2 within `CONTROL_SILENCE_SECS + 1` (Q16 defaults 10 and 2); `Shutdown` exits 0,
@@ -146,15 +146,15 @@ one line in `pre-push`. Accept per devex task 4, except the exempt list follows 
 generated C#, engine scene and `.meta` files, `fixtures/`, listed with sizes in the job summary).
 
 **W0-18.** Paths: `.github/PULL_REQUEST_TEMPLATE.md`, `tools/checks/template-drift.sh`, a job in
-`pr-gates.yml`. Accept: the copy equals `docs/plan/pr-template.md`; a new PR opens with the five
-sections; a one-word edit to either file goes red naming both; green on head.
+`pr-gates.yml`. Accept: the copy equals `docs/plan/pr-template.md`; a new PR opens with the `Agent:`
+line and the five sections; a one-word edit to either file goes red naming both; green on head.
 
 **W0-19, founder only (D24).** Paths: `docs/plan/decisions.md`. Accept: D3's outcome from W0-08, D8's
-from ADR 0003, D7's from ADR 0004, each linking its PR; no other row changes; the reviewer
+from ADR 0003, D7's from ADR 0004, each linking its PR; no other row changes; carries `founder-approved` (D29); the reviewer
 pre-reviews. An outcome not in by week end goes in a week-1 founder PR.
 
-**W0-20, founder only (D24), opened after W0-16 merges.** Paths: `.claude/settings.json`. Accept: one
-Stop hook runs `tools/hooks/pre-push` from `$CLAUDE_PROJECT_DIR` with stdin closed, so the hook's JSON
+**W0-20, founder only (D24), opened after W0-16 merges.** Paths: `.claude/settings.json`. Accept: carries
+`founder-approved` (D29); one Stop hook runs `tools/hooks/pre-push` from `$CLAUDE_PROJECT_DIR` with stdin closed, so the hook's JSON
 is not read as git ref lines; a failing check blocks the stop and shows its message to the agent
 (Claude Code blocks only on exit code 2 or a `"decision": "block"` reply, so pre-push's exit 1 is
 mapped); an explicit timeout above two minutes; red and green: a session leaving an unformatted file
@@ -163,7 +163,7 @@ finishes"; the team runs as subagents); the PR says how a repeat block (`stop_ho
 
 **W0-21.** Paths: `tools/checks/protected-paths.sh`, a job in `pr-gates.yml`. Accept: a diff touching
 `.claude/`, `CLAUDE.md`, `docs/research/`, or `decisions.md` fails `RULE D24: <path> is founder-edited`
-unless the PR author is `FOUNDER_LOGIN`; red on an agent branch, green on head and on a founder branch.
+unless the PR carries `founder-approved` (D29); rechecked on `labeled` and `unlabeled`; red without the label, green once the founder labels the throwaway PR, and green on head.
 
 ## Pull forward only if W0-01 to W0-21 have merged and hours remain
 
@@ -192,7 +192,7 @@ unless the PR author is `FOUNDER_LOGIN`; red on an agent branch, green on head a
 
 1. Q14 and Q18 have no written default; W0-10 and W0-08 state this queue's assumption until answered.
 2. Resolved 2026-10-08: the skeptic review's patch was applied with the team (agent files now plan at
-   30 h, and `CLAUDE.md` carries the in-week freeze, agent GitHub identity, and eligibility-only add-backs).
+   30 h, and `CLAUDE.md` carries the in-week freeze, the agent login rule, replaced by D29 on 2026-10-10, and eligibility-only add-backs).
 3. D2's add-back trigger fires near week 26; D28 makes the cut scope the target. Eligibility only, unless you raise it.
 
 ## Questions

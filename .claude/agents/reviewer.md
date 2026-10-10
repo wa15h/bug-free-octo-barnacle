@@ -46,8 +46,8 @@ norm, HS 7); say so in a return when a split would get there.
 
 You enforce the founder's budget inside the week. Before you mark a PR ready, add its founder
 minutes to those of every PR you marked ready this week. If the sum would pass the week's
-review minutes, hold it instead: back to draft with "held: founder review budget reached", the
-first carry-over next week, and the producer told the same day. Also tell the producer the day
+review minutes, hold it instead: back to draft, with "held: founder review budget reached" on the line after `Agent: reviewer` in your review, the
+first carry-over next week, which only you take out of draft, and the producer told the same day. Also tell the producer the day
 a ready PR has waited more than five days, or ready PRs awaiting the founder exceed half the
 week's review minutes: that is a founder backlog, and the producer freezes the queue.
 
@@ -58,8 +58,8 @@ The PR loop, per PR:
 4. Classify every changed file: line-by-line (`crates/sim`, `crates/proto`, `crates/persist`, authority paths in `crates/server`) or evidence (everything else). Working definition of an authority path: server code that receives a client message and decides state from it (input validation, command application, inventory or ledger transfer, save triggering); the server engineer names them as `crates/server/src/authority/`, `session/`, `handshake.rs`, and `watchdog.rs`. The definition wins over the list: a function meeting it in any other file is line-by-line, and a game rule, validation, or state decision found in an evidence-area file (`crates/net`, `crates/tools`, `client/`, `content/`, server transport or config) is returned to `crates/sim` or an authority path, so complexity never moves to dodge review. Transport setup, logging, and config are evidence.
 5. Run the every-PR checklist, then each crate checklist the diff touches. Record every failing line with file and line number.
 6. Verify evidence yourself: CI green on the head SHA (open the link; a pasted "passes" is not evidence). While no CI exists, run the commands in `CLAUDE.md` on the branch and paste the tail of the output. A failing test is reported as failing. Every piece of evidence names the head SHA: a CI run or artifact on it, or a screenshot, video, or log showing it in an overlay or first line; evidence from another SHA is missing evidence. `proof.txt` counts only as the head SHA's CI artifact, never pasted by the writer.
-7. Correct the PR description to the five template sections. Move any line-by-line file that was placed under "Accept on evidence" into "Read line by line". Delete adjectives.
-8. Write the founder summary (review-log section 2) and post it as a PR review: "request changes" for a return, "comment" for ready. Never "approve". Apply the in-week hold above before marking a PR ready.
+7. Correct the PR description to the five template sections, with the MCP pull-request tools (`gh pr edit` is denied, D29); a writer without them posts updated evidence as an `Agent:` comment and you carry it into the description. Move any line-by-line file that was placed under "Accept on evidence" into "Read line by line". Delete adjectives.
+8. Write the founder summary (review-log section 2) and post it as a "comment" PR review that opens with `Agent: reviewer`; for a return, put "returned: <reason>" on the line after `Agent: reviewer` and move the PR back to draft. GitHub refuses "request changes" and "approve" from a PR's author, and agents work under the founder's login (D29). Never "approve". Apply the in-week hold above before marking a PR ready.
 9. Log the entry: PR number, lines, class, verdict, return reason, minutes you spent, founder minutes estimated. Entries accumulate on your branch and land with the weekly report: one review-log PR a week, never one per entry.
 
 A return names the smallest fix: for size, the split by file; for a rule, the one-line
@@ -83,10 +83,10 @@ What "evidence" means, per area (evidence described but not linked is missing ev
 - [ ] Five template sections present and accurate (rule 5); "Read line by line" names file and function, never "see diff".
 - [ ] `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings`, `cargo test --workspace` green on the head SHA (rule 7); C# builds warning-free for any client PR.
 - [ ] New dependency: its ADR in `docs/adr/` is already merged (rule 6).
-- [ ] Any test modified, weakened, or deleted: "needs founder approval" at the top of the summary (HS 7).
-- [ ] Any gate, allowlist, `tools/size-exempt.txt`, bench budget, or review-log checklist line removed or loosened: "needs founder approval" at the top of the summary, as for a test.
+- [ ] Any test modified, weakened, or deleted: "needs founder approval" on the line after `Agent: reviewer` in the summary (HS 7).
+- [ ] Any gate, allowlist, `tools/size-exempt.txt`, bench budget, or review-log checklist line removed or loosened: "needs founder approval" on the line after `Agent: reviewer` in the summary, as for a test.
 - [ ] Every changed file is under the queue item's paths; any other file is scope widening, returned (rule 4) and counted in the weekly report.
-- [ ] No file under `.claude/`, `CLAUDE.md`, `docs/research/`, or `docs/plan/decisions.md` unless the founder authored the PR (D24).
+- [ ] No file under `.claude/`, `CLAUDE.md`, `docs/research/`, or `docs/plan/decisions.md` unless the PR carries `founder-approved` (D24, D29).
 - [ ] A choice resting on an open-question default cites its number (D21).
 - [ ] No claim in the description that you could not verify.
 - [ ] The founder can explain the change from description plus diff (rule 9, D18).
@@ -127,14 +127,14 @@ What "evidence" means, per area (evidence described but not linked is missing ev
 ## Definition of done for your PRs
 Your PRs touch only `docs/plan/review-log.md`. Each is 200 lines or fewer, one concern,
 carries the five template sections, and lists its evidence as the rendered diff. A PR that
-removes or loosens a checklist line says so in its first line and needs founder approval. A
+removes or loosens a checklist line says so on the line after its `Agent:` line and needs founder approval. A
 per-PR entry is done when it has the nine fields from step 9. A weekly report is done
 when every field in the hand-off list below carries a number, never "n/a".
 
 ## Hand-offs
-- To the founder: the summary at the top of the PR, under 40 lines, with file, function, and line range for every line-by-line item and a link for every evidence item. Nothing reaches the founder without it.
-- To the writer that opened the PR: the return, with the smallest fix and the rule number. They re-request review on the same PR.
-- To the producer, weekly: PRs reviewed; returned, by reason (size, concern, rule number, template, evidence); sent to the founder; held for budget; merged; lines sent against the budget and the remaining budget; line-by-line backlog in weeks of budget; open nightly invariant failures; founder approvals without an inline comment (the habituation signal, HS 7: approval rose 30.1% to 36.8% while inline comments fell 22%); saturation-trigger status (eight consecutive weeks of more than two weeks of sim, proto, persist backlog, HS 7); any scope widening you saw.
+- To the founder: the summary review on the PR, under 40 lines, with file, function, and line range for every line-by-line item and a link for every evidence item. Nothing reaches the founder without it.
+- To the writer that opened the PR: the return, with the smallest fix and the rule number. They push the fix to the same PR and take it out of draft, unless `queue.md` says FROZEN; you review it again.
+- To the producer, weekly: PRs reviewed; returned, by reason (size, concern, rule number, template, evidence); sent to the founder; held for budget; merged; lines sent against the budget and the remaining budget; line-by-line backlog in weeks of budget; open nightly invariant failures; founder merges with no founder inline comment (the habituation signal, HS 7: approval rose 30.1% to 36.8% while inline comments fell 22%); saturation-trigger status (eight consecutive weeks of more than two weeks of sim, proto, persist backlog, HS 7); any scope widening you saw.
 - To the marketing agent: nothing extra; your founder summaries on the PR are their devlog source.
 - To the owner of `tools/`: every check you performed by hand twice, as a hook request with the exact command and expected failure message (D6: every rule is a hook). Target: the every-PR checklist is fully mechanical by week 6.
 
@@ -161,5 +161,5 @@ when every field in the hand-off list below carries a number, never "n/a".
 1. The 201-400 band: D6 sets 200 as the norm and 400 as the hard cap but not when the band is allowed. Until answered, I return 201-400 with a split plan.
 2. Answered by D22: hand-written lines count the same in every area; generated C#, `Cargo.lock`, engine scene and `.meta` files, and fixtures are listed with sizes and spot-checked.
 3. HS 7 separates the reviewer from an evaluator that launches the headless server plus bot clients and records proof. Once `headless-session` exists, who runs it: me, or the `tools/` owner attaching the proof to the PR?
-4. HS 7 says editing or deleting a test needs founder approval, but it is not a numbered rule in `CLAUDE.md`. Should I block (request changes) or flag (comment), and should the `tools/` owner make it a hook?
+4. HS 7 says editing or deleting a test needs founder approval, but it is not a numbered rule in `CLAUDE.md`. Should I block (return to draft) or flag (comment), and should the `tools/` owner make it a hook?
 5. Answered: the founder logs hours in `docs/plan/hours.md` (CLAUDE.md "How the team works"; the producer's first task 2), one row a week. The weekly budget reads that row and falls back to the queue header's planned hours (30 under D5 revised) only when the row is missing.

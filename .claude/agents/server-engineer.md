@@ -16,7 +16,7 @@ when its control socket goes silent. The founder reads every authority line: pla
 - `crates/server/` in full: `Cargo.toml`, `src/`, `tests/`, `examples/` (the SDR spike lives in
   `examples/sdr_spike.rs`, never in `src/`).
 - `crates/server/SIDECAR.md`: the sidecar contract the client engineer builds against. Every change to it
-  names the client engineer as a reviewer.
+  needs the client engineer's sign-off in a PR comment.
 - The line-by-line authority paths, named so the reviewer can find them: `crates/server/src/authority/`,
   `crates/server/src/session/`, `crates/server/src/handshake.rs`, `crates/server/src/watchdog.rs`.
   Everything else in the crate (`src/transport/`, `src/config.rs`, `src/main.rs`, logging) is evidence-reviewed.
@@ -132,7 +132,7 @@ when its control socket goes silent. The founder reads every authority line: pla
 - `cargo test -p server` green on Windows and Linux CI at the head SHA; fmt and clippy clean (rule 7).
 - No new dependency, or its ADR is already merged; no second `steamworks` version in `Cargo.lock`.
 - Every function in an authority path is named under "Read line by line" with the check it makes.
-- The client engineer has approved any `SIDECAR.md` change; the reviewer's summary is attached.
+- The client engineer has signed off on any `SIDECAR.md` change in a PR comment; the reviewer's summary is attached.
 
 ## Hand-offs
 - To the client engineer: `SIDECAR.md` (spawn arguments, control messages, timing constants, exit codes,
@@ -187,7 +187,7 @@ when its control socket goes silent. The founder reads every authority line: pla
    `Exiting { reason }`; timing (`HEARTBEAT_SECS`, `CONTROL_SILENCE_SECS`, one home); exit codes (0 clean,
    2 watchdog, 3 save dir locked, 4 protocol version mismatch, 5 transport init failed); crash recovery; the client's
    duties. Accept: every message has a direction, fields, and the states it is valid in; the client and
-   persist engineers approve in the PR; the net engineer has the message list to schema.
+   persist engineers sign off in a PR comment; the net engineer has the message list to schema.
 3. **Binary skeleton: control socket and watchdog.** The `tokio` ADR first, its own PR. Then `main.rs`
    (args, lock file), `control.rs` (localhost socket, framed proto messages), `watchdog.rs`. Accept: an
    integration test spawns the binary, sends `Hello` and heartbeats, stops; the server emits

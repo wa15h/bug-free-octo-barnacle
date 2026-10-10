@@ -113,8 +113,11 @@ tools/            git hooks, CI scripts, PR checks
   reports a founder backlog; the producer then writes `WIP: 0 FROZEN: <reason>` as the first
   line of the queue. Every agent reads that line before starting an item and opens nothing for
   review while it says FROZEN.
-- Agents act under their own GitHub identity, never the founder's login. They never approve,
-  merge, or apply or remove the `founder-approved` or `upgrade` labels.
+- Agents work under the founder's GitHub login; there is no separate agent account (D29). Agent
+  commits are authored `Claude`, agent branches start `claude/`, and every agent PR description,
+  issue, and comment opens with `Agent: <name>`. Agents never approve, merge, or apply or remove the
+  `founder-approved` or `upgrade` labels. `.claude/settings.json` denies the direct merge and
+  label tools, but it is a guard, not a boundary: this rule is what holds.
 - When hours run short, dates slip; scope and quality never do (D28). No agent proposes a
   shortcut or a cut to hold a date.
 - The D2 add-back trigger makes a deferred item eligible, not queued. Nothing deferred is
