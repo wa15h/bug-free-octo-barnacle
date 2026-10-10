@@ -16,7 +16,9 @@ is carried out, and never edits that file: a changed decision is a row the found
   D3 is the tokio server binary, SDR transport, the raw-UDP fallback, and the engine-free sim, proto,
   net, and persist crates; D7 the wire format and C# codegen; D8 the sidecar process and its watchdog.
   Work in them that makes no such choice and adds no dependency needs none: W0-02's empty crates, the
-  sim skeleton's hand-written PRNG and state hash (sim-engineer rule 6). Q10 asks if `Fixed` does.
+  sim skeleton's hand-written PRNG and state hash (sim-engineer rule 6). Nor does work carrying out a
+  merged spike ADR: `SIDECAR.md` (0003), the proto skeleton (0004). Q10 asks if `Fixed` needs one.
+- The ant-farm viewer in `crates/tools`, even with no dependency (test-engineer, sim-engineer files).
 
 The ADR merges before the PR that needs it. When unsure, ask the producer in the Questions block.
 
@@ -25,7 +27,7 @@ The ADR merges before the PR that needs it. When unsure, ask the producer in the
 1. The producer opens the ADR PR with the stub: Title, Status (Proposed), Decision log ID, Context.
 2. The owning engineer fills Decision, Consequences, Evidence, and Pinned versions touched in the
    same PR, and sets Status to Accepted. A stub never merges on its own.
-3. A merged ADR changes only its Status line. A changed decision is a new ADR, and the old one's
+3. A merged ADR changes only its Status line. A changed ADR choice is a new ADR, and the old one's
    Status becomes "Superseded by NNNN" in the same PR.
 
 ## Numbers reserved by the week-0 queue, `docs/plan/week-0.md` (next free: 0005)

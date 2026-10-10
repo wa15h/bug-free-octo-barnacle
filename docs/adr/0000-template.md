@@ -1,8 +1,6 @@
 # NNNN: <title, the choice in a few words>
 
-Copy this file to `docs/adr/NNNN-<slug>.md` (see `README.md`). The producer writes the stub (Title,
-Status, Decision log ID, Context); the owning engineer fills the rest in the same PR. Replace every
-line of guidance.
+Copy to `docs/adr/NNNN-<slug>.md` and replace all guidance; `README.md` says who writes each section.
 
 ## Status
 Proposed (the stub), Accepted (set by the owner before merge; an unmerged ADR decides nothing), or
