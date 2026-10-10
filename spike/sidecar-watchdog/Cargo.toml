@@ -1,0 +1,11 @@
+# W0-09 sidecar watchdog spike (ADR 0003). Lives only on claude/spike-sidecar-watchdog; never merged.
+# std only: no dependencies (rule 6). Its own workspace, so it is not a member of the root workspace.
+[package]
+name = "sidecar-watchdog-spike"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[workspace]
+
+[dependencies]

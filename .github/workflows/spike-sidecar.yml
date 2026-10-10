@@ -1,0 +1,56 @@
+# W0-09 sidecar watchdog spike (ADR 0003). Lives only on claude/spike-sidecar-watchdog; never merged.
+# Builds the std-only spike and runs each case on both OSes, printing logs and exit codes.
+name: spike-sidecar
+
+on:
+  push:
+    branches: [claude/spike-sidecar-watchdog]
+
+permissions:
+  contents: read
+
+jobs:
+  spike:
+    name: spike (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+        working-directory: spike/sidecar-watchdog
+    steps:
+      # actions/checkout v7.0.1 by full SHA, as ADR 0001 (W0-04) pins it.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Toolchain and image
+        run: echo "image $ImageOS $ImageVersion" && rustc --version && cargo --version
+      - name: Build
+        id: build
+        run: cargo build --release
+      - name: "case: spawn_ready"
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: code=0; ./target/release/parent spawn_ready || code=$?; echo "harness exit code $code"; exit $code
+      - name: "case: shutdown"
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: code=0; ./target/release/parent shutdown || code=$?; echo "harness exit code $code"; exit $code
+      - name: "case: silent_control"
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: code=0; ./target/release/parent silent_control || code=$?; echo "harness exit code $code"; exit $code
+      - name: "case: ignored_shutdown"
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: code=0; ./target/release/parent ignored_shutdown || code=$?; echo "harness exit code $code"; exit $code
+      - name: "case: reused_pid"
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: code=0; ./target/release/parent reused_pid || code=$?; echo "harness exit code $code"; exit $code
+      - name: "case: killed_parent"
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: code=0; ./target/release/parent killed_parent || code=$?; echo "harness exit code $code"; exit $code
+      - name: "case: lock_live"
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: code=0; ./target/release/parent lock_live || code=$?; echo "harness exit code $code"; exit $code
+      - name: "case: lock_dead"
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: code=0; ./target/release/parent lock_dead || code=$?; echo "harness exit code $code"; exit $code
