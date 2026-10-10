@@ -18,23 +18,24 @@ FlatBuffers crate (rule 6); week 1's `crates/proto`, codegen, and `client/lib` s
 the founder writes D7's outcome from it (W0-19, D24).
 
 ## Pre-registered rule (Q14)
-- Snapshot (guesses, fixed now): 2 players, 8 boars, 6 settlers, 20 buildings, 12 ledger lines, 1
-  cordon stage; 4x quadruples all but players and cordon stage (D2, D26). Each is one flat message
-  (table) of a `uint32` id and five `sint64` (`long`) fields, the same in both schemas.
+- Snapshot (guesses): 2 players, 8 boars, 6 settlers, 20 buildings, 12 ledger lines, 1 cordon stage;
+  4x quadruples all but players and stage (D2, D26). Each is one flat message (table): `uint32` id 1
+  to n, five `sint64` fields uniform over `i32` from seed 1; one id-sorted list (net's `Snapshot`).
 - Measured in C#: `t`, decode us per snapshot, and `a`, bytes allocated per decode, over 10,000
   decodes after 1,000 warm-up, each reading every field of one `byte[]` into a checksum equal across
   formats; `t` from `Stopwatch`, `a` from `GC.GetAllocatedBytesForCurrentThread()`.
 - `t` at most 250 us. A Deck frame is 16.7 ms (Valheim runs about 60 fps there at low vegetation:
-  setting review, "Why the restraint"; D15). Q8 sets no send rate, so one snapshot a frame; decode
-  gets 3% (0.5 ms), halved for the runner not being a Deck and .NET 8 not being Unity 6's runtime.
+  setting review, "Why the restraint"; D15). No send rate is decided (Q8), so assume one snapshot a
+  frame. Decode gets 3% (0.5 ms), halved: the test runs neither on a Deck nor inside a D4 engine.
 - `a` at most 16,384 bytes: one decode a frame then makes under 1 MiB of garbage a second. CPU speed
-  does not change allocation, so no halving. 3%, the halving, and 1 MiB are judgments.
-- Pick on the medians of five runs, printed to 0.1 us and whole bytes; nothing else counts. A
-  format passes a size when both its medians are at or under their limits. The format passing more
-  of the two sizes wins; an equal count keeps prost (D7's default; at 1-1 and 0-0, a judgment).
-- Runner: one GitHub-hosted `ubuntu-24.04` x64 job, formats alternating by run; a `netstandard2.1`
-  decoder (D4) in a Release `net8.0` console; the log prints `lscpu`, `rustc -V`, `dotnet --info`.
-  The first spike-branch job not voided (crash, checksum mismatch) decides; only voided jobs rerun.
+  does not change allocation, so no halving. Judgments: one snapshot a frame, the 1,000 warm-up, the
+  `i32` range, 3%, the halving, 1 MiB, and keeping prost on a 1-1 or 0-0 tie (below).
+- Pick on medians of five runs, printed to 0.1 us, whole bytes; nothing else counts. A format passes
+  a size if both medians are at or under limits; more sizes passed wins; a tie keeps prost (D7).
+- Runner: one GitHub-hosted `ubuntu-24.04` x64 job, runs alternating formats; a `netstandard2.1`
+  decoder generated from each schema (D4, D7) in a Release `net8.0` console; the log prints `lscpu`,
+  `rustc -V`, `dotnet --info`; the table names runner and CPU. Only a job voided by a crash, missing
+  row, or checksum mismatch reruns; the first non-void job after the approval comment decides.
 
 ## Decision
 The choice in one paragraph. For a dependency: the package name exactly as the manifest writes it,
