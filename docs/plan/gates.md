@@ -16,7 +16,7 @@ event; the producer presents the evidence against the pass rule and the founder 
 - Calendar weeks to go = (trigger - Cum build) / pace x 52/42. The 52/42 turns 42 project weeks
   a year (D5) into calendar weeks; deloads and other zero weeks sit inside it.
 - Point = the Monday after the latest logged week, plus the calendar weeks to go. Until week 0's
-  row sets its dates, the origin is week 0's planned Monday, 2026-10-12 (`week-0.md`).
+  row sets its dates, the origin is the first day of week 0's planned dates in `week-0.md`.
 - Band = the point plus or minus 2 weeks, printed as the month or months it touches. The point is
   never printed. Week numbers are calendar weeks from week 0; deload weeks count (`hours.md`).
 - 30 h/week is the plan (D5). The 20 and 15 h/week columns are the re-baseline fallbacks and
@@ -49,14 +49,14 @@ No `hours.md` row is logged yet: every Cum build is 0 and the rolling column is 
 
 Fun-gate pass lines are the game designer's playtest scripts, run as written with at least four
 testers and filed (D10); Gate 0's 3-of-4 line and Gate 2's cohort follow Q26's default. A low
-pace, a V under 0.6, or a fatigue flag re-dates the bands and nothing else; a failed fun gate goes
-to the founder as a decision with written options, never an automatic cut (D28).
+rolling average, a V under 0.6, or a fatigue flag re-dates the bands and nothing else; a failed
+fun gate goes to the founder as a decision with written options, never an automatic cut (D28).
 
 **Architecture reviews 1 and 2.** Decisions: D12. Fixed fee, $500-1,500 each, or a $0 review swap.
 - Evidence: the reviewer's written report. Review 1 covers the deterministic-sim harness, the wire
   protocol and versioning, persistence and save migration, and the sidecar contract (HS 5).
   Review 2 comes at the two-player loop (HS 9.7). The founder books and pays.
-- Pass: the report is filed, and the founder has queued or answered each finding.
+- Pass: the report is filed, and each finding is queued by the producer or answered by the founder.
 - Fail: none to scope. A review not yet booked is reported in each weekly summary.
 
 **Gate 0: the ant farm is fun alone.** Decisions: D10, D27, D28.
@@ -71,8 +71,7 @@ to the founder as a decision with written options, never an automatic cut (D28).
   `milestones.md`'s item table.
 - Pass: V4 of 0.8 or more keeps the current bands. From 0.6 to under 0.8 keeps the cut scope and
   bars add-backs.
-- Fail: V4 under 0.6 re-dates every band from measured V (remaining likely hours / V4) and
-  nothing else (D28).
+- Fail: V4 under 0.6 re-dates every band from measured V and nothing else (D28).
 
 **Camera lock.** Decisions: D13, D23. D13's ~400 logged hours count as build-hours, as HS 9.11's do.
 - Evidence: a prototype of both cameras, the third-person follow camera and the top-down diorama,
@@ -87,8 +86,8 @@ to the founder as a decision with written options, never an automatic cut (D28).
 - Fail: no such session by ~500 re-dates every band from measured V and nothing else (D28).
 
 **Engine confirmation.** Decisions: D4, D10, D24. The bake-off itself runs in weeks 0-6.
-- Evidence: Bake G and Bake U in `hours.md`, summed from `client/BAKEOFF.md`, for the identical
-  slice in both engines.
+- Evidence: Bake G and Bake U in `hours.md`, summed from `client/BAKEOFF.md` (Q19 default), for
+  the identical slice in both engines.
 - Pass: fewer logged hours wins. A gap within 15% goes to Unity 6, by `BAKEOFF.md`'s tie formula
   (D4). The founder writes D4's outcome (D24).
 - Fail: a slice unfinished at the trigger is reported to the founder, who decides.
@@ -110,7 +109,8 @@ hours, as HS 6 and D11 print it.
   demo-page day (Q36 default).
 - Fail: under ~500 means zero hires and no cut (D28).
 - Every outcome: the founder records one D19 option (below) by the first `hours.md` row after day
-  90, whose Cum build is this gate's hour mark; until then each weekly summary reports it missed.
+  90, whose Cum build is this gate's hour mark; from that row until it is recorded, each weekly
+  summary reports it missed.
 
 **Gate 2: the Thursday group plays unasked.** Decisions: D10, D28.
 - Evidence: the session log. The cohort is every Thursday tester who launched the build on day 0.
@@ -141,10 +141,10 @@ the deloads are weeks 12-13, 26-27, and 40-41.
   never cuts or adds scope (D28).
 
 **Review-saturation counter, at the D6 revised cap.** Decisions: D6, D12.
-- Evidence: the reviewer's weekly report. A week counts when the line-by-line PRs waiting for the
-  founder exceed two weeks of that week's D6 PR count (about 20-25 at 30 h, 8-15 at 15 h), or
-  when nightly invariant failures exceed what the 40% review share can triage (HS 7). Any other
-  week resets the counter to 0.
+- Evidence: the reviewer's weekly report must give the count of line-by-line PRs waiting for the
+  founder, set against two weeks of that week's D6 PR count (about 20-25 at 30 h, 8-15 at 15 h).
+  A week counts when that count is over two weeks' worth, or when nightly invariant failures
+  exceed what the 40% review share can triage (HS 7). Any other week resets the counter to 0.
 - Pass: under 8; nothing changes.
 - Fail, at 8 in a row: reported to the founder with the eight weeks' numbers. The producer
   proposes no hire (D12).
