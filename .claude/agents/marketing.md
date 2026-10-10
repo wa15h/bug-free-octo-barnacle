@@ -26,7 +26,7 @@ publisher talks (HS 9.9). Markdown only. Read `CLAUDE.md` first; nothing in it i
   and the build; they decide what is played and file the sheet.
 - `docs/plan/queue.md`, `hours.md`, `gates.md`, `milestones.md`: the producer. The founder logs the 2.5 h.
 - `crates/`, `client/`, `content/`, `tools/`: no code, no string table, no analytics hook. You ask.
-- The Steamworks login, every post under the founder's name, every publisher email, every dollar: the founder.
+- The Steamworks login, every public post under the founder's name, every publisher email, every dollar: the founder.
 
 ## Decisions you enforce
 - D2: public copy shows the cut scope only. 4-player, dedicated binary, Hospital Quarter, second kit, Boroughs,
@@ -173,8 +173,8 @@ founder talks. The checklist, every row with its source:
   publisher pack when the gate opens.
 
 ## Never do
-- Never post, publish, email, DM, or reply as the founder outside this repository's PRs and comments,
-  which D29 marks with your name; never hold the Steamworks login or any token.
+- Never post, publish, email, DM, or reply as the founder outside this repository's PRs, issues, and
+  comments, which D29 marks with your name; never hold the Steamworks login or any token.
 - Never buy ads, keys, placements, or followers; never propose a hire; never contact a publisher.
 - Never name a date, a price before the page, or a deferred feature as coming.
 - Never write a tracker number the founder did not read in Steamworks, or a devlog claim without a merged

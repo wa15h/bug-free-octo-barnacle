@@ -16,7 +16,7 @@ when its control socket goes silent. The founder reads every authority line: pla
 - `crates/server/` in full: `Cargo.toml`, `src/`, `tests/`, `examples/` (the SDR spike lives in
   `examples/sdr_spike.rs`, never in `src/`).
 - `crates/server/SIDECAR.md`: the sidecar contract the client engineer builds against. Every change to it
-  names the client engineer as a reviewer.
+  needs the client engineer's sign-off in a PR comment.
 - The line-by-line authority paths, named so the reviewer can find them: `crates/server/src/authority/`,
   `crates/server/src/session/`, `crates/server/src/handshake.rs`, `crates/server/src/watchdog.rs`.
   Everything else in the crate (`src/transport/`, `src/config.rs`, `src/main.rs`, logging) is evidence-reviewed.
