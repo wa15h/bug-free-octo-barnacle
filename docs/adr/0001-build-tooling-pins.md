@@ -1,7 +1,7 @@
 # 0001: Rust toolchain and CI action pins
 
 ## Status
-Proposed
+Accepted
 
 ## Decision log ID
 D17, and rule 6 for each GitHub Action. Relies on Q24's default (D21): the toolchain moves only when
@@ -18,16 +18,22 @@ on the PR date, each Action at a full SHA with its maintainer. Steamworks pins a
 pins come in week 1.
 
 ## Decision
-The choice in one paragraph. For a dependency: the package name exactly as the manifest writes it,
-the exact version, the maintainer, the license, and which crates or projects may use it.
+Rust `1.99.0` from the Rust project (MIT or Apache-2.0), with `rustfmt` and `clippy`, profile `minimal`,
+for every crate, installed by each runner's own rustup from `rust-toolchain.toml`. Two Actions, both
+GitHub's (MIT): `actions/checkout` in `ci.yml` and `pr-gates.yml` (every job needs the code, `pr-size.sh`
+the merge base) and `actions/cache` in `ci.yml` (cargo registry, `target/`); `pr-gates.yml` labels with
+the runner's `gh`. Rejected: `dtolnay/rust-toolchain`, `Swatinem/rust-cache`, third-party and redundant.
 
 ## Consequences
-What becomes easier, what becomes harder or forbidden, and any follow-up item for the queue.
+Both CI runners and every clone use one compiler, rustfmt, and clippy (the images alone ship 1.99.0 and
+1.98.1). A move is a pin-only PR editing this file. A later NuGet cache reuses `actions/cache`; any new
+Action needs its ADR first (rule 6). Not pinned: the `-latest` images, with their rustup and `gh`.
 
 ## Evidence
-Links to the runs, logs, benchmarks, or upstream pages the decision rests on, with the commit SHA or
-version each one used. Evidence described but not linked is missing.
+[Stable manifest](https://static.rust-lang.org/dist/channel-rust-1.99.0.toml), equal to `channel-rust-stable.toml` on 2026-10-10: `date = "2026-10-01"`, `rust 1.99.0`.
+[Runner images](https://github.com/actions/runner-images/tree/8197087fc536320d1441203fdb5da9ae1b44b863/images): rustup 1.29.1 and `gh` on both; Rust 1.99.0 (Ubuntu 24.04), 1.98.1 (Windows 2025).
 
 ## Pinned versions touched
-Each pin this ADR sets (D17) and its current value, or "none". An upgrade PR (rule 8) edits this ADR
-in place: the new value and a dated line saying why. A changed choice is a new, superseding ADR.
+- `rust` = `1.99.0`, set 2026-10-10.
+- `actions/checkout` = [`3d3c42e5aac5ba805825da76410c181273ba90b1`](https://github.com/actions/checkout/commit/3d3c42e5aac5ba805825da76410c181273ba90b1), lightweight tag `v7.0.1` (`git ls-remote`).
+- `actions/cache` = [`55cc8345863c7cc4c66a329aec7e433d2d1c52a9`](https://github.com/actions/cache/commit/55cc8345863c7cc4c66a329aec7e433d2d1c52a9), lightweight tag `v6.1.0` (`git ls-remote`).
