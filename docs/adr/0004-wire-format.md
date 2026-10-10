@@ -10,7 +10,7 @@ D30 (founder, 2026-10-10; D7's format clause superseded; answers Q14); rule 6; D
 D7 kept protobuf via prost unless snapshot decode cost showed; this ADR's draft pre-registered a C#
 threshold to decide it. D30 picks FlatBuffers now and drops the comparison and the threshold. The
 spike still measures FlatBuffers decode cost, so this ADR has real numbers and the C# codegen path is
-proven. It merges before any PR adding `flatbuffers` or `Google.FlatBuffers` (rule 6); week 1's `crates/proto`, codegen, and `client/lib` skeletons wait on it.
+proven. It merges before any PR adding `flatbuffers`, `flatc`, or `Google.FlatBuffers` (rule 6); week 1's `crates/proto`, codegen, and `client/lib` skeletons wait on it.
 
 ## Measurement
 - Snapshot (guesses): 2 players, 8 boars, 6 settlers, 20 buildings, 12 ledger lines, 1 cordon stage
@@ -34,8 +34,8 @@ LLC), Apache-2.0, tag `v25.2.10` at commit `1c514626e83c20fffa8557e75641848e1e15
 - `crates/proto`: the schema is `schema/*.fbs`; `build.rs` runs flatc (failing unless it reports
   25.2.10) into `OUT_DIR`; nothing generated is committed. Each shipped version freezes its `.bfbs` as
   `fixtures/v<N>/schema.bfbs`, replacing protobuf's `descriptor.bin`; `schema_is_compatible` runs `flatc --conform`
-  against it and compares each shipped struct's size, which `--conform` does not. Evolution is D30's rule: append a table field or mark it
-  `(deprecated)`, keeping its slot; never remove or reorder a field, change its type or default, change a shipped struct, or remove or renumber an enum or union value. The spike run shows `--conform` rejecting a removal and a retype.
+  against it and compares each shipped struct's size, which `--conform` does not. Evolution follows D30's rule in full
+  (`decisions.md`), both the changes it forbids and the additions it allows; this ADR does not restate it. The spike run shows `--conform` rejecting a removal and a retype.
 - Codegen: CI installs flatc from its OS's zip by SHA-256 and generates C# into `client/lib/Generated/`
   (gitignored) for the lockstep job. Follow-ups: devex, that install on both CI runners from the zips pinned below, and the same flatc on PATH on clones (with `tools/codegen/gen-csharp.sh`) so `cargo build` and `cargo test --workspace` run there (rule 7);
   client engineer, `packages.lock.json` if the founder wants a NuGet hash mirror (its contentHash, `z3ykbSRsy6oqMzeZ84a+K8rnMJ/ysVikar8r2yUhHz0HSxIjBpj53mZvpu6LjLEm5fLLWQsCdelJwL1nu7lloA==`, leaves out the signature); producer, `docs/adr/README.md` names D30 for the wire format.
