@@ -31,7 +31,7 @@ the founder writes D7's outcome from it (W0-19, D24).
   does not change allocation, so no halving. 3%, the halving, and 1 MiB are judgments.
 - Pick on the medians of five runs, printed to 0.1 us and whole bytes; nothing else counts. A
   format passes a size when both its medians are at or under their limits. The format passing more
-  of the two sizes wins; an equal count (2-2, 1-1, 0-0) keeps prost, D7's default.
+  of the two sizes wins; an equal count keeps prost (D7's default; at 1-1 and 0-0, a judgment).
 - Runner: one GitHub-hosted `ubuntu-24.04` x64 job, formats alternating by run; a `netstandard2.1`
   decoder (D4) in a Release `net8.0` console; the log prints `lscpu`, `rustc -V`, `dotnet --info`.
   The first spike-branch job not voided (crash, checksum mismatch) decides; only voided jobs rerun.
