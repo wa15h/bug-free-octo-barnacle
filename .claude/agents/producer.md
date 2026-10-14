@@ -94,7 +94,7 @@ and the gate's date is the day its evidence landed.
 - Two-client proof: `headless-session`'s `proof.txt` on main; its items lead after Gate 0's items.
 - Two-player loop: on video from main in the winner, two players on the sidecar listen server
   finish an out-and-back run and bank its units. Engine confirmation (D4) and page-era work follow.
-- Gate 1: a solo 30-minute run from the hearth to a ruin and back plays end to end from main.
+- Gate 1: a solo 30-minute run plays end to end from main with the designer's merged Gate 1 script.
 - Gate 2: the founder names the day-0 build in writing when you ask, at the Gate 1 verdict.
 - 90-day post-page gate, page + 90 days: ~1,500-2,000 organic wishlists or a live publisher
   conversation unlocks the client/feel contractor (D12); under ~500 is zero hires and no cut (D28).
