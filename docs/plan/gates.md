@@ -15,7 +15,7 @@ No gate is reached yet: every Reached on cell is empty.
 |---|---|---|
 | Architecture review 1 | the weeks 0-6 spikes end | |
 | Gate 0: the ant farm is fun alone | the settlement viewer on main runs the designer's merged Gate 0 script | |
-| Bake-off result | both engines finish the slice, or the founder rules that one cannot reach a rung the other reached | |
+| Bake-off result | both engines finish the slice, or the founder rules that one cannot reach a rung (`client/BAKEOFF.md`, verdict rule) | |
 | Camera lock | the two-camera prototype merges in the winner with video | |
 | Two-client proof | `headless-session`'s `proof.txt` is on main | |
 | Two-player loop and engine confirmation | the loop's video is on main in the winner | |
