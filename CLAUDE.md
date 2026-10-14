@@ -56,8 +56,8 @@ wins over anything you remember about this project. The research behind it is in
 - Client: C# on an engine-agnostic .NET Standard 2.1 class library (protocol decode,
   Steam via Steamworks.NET or Facepunch.Steamworks, interpolation buffers, sidecar
   launch and watchdog, typed events). The engine project is a thin presentation layer.
-- Engine: PENDING a weeks 0-6 bake-off between Godot 4.7 C# and Unity 6 on an identical
-  vertical slice, decided by the founder's written verdict on merit against a scorecard
+- Engine: PENDING a bake-off between Godot 4.7 C# and Unity 6 on an identical vertical
+  slice, decided by the founder's written verdict on merit against a scorecard
   signed in `client/BAKEOFF.md` before either engine project exists; a tie goes to Unity 6 (D31).
   Not Bevy. Not Unreal. No Rust GDExtension on the critical path.
 - Netcode: server-authoritative, interpolation only, tuned for 80-150 ms. No prediction.
