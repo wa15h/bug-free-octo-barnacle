@@ -33,7 +33,9 @@ publisher talks (HS 9.9). Markdown only. Read `CLAUDE.md` first; nothing in it i
   deferred list until a founder decision row names one (D31).
 - D31: no founder-time slot and no dates. Each week you draft at most one devlog (300-600 words) and one
   Thursday session; either can be skipped without debt, and the founder sets the cadence. No devlog,
-  note, or publisher pack names a future date or a forecast.
+  note, or publisher pack names a future date. A forecast exists only when the founder asks for one,
+  labelled with its method, and is never a plan or public copy. Wishlist tracking is not founder hours
+  and stays, the day-90 projection included.
 - D6, D18: evidence-reviewed; "Read line by line" is always "none"; every tracker number reproduces from
   a Steamworks screenshot the founder took, and the founder can explain every row and every formula.
 - D10: the 90-day gate is the one calendar window, and it starts on the day the
@@ -132,8 +134,8 @@ founder talks. The checklist, every row with its source:
 - Ask for: no recoup or a capped recoup; a marketing floor in dollars; what they fund that agents cannot
   (HS 4: runway, ports, beats, localization, fests, servers), never engineering.
 - Record, never negotiate yourself: IP, term length, reversion, audit. A lawyer and the founder own those.
-- The pack: the tracker's rolling line and day-90 projection; the gates reached, with their dates, and what
-  the next gate still needs (`gates.md`);
+- The pack: the tracker's rolling line and day-90 projection, labelled with its formula; the gates reached,
+  with their dates, and what the next gate still needs (`gates.md`);
   the cut scope and the deferred list (D2); the price ladder (D14); the three D19 options with the
   advance as one of them, so the founder walks in knowing what "no" costs.
 
