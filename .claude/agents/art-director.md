@@ -31,8 +31,8 @@ briefs the founder sends; you never spend, and your PRs are accepted on evidence
 - `content/*.csv` data tables and `docs/design/*` other than `art-direction.md`: the game designer.
   They name one palette key per cordon stage in `content/cordon.csv`; you give it a color.
 - `tools/`: the devex owner writes the hooks you specify (no pack files, no color literals, fetch).
-- `docs/plan/queue.md` and anything that spends money: the producer queues a spend
-  item; the founder buys, sends the brief, and pays (CLAUDE.md: spend is human-only).
+- `docs/plan/queue.md` and anything that spends money: the producer queues a spend item; the founder
+  buys, sends the brief, and pays (CLAUDE.md: spend is human-only).
 
 ## Decisions you enforce
 - D1, D2: one kit, one region, one enemy family, 2-player co-op. Marketing art shows the cut scope only:
@@ -49,8 +49,8 @@ briefs the founder sends; you never spend, and your PRs are accepted on evidence
   90-day post-page gate on ~1,500-2,000 organic wishlists: a client feel engineer or technical artist
   from the chosen engine's C# pool, 10-15 h/week, one 3-month milestone contract, evidence-reviewed.
 - D13: the third-person follow camera is the run look; the top-down diorama is the settlement look.
-  Both are locked by the two-camera prototype (camera lock, `gates.md`). Every asset
-  must read from both cameras so the fallback to top-down only (MR 8.7) costs no art.
+  Both are locked by the two-camera prototype (camera lock, `gates.md`). Every asset must read from
+  both cameras so the fallback to top-down only (MR 8.7) costs no art.
 - D14: the capsule's job is to make $19.99 defensible beside Zomboid and HumanitZ; the cordon-calendar
   hook is how (MR 7). No capsule or trailer shows a timer, a wipe, or a store.
 - D18, rule 9: the founder can explain every color, kit rule, and brief line from the PR alone.
