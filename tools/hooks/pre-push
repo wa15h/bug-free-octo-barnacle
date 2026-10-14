@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Pre-push hook (W0-16); tools/hooks/install.sh points git here. It runs the checks ci.yml runs, in ci.yml's order:
+# Pre-push hook (W0-16); tools/hooks/install.sh points git here. It runs ci.yml's checks, in its order, then pr-gates.yml's pr-size.sh:
 # rule 7 (fmt, cargo fetch --locked, clippy, test), then each tools/checks gate, so a push CI would fail stops here.
 # Git passes a remote name and URL, and ref lines on stdin; the D25 Stop hook (W0-20) passes no arguments and empty
-# stdin. Neither is read: every check reads the working tree. All output goes to stderr. The first failure stops
-# the run and exits 1 with `RULE <n>: <what> -- <fix>` as its last line.
+# stdin. Neither is read: pr-size.sh counts committed HEAD against origin/main, not the working tree the others read.
+# All output goes to stderr. The first failure stops the run and exits 1 with `RULE <n>: <what> -- <fix>` as its last line.
 set -uo pipefail
 exec </dev/null 1>&2
 root=$(git rev-parse --show-toplevel) || exit 1
@@ -34,7 +34,7 @@ say "cargo test --workspace --locked"
 cargo test --workspace --locked 2>&1 | tee "$log" ||
   fail 7 "a test failed at $(at)" "fix the code until cargo test passes"
 
-# The tools/checks gates, one line each; each prints its own RULE line. W0-17 adds pr-size.sh (rule 4) below pins.sh.
+# The tools/checks gates, one line each; each prints its own RULE line. pr-size.sh (rule 4, W0-17) runs after pins.sh.
 say "tools/checks/pins.sh"
 tools/checks/pins.sh || exit 1
 tools/checks/pr-size.sh || exit 1

@@ -2,7 +2,7 @@
 # Rule 4 size gate (D6, D22); the pre-push hook (W0-16) and pr-gates.yml run this same file, which reads only git.
 # Count method: the counted lines are the additions plus deletions that `git diff --numstat -M` reports from HEAD's
 # merge base with origin/main to HEAD, summed over every file whose path (a renamed file's new path) no glob in
-# tools/size-exempt.txt matches.
+# tools/size-exempt.txt at HEAD matches.
 # Over 200 passes with a notice (pr-gates.yml labels the PR size/over-200); over 400 exits 1 with
 # `RULE 4: <what> -- <fix>`. Every exempt file is listed with its size: lines added and deleted, or bytes if binary.
 # In CI the total, the exempt files, and any RULE line also go to the job summary, and `counted=<n>` to the step
@@ -15,10 +15,12 @@ fail() { echo "RULE 4: $1 -- $2" >&2; note "RULE 4: $1 -- $2"; exit 1; }
 out() { echo "pr-size.sh: $1"; note "$1"; }
 
 git rev-parse -q --verify 'origin/main^{commit}' >/dev/null || fail "there is no origin/main to count against" "run git fetch origin main, then rerun"
-base=$(git merge-base origin/main HEAD) || fail "HEAD shares no history with origin/main" "branch from origin/main"
+base=$(git merge-base origin/main HEAD) || [ "$(git rev-parse --is-shallow-repository)" = false ] ||
+  fail "this clone is shallow, so git finds no merge base of HEAD and origin/main" "run git fetch --unshallow origin, then rerun"
+[ -n "$base" ] || fail "HEAD shares no history with origin/main" "branch from origin/main"
 inc=()
-while IFS= read -r g; do inc+=(":(glob)$g"); done < <(tr -d '\r' < "$X" | grep -vE '^[[:space:]]*(#|$)')
-[ "${#inc[@]}" -gt 0 ] || fail "$X is missing or lists no globs, so pr-size.sh cannot apply D22" "restore $X from origin/main"
+while IFS= read -r g; do inc+=(":(glob)$g"); done < <(git cat-file blob "HEAD:$X" 2>/dev/null | tr -d '\r' | grep -vE '^[[:space:]]*(#|$)')
+[ "${#inc[@]}" -gt 0 ] || fail "$X is missing at HEAD or lists no globs, so pr-size.sh cannot apply D22" "restore $X from origin/main and commit it"
 # One numstat for the whole diff, so a rename stays one row (with -z its paths follow on their own lines, old then new).
 # A row is exempt when its path is among the changed paths a glob matches (--no-renames lists each side on its own).
 if ! raw=$(git diff --numstat -z -M "$base" HEAD | tr '\0' '\n') ||
