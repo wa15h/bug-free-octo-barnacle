@@ -27,11 +27,12 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          fetch-depth: 2
-      - name: Runner, commits (the second line is the W0-08 head), and no Steam client
+          fetch-depth: 0
+      - name: Runner, the commit that last changed the spike (the W0-08 head), and no Steam client
         run: |
           echo "runner image $ImageOS $ImageVersion, $RUNNER_ARCH"; uname -srm
-          git log --oneline -2
+          echo "workflow commit: $(git log --oneline -1)"
+          echo "spike code (crates/server, Cargo.lock) last changed in: $(git log --oneline -1 -- crates/server Cargo.lock)"
           if ls -d ~/.steam ~/Steam 2>/dev/null; then echo "a Steam directory exists"; else echo "no ~/.steam or ~/Steam"; fi
       # Valve's SteamCMD install for Linux (developer.valvesoftware.com/wiki/SteamCMD), run with +quit, so no
       # account logs in. A Linux GameServer loads steamclient.so from ~/.steam/sdk64; SteamCMD ships it.
