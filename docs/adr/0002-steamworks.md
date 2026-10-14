@@ -41,13 +41,14 @@ Apache-2.0 unless noted:
   https://index.crates.io/st/ea/steamworks-sys has one 0.13.x, 0.13.0 (`ae139f05`). License, owner,
   SDK table, `steamworks-sys/build.rs`: https://github.com/Noxime/steamworks-rs/tree/bfc8210 (0.13.1).
   Steamworks.NET on SDK 1.65: https://github.com/rlabrecque/Steamworks.NET/tree/ba71581 (README).
-- The eight packages: `steamworks` 0.13.1 requires them in
-  https://github.com/Noxime/steamworks-rs/blob/bfc8210/Cargo.toml (none `optional`). Owners and
-  licences on crates.io, read 2026-10-14: [bitflags](https://crates.io/crates/bitflags/2.13.2),
-  [thiserror](https://crates.io/crates/thiserror/2.0.21), [paste](https://crates.io/crates/paste/1.0.15),
-  [thiserror-impl](https://crates.io/crates/thiserror-impl/2.0.21), [syn](https://crates.io/crates/syn/3.0.9),
-  [quote](https://crates.io/crates/quote/1.0.47), [proc-macro2](https://crates.io/crates/proc-macro2/1.0.107),
-  [unicode-ident](https://crates.io/crates/unicode-ident/1.0.27).
+- The eight packages: https://github.com/Noxime/steamworks-rs/blob/bfc8210/Cargo.toml requires
+  `bitflags`, `paste`, and `thiserror`; `thiserror` requires `thiserror-impl`, which requires `syn`,
+  `quote`, and `proc-macro2`; `syn` and `proc-macro2` require `unicode-ident`. None of these is
+  `optional`. Owners, licences, and requirements on crates.io, read 2026-10-14:
+  [bitflags](https://crates.io/crates/bitflags/2.13.2), [paste](https://crates.io/crates/paste/1.0.15),
+  [thiserror](https://crates.io/crates/thiserror/2.0.21), [thiserror-impl](https://crates.io/crates/thiserror-impl/2.0.21),
+  [syn](https://crates.io/crates/syn/3.0.9), [quote](https://crates.io/crates/quote/1.0.47),
+  [proc-macro2](https://crates.io/crates/proc-macro2/1.0.107), [unicode-ident](https://crates.io/crates/unicode-ident/1.0.27).
 
 ## Pinned versions touched
 `steamworks-sdk` 1.64, `steamworks` 0.13.1, `steamworks-sys` 0.13.0. Redistributable SHA-256s:
