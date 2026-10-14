@@ -22,6 +22,15 @@ Aaro Perämaa, `Noxime`); W0-08 adds it. SDK 1.64 comes vendored inside `steamwo
 0.13.1 accepts any `steamworks-sys` 0.13.x, so `Cargo.lock` holds 0.13.0, and `STEAM_SDK_LOCATION`
 stays unset (it swaps in another SDK). The server and the client ship the vendored files hashed below.
 
+`steamworks` brings eight more packages, none optional in 0.13.1 (W0-08's lock, `6f8d106`; added
+2026-10-14 for rule 6). All come from crates.io, are used only through `steamworks`, and are MIT OR
+Apache-2.0 unless noted:
+- linked: `bitflags` 2.13.2 (owners KodrAus, rust-lang-owner; `flatbuffers` uses it too, ADR 0004)
+  and `thiserror` 2.0.21 (owner dtolnay);
+- compile time only, all owned by dtolnay: the proc macros `paste` 1.0.15 and `thiserror-impl`
+  2.0.21, and what they build on, `syn` 3.0.9, `quote` 1.0.47, `proc-macro2` 1.0.107, and
+  `unicode-ident` 1.0.27, which is (MIT OR Apache-2.0) AND Unicode-3.0.
+
 ## Consequences
 - W0-06 copies the pins below into `tools/pins.toml`. `pins.sh` fails a second `steamworks` or
   `steamworks-sys`, either one off its pin, or another redistributable hash. A pin-only PR moves them.
@@ -32,6 +41,13 @@ stays unset (it swaps in another SDK). The server and the client ship the vendor
   https://index.crates.io/st/ea/steamworks-sys has one 0.13.x, 0.13.0 (`ae139f05`). License, owner,
   SDK table, `steamworks-sys/build.rs`: https://github.com/Noxime/steamworks-rs/tree/bfc8210 (0.13.1).
   Steamworks.NET on SDK 1.65: https://github.com/rlabrecque/Steamworks.NET/tree/ba71581 (README).
+- The eight packages: `steamworks` 0.13.1 requires them in
+  https://github.com/Noxime/steamworks-rs/blob/bfc8210/Cargo.toml (none `optional`). Owners and
+  licences on crates.io, read 2026-10-14: [bitflags](https://crates.io/crates/bitflags/2.13.2),
+  [thiserror](https://crates.io/crates/thiserror/2.0.21), [paste](https://crates.io/crates/paste/1.0.15),
+  [thiserror-impl](https://crates.io/crates/thiserror-impl/2.0.21), [syn](https://crates.io/crates/syn/3.0.9),
+  [quote](https://crates.io/crates/quote/1.0.47), [proc-macro2](https://crates.io/crates/proc-macro2/1.0.107),
+  [unicode-ident](https://crates.io/crates/unicode-ident/1.0.27).
 
 ## Pinned versions touched
 `steamworks-sdk` 1.64, `steamworks` 0.13.1, `steamworks-sys` 0.13.0. Redistributable SHA-256s:
