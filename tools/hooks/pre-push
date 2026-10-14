@@ -37,4 +37,5 @@ cargo test --workspace --locked 2>&1 | tee "$log" ||
 # The tools/checks gates, one line each; each prints its own RULE line. W0-17 adds pr-size.sh (rule 4) below pins.sh.
 say "tools/checks/pins.sh"
 tools/checks/pins.sh || exit 1
+tools/checks/pr-size.sh || exit 1
 say "ok: every check passed in ${SECONDS}s"

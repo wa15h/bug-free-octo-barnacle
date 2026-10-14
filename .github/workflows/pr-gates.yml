@@ -1,0 +1,42 @@
+# PR gates: one job per tools/checks script, the same file tools/hooks/pre-push runs. W0-17 adds pr-size (rule 4).
+# Every team branch is in this repo (D29), so the token gets the permissions each job lists. Actions per ADR 0001:
+# actions/checkout at its tools/pins.toml SHA; labels go on and off with the runner's gh. No Steam client or secret.
+name: pr-gates
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+  group: pr-gates-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  pr-size:
+    name: pr-size (rule 4)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read # checkout
+      pull-requests: write # add or remove the size/over-200 label
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }} # the PR head, as the hook counts, not the merge commit
+          fetch-depth: 0 # all history, so origin/main and the merge base are present
+          persist-credentials: false
+      - name: tools/checks/pr-size.sh (rule 4, D22)
+        id: size
+        run: tools/checks/pr-size.sh
+      - name: Add or remove size/over-200 to match the count (D6)
+        if: ${{ !cancelled() && steps.size.outputs.counted != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          N: ${{ steps.size.outputs.counted }}
+          HAS: ${{ contains(github.event.pull_request.labels.*.name, 'size/over-200') }}
+          API: repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels
+        run: |
+          if [ "$N" -gt 200 ] && [ "$HAS" = false ]; then gh api --method POST "$API" -f "labels[]=size/over-200" --silent; fi
+          if [ "$N" -le 200 ] && [ "$HAS" = true ]; then gh api --method DELETE "$API/size%2Fover-200" --silent; fi
