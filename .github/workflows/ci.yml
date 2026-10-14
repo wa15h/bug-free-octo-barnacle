@@ -1,0 +1,69 @@
+# Rule 7 on Linux and Windows (D15), then the D17 pins gate. Actions and toolchain per ADR 0001.
+# Trigger: every branch push runs once. A PR to main shows its head branch's run (every team branch is
+# in this repo, under one login: D29), and runs on main seed the cache. Windows on every push: devex open
+# question 3's default ("Windows on every PR with caches"; Q21 has none written), plus main and non-PR branches.
+# No dotnet job: no C# project and no dotnet-sdk pin (client/global.json) until week 1. No Steam or secret.
+name: ci
+
+on:
+  push:
+    branches: ["**"]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  rust:
+    name: rust (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            target/
+          key: cargo-${{ runner.os }}-${{ hashFiles('rust-toolchain.toml') }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: cargo-${{ runner.os }}-${{ hashFiles('rust-toolchain.toml') }}-
+      - name: Install the rust-toolchain.toml toolchain with the runner's rustup
+        run: rustup toolchain install --no-self-update && rustc --version && cargo clippy --version
+      - name: cargo fmt --all --check (rule 7)
+        if: runner.os == 'Linux'
+        run: |
+          cargo fmt --all --check && exit 0
+          f=$(cargo fmt --all --check -- -l 2>&1 | sed -n -e 's|^ *--> \(.*:[0-9]*\):[0-9]*$|\1|' -e "s|^$PWD/||p" |
+            sort -u | paste -sd' ' - || true)
+          echo "::error::RULE 7: unformatted Rust in ${f:-(no file listed; see the rustfmt error above)} -- run cargo fmt --all and commit"; exit 1
+      - name: cargo fetch --locked, Cargo.lock is current (rule 7)
+        run: |
+          cargo fetch --locked ||
+            { echo "::error::RULE 7: Cargo.lock is stale, or a download failed (cargo's error above says which) --" \
+              "if stale, run cargo fetch and commit Cargo.lock, keeping --locked; if a download, re-run the job"; exit 1; }
+      - name: cargo clippy --workspace --all-targets --locked -- -D warnings (rule 7)
+        run: |
+          cargo clippy --workspace --all-targets --locked -- -D warnings 2>&1 | tee "$RUNNER_TEMP/clippy.log" && exit 0
+          f=$(tr '\\' / < "$RUNNER_TEMP/clippy.log" | sed -n 's|^ *--> \(.*:[0-9]*\):[0-9]*$|\1|p' | sort -u | paste -sd' ' -)
+          echo "::error::RULE 7: clippy failed at ${f:-(no file named; see the cargo error above)} -- fix each, then rerun clippy"; exit 1
+      - name: cargo test --workspace --locked (rule 7)
+        run: |
+          cargo test --workspace --locked 2>&1 | tee "$RUNNER_TEMP/test.log" && exit 0
+          f=$(tr '\\' / < "$RUNNER_TEMP/test.log" | sed -n 's|.* panicked at \(.*:[0-9]*\):[0-9]*:$|\1|p; s|^ *--> \(.*:[0-9]*\):[0-9]*$|\1|p' |
+            sort -u | paste -sd' ' -)
+          echo "::error::RULE 7: a test failed at ${f:-(no file named; see the cargo error above)} -- fix the code until cargo test passes"; exit 1
+      - name: tools/checks/pins.sh (D17)
+        run: tools/checks/pins.sh
