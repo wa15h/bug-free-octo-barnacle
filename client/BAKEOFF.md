@@ -4,8 +4,8 @@ Owned by the client engineer (`.claude/agents/client-engineer.md`, first task 3)
 item 4 in `docs/plan/decisions.md`: the identical vertical slice and the founder's scorecard
 (D31), signed and merged before `client/godot/` or `client/unity/` exists. The candidates are
 Godot 4.7 C# (.NET build) and Unity 6 LTS with URP, each on the minor line its own pin-only PR
-sets (D17, rule 8). The founder's written verdict picks the engine; the founder confirms it and
-writes D4's outcome at the engine confirmation gate (`docs/plan/gates.md`, D10).
+sets (D17, rule 8). The founder's written verdict picks the engine; the founder confirms it at the
+Two-player loop and engine confirmation gate (`docs/plan/gates.md`, D10) and writes D4's outcome.
 
 ## The slice: six rungs, identical in both engines
 
@@ -58,8 +58,8 @@ What the founder weighs, for each engine. No row records anyone's time, and no r
 
 1. **Rung results and video.** Each rung: done, or ruled unreachable, with its merged PR and the
    evidence above, linked.
-2. **Return rounds.** Each rung: how many times that engine's PRs for it were returned
-   (`returned:`, by the reviewer or the founder) before merge, split and fix PRs included.
+2. **Return rounds.** Each rung: how many times that engine's PRs for it were returned by the
+   reviewer (`returned:`) or the founder before merge, split and fix PRs included.
 3. **Exports and runs on the targets.** Rung 6's Windows and Linux artifacts and the Deck or
    1280x800 Proton session: whether each launched, reached rung 5, and played on a gamepad, and
    what failed.
@@ -96,8 +96,9 @@ Signed: ______________________ Date: ____________
 1. When the founder writes the verdict, the client engineer records the losing project's last
    commit SHA under Result. Client work goes on in the winner only; the loser's project is left
    as it is, with no rung, fix, upgrade, or export.
-2. At the engine confirmation gate (`docs/plan/gates.md`, D10), the founder confirms the winner
-   and writes D4's outcome (D24); the client engineer fills the D4 ADR (client-engineer task 6).
+2. At the Two-player loop and engine confirmation gate (`docs/plan/gates.md`, D10), the founder
+   confirms the winner and writes D4's outcome (D24); the client engineer fills the D4 ADR
+   (client-engineer task 6).
 3. The producer then queues two PRs: one removes `client/<loser>/` and its `.gitignore` lines; one
    pin-only PR (rule 8) removes the loser's engine pin and marks its pin ADR superseded by the D4
    ADR. The loser's project stays recoverable from git history at the recorded SHA.
