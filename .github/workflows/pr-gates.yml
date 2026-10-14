@@ -1,4 +1,4 @@
-# PR gates: one job per tools/checks script, the same file tools/hooks/pre-push runs. W0-17 adds pr-size (rule 4).
+# PR gates: one job per tools/checks script. W0-17 adds pr-size (rule 4), the same file tools/hooks/pre-push runs.
 # Every team branch is in this repo (D29), so the token gets the permissions each job lists. Actions per ADR 0001:
 # actions/checkout at its tools/pins.toml SHA; labels go on and off with the runner's gh. No Steam client or secret.
 name: pr-gates
