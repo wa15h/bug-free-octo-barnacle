@@ -49,8 +49,6 @@ Where the engines name a part differently, the line names both.
   the evidence: what failed, and the PRs and return rounds tried. The slice never changes for one
   engine alone. The founder rules in writing: either that engine cannot reach the rung, which ends
   the bake-off and goes to the verdict, or the rung changes for both engines.
-- The bake-off runs in weeks 0-6 (D4). If rung 6 is not done in both engines by then, it runs on:
-  dates slip, scope does not (D28).
 - After merge, a rung, a rule, or the scorecard changes only in a PR the founder signs, and the
   change applies to both engines.
 
