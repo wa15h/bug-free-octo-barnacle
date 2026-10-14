@@ -1,5 +1,6 @@
 # Paths whose lines do not count toward rule 4's 200 and 400 (D6); tools/checks/pr-size.sh reads this file.
-# The list is D22's: a line added, widened, or removed needs founder approval (review-log section 1.1).
+# The list is D22's. A line added or widened (a loosening) needs founder approval (review-log section 1.1);
+# removing a line changes D22, which is the founder's decision.
 # One git glob pathspec per line (gitglossary, `:(glob)`): * stays inside one directory, **/ is any depth.
 # pr-size.sh lists every exempt file with its size, and the reviewer spot-checks them (D22).
 Cargo.lock
