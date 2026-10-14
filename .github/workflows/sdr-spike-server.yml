@@ -2,6 +2,7 @@
 # merged, never a PR. The founder has only a Mac (2026-10-14), so the Linux machine with no Steam client is
 # this GitHub-hosted runner. The founder clicks "Re-run all jobs", copies the Steam ID from the server job's
 # log, and runs client mode on the Mac inside the 30-minute window. Only actions/checkout, by its ADR 0001 SHA.
+# GitHub re-runs a run only within 30 days of it; after that, a new commit to this branch starts a fresh run.
 name: sdr-spike-server
 
 on:
@@ -47,7 +48,7 @@ jobs:
       - name: Build sdr_spike
         run: cargo build -p server --example sdr_spike --locked
       # The Steam ID line comes seconds into this step. The log is public, so personal Steam IDs (76561...,
-      # the client's account in the connection lines) are masked; the server's anonymous ID (9007...) is not.
+      # the client's account in the connection lines) are masked; the server's anonymous ID (90...) is not.
       - name: Run sdr_spike server for up to 30 minutes (copy the Steam ID from here)
         run: |
           set +e
