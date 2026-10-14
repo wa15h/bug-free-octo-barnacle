@@ -48,10 +48,9 @@ fun gate goes to the founder as a decision with written options, never an automa
 **Bake-off result.** Decisions: D4, D31.
 - Evidence: both engines' rung PRs merged with their evidence, set against the scorecard the
   founder signed in `client/BAKEOFF.md` before either engine project existed. An engine cannot
-  reach a rung only when the founder rules so in writing on the client engineer's evidence report;
-  the verdict then follows `client/BAKEOFF.md`'s verdict rule.
-- Pass: the founder's written verdict on merit, with reasons, names the winner; if the founder
-  cannot separate them, Unity 6 wins (D4). Client work then continues in the winner only.
+  reach a rung only when the founder rules so in writing on the client engineer's evidence report.
+- Pass: the founder's verdict, written under `client/BAKEOFF.md`'s verdict rule, names the winner.
+  Client work then continues in the winner only.
 - Fail: none to scope. An unfinished slice runs on; nothing is cut to finish it (D28).
 
 **Camera lock.** Decisions: D13, D31. The two-camera prototype, in the bake-off winner, is the
