@@ -16,7 +16,7 @@ No gate is reached yet: every Reached on cell is empty.
 |---|---|---|
 | Architecture review 1 | the weeks 0-6 spikes end | |
 | Gate 0: the ant farm is fun alone | the settlement viewer on main runs the designer's merged Gate 0 script | |
-| Bake-off result | both engines finish the slice, or the founder rules that one cannot reach a rung | |
+| Bake-off result | both engines finish the slice, or the founder rules that one cannot reach a rung the other reached | |
 | Camera lock | the two-camera prototype merges in the winner with video | |
 | Two-client proof | `headless-session`'s `proof.txt` is on main | |
 | Two-player loop and engine confirmation | the loop's video is on main in the winner | |
@@ -50,7 +50,7 @@ fun gate goes to the founder as a decision with written options, never an automa
 - Evidence: both engines' rung PRs merged with their evidence, set against the scorecard the
   founder signed in `client/BAKEOFF.md` before either engine project existed. An engine cannot
   reach a rung only when the founder rules so in writing on the client engineer's evidence report;
-  that engine loses, unless the founder changes the rung for both engines.
+  the verdict then follows `client/BAKEOFF.md`'s verdict rule.
 - Pass: the founder's written verdict on merit, with reasons, names the winner; if the founder
   cannot separate them, Unity 6 wins (D4). Client work then continues in the winner only.
 - Fail: none to scope. An unfinished slice runs on; nothing is cut to finish it (D28).
