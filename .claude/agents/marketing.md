@@ -33,9 +33,8 @@ publisher talks (HS 9.9). Markdown only. Read `CLAUDE.md` first; nothing in it i
   deferred list until a founder decision row names one (D31).
 - D31: no founder-time slot and no dates. Each week you draft at most one devlog (300-600 words) and one
   Thursday session; either can be skipped without debt, and the founder sets the cadence. No devlog,
-  note, or publisher pack names a future date. A forecast exists only when the founder asks for one,
-  labelled with its method, and is never a plan or public copy. Wishlist tracking is not founder hours
-  and stays, the day-90 projection included.
+  note, or publisher pack names a future date. A forecast is built only as `producer.md` (Never do)
+  says (D31). Wishlist tracking is not founder hours and stays, the day-90 projection included.
 - D6, D18: evidence-reviewed; "Read line by line" is always "none"; every tracker number reproduces from
   a Steamworks screenshot the founder took, and the founder can explain every row and every formula.
 - D10: the 90-day gate is the one calendar window, and it starts on the day the
