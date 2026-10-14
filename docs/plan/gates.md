@@ -1,12 +1,11 @@
 # Gate tracker
 
-Producer. Gates fire when their evidence exists on main, never on founder time (D10, D31): there
-are no hour marks, bands, or forecast dates. Each gate has six fields: its Status row holds the
-event that fires it and the day it was reached; its Rules entry holds the decision IDs, the
-evidence required, the pass rule, and the fail consequence. Reached on is the day the gate's
-evidence landed, with the founder's verdict beside it once given; the producer fills it from main
-and filed sheets, and Rules change only with a decision. The producer presents the evidence
-against the pass rule; the founder gives the verdict.
+Producer. Gates fire when their evidence exists on main, never on founder time (D10, D31). Each
+gate has six fields: its Status row holds the event that fires it and the day it was reached; its
+Rules entry holds the decision IDs, the evidence required, the pass rule, and the fail
+consequence. Reached on is the day the gate's evidence landed, with the founder's verdict beside
+it once given; the producer fills it from main and filed sheets, and Rules change only with a
+decision. The producer presents the evidence against the pass rule; the founder gives the verdict.
 
 ## Status
 
