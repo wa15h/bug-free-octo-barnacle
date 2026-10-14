@@ -31,7 +31,7 @@ briefs the founder sends; you never spend, and your PRs are accepted on evidence
 - `content/*.csv` data tables and `docs/design/*` other than `art-direction.md`: the game designer.
   They name one palette key per cordon stage in `content/cordon.csv`; you give it a color.
 - `tools/`: the devex owner writes the hooks you specify (no pack files, no color literals, fetch).
-- `docs/plan/queue.md`, `hours.md`, and anything that spends money: the producer queues a spend
+- `docs/plan/queue.md` and anything that spends money: the producer queues a spend
   item; the founder buys, sends the brief, and pays (CLAUDE.md: spend is human-only).
 
 ## Decisions you enforce
@@ -41,7 +41,7 @@ briefs the founder sends; you never spend, and your PRs are accepted on evidence
   engine line, with no importer plugin that forces an upgrade. No shader is written during the
   bake-off: it is specified now and built once in the winner, so rung-2 evidence is comparable.
 - D6: your area is evidence-reviewed. "Read line by line" is always "none"; every PR links a render,
-  swatch, screenshot, or license page the founder can check in under a minute.
+  swatch, screenshot, or license page the founder can check at a glance.
 - D9: a telegraph must read at 80-150 ms of interpolation. Telegraph color and pose are palette and
   animation items you specify; the wind-up is visibly distinct from the first telegraph tick.
 - D12: no hire in the base case. Art spend is per asset from petty cash, $300-1,500 a month before
@@ -49,7 +49,7 @@ briefs the founder sends; you never spend, and your PRs are accepted on evidence
   90-day post-page gate on ~1,500-2,000 organic wishlists: a client feel engineer or technical artist
   from the chosen engine's C# pool, 10-15 h/week, one 3-month milestone contract, evidence-reviewed.
 - D13: the third-person follow camera is the run look; the top-down diorama is the settlement look.
-  Both are locked by a prototype at the ~400 h camera gate, counted in build-hours (D23). Every asset
+  Both are locked by the two-camera prototype (camera lock, `gates.md`). Every asset
   must read from both cameras so the fallback to top-down only (MR 8.7) costs no art.
 - D14: the capsule's job is to make $19.99 defensible beside Zomboid and HumanitZ; the cordon-calendar
   hook is how (MR 7). No capsule or trailer shows a timer, a wipe, or a store.
@@ -124,8 +124,8 @@ briefs the founder sends; you never spend, and your PRs are accepted on evidence
   Steam's smallest size still reads the hook; before any capsule spend (D26), a greybox shown to 30+
   survival players passes if under 25% name a zombie game, The Division, COVID, or Pacific Drive.
 - Deliverables are every store size on the Steamworks store-asset page, copied from the page the
-  week the brief is sent, never from memory. The ~$400 line and the page-month $500-1,000 iteration
-  line are separate ledger rows; the second is not spent before the page month (HS 9.7).
+  week the brief is sent, never from memory. The ~$400 line and the $500-1,000 page iteration line
+  are separate ledger rows; the second is not spent until the page checklist is otherwise true (HS 9.7).
 - `page-assets.md`: the capsule, six screenshots, and a 45-second trailer (MR 7). The first
   screenshot carries the calendar hook; the calendar is in every screenshot (the game designer's
   legibility rule); one diorama shot, one third-person shot, one 2-player shot, and one 1280x800
@@ -216,8 +216,8 @@ briefs the founder sends; you never spend, and your PRs are accepted on evidence
 ## Open questions for the producer
 1. Settler rig cost against the cap: HS 3 prices a stylized character at $2-5k plus $500-1k for the
    rig, which with the capsule and iteration can exceed MR 7's $8k year one. Default: a recolored
-   kit character stands in until the page month; `settler-rig.md` is written but not queued. At
-   30 h/week the page month (~Oct 2027, D11) is the end of year one, so all three land against the $8k.
+   kit character stands in until the page checklist is otherwise true; `settler-rig.md` is written but
+   not queued. If that falls inside year one, all three land against the $8k.
 2. Where purchased kits live and who fetches them: the client engineer's default is a founder-held
    location and a `tools/` script. Default: that, the devex owner writes it, the location backed up.
 3. Rule 6 and purchased kits: does a kit need an ADR, or is `LICENSE-RECORD.md` the record? Default:
