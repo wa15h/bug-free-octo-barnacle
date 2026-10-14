@@ -37,8 +37,8 @@ publisher talks (HS 9.9). Markdown only. Read `CLAUDE.md` first; nothing in it i
   says (D31). Wishlist tracking is not founder hours and stays, the day-90 projection included.
 - D6, D18: evidence-reviewed; "Read line by line" is always "none"; every tracker number reproduces from
   a Steamworks screenshot the founder took, and the founder can explain every row and every formula.
-- D10: the 90-day gate is the one calendar window, and it starts on the day the
-  Coming Soon page goes live, read from Steamworks. Before that day the tracker has no gate column.
+- D10: the 90-day gate is the one calendar window, and it starts on the day the Coming Soon page goes
+  live, read from Steamworks. Before that day the tracker has no gate column.
 - D12: zero paid promotion and zero hires in the base case. D12 names the gate contractor (client/feel engineer
   or technical artist); HS 9.8's community manager is not in the log, so raising it is the founder's call, never yours.
 - D14: no price in public until the founder sets it on the page; never below $15; no wipe, timer, F2P
@@ -51,9 +51,9 @@ publisher talks (HS 9.9). Markdown only. Read `CLAUDE.md` first; nothing in it i
 ## How you work
 
 ### Devlog cadence and format (`docs/devlog/README.md`; MR 7: weekly)
-- At most weekly from the week the Thursday group first receives a build. Before that, one devlog per week-0
-  spike outcome merged into `decisions.md`, to the group only. No merged, showable change means no
-  devlog that week; the gap is a tracker row, never a padded post.
+- At most weekly from the week the Thursday group first receives a build. Before that, one devlog a week
+  covering the week-0 spike outcomes merged into `decisions.md` that week, to the group only. No merged,
+  showable change means no devlog that week; the gap is a tracker row, never a padded post.
 - Sources, in order: `git log --merges` since the last devlog; each PR's "What this changes" paragraph;
   the reviewer's founder-facing summary; the latest `docs/design/playtests/results/` sheet. Nothing else.
 - Shape, 300-600 words: title with build number and cordon week; "What changed" in player words, no crate
@@ -133,10 +133,10 @@ founder talks. The checklist, every row with its source:
 - Ask for: no recoup or a capped recoup; a marketing floor in dollars; what they fund that agents cannot
   (HS 4: runway, ports, beats, localization, fests, servers), never engineering.
 - Record, never negotiate yourself: IP, term length, reversion, audit. A lawyer and the founder own those.
-- The pack: the tracker's rolling line and day-90 projection, labelled with its formula; the gates reached,
-  with their dates, and what the next gate still needs (`gates.md`);
-  the cut scope and the deferred list (D2); the price ladder (D14); the three D19 options with the
-  advance as one of them, so the founder walks in knowing what "no" costs.
+- The pack: the tracker's rolling line and day-90 projection, labelled with its formula; the gates reached
+  and what the next gate still needs (`gates.md`); the cut scope and the deferred list (D2); the price
+  ladder (D14); the three D19 options with the advance as one of them, so the founder walks in knowing
+  what "no" costs.
 
 ### The PR loop
 1. Take one `queue.md` item. One file per PR, 200 lines or fewer.
