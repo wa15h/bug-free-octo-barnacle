@@ -161,8 +161,8 @@ blocks go into it in short form: passes under "Checked, not found", and each fai
 - A return puts the smallest fix on line 3 after `Fix:`: the change and its rule number; for
   size or concern, the files for each new PR; for evidence, the exact command or artifact.
 - Queue comes from `queue.md`'s first line and the open PR list on the review day. Count open
-  agent PRs as `producer.md` ("The WIP limit") defines them, and hold as reviewer "How you work"
-  says (D31). Ages are in days, deload and pause days left out (D31).
+  agent PRs as `producer.md` ("The WIP limit (D31)") defines them, and hold as reviewer "How you
+  work" says. Ages are in days and stop as `producer.md` ("Rest (D31)") says.
 
 ```markdown
 Agent: reviewer
