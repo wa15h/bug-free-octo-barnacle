@@ -1,0 +1,95 @@
+# W0-08 SDR spike, server half (server-engineer task 1(b)). Lives only on claude/spike-sdr-server: never
+# merged, never a PR. The founder has only a Mac (2026-10-14), so the Linux machine with no Steam client is
+# this GitHub-hosted runner. The founder clicks "Re-run all jobs", copies the Steam ID from the server job's
+# log, and runs client mode on the Mac inside the 30-minute window. Only actions/checkout, by its ADR 0001 SHA.
+name: sdr-spike-server
+
+on:
+  push:
+    branches: [claude/spike-sdr-server]
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: never
+
+jobs:
+  server:
+    name: server (ubuntu-latest, no Steam client)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+      - name: Runner, commits (the second line is the W0-08 head), and no Steam client
+        run: |
+          echo "runner image $ImageOS $ImageVersion, $RUNNER_ARCH"; uname -srm
+          git log --oneline -2
+          if ls -d ~/.steam ~/Steam 2>/dev/null; then echo "a Steam directory exists"; else echo "no ~/.steam or ~/Steam"; fi
+      # Valve's SteamCMD install for Linux (developer.valvesoftware.com/wiki/SteamCMD), run with +quit, so no
+      # account logs in. A Linux GameServer loads steamclient.so from ~/.steam/sdk64; SteamCMD ships it.
+      - name: SteamCMD's steamclient.so into ~/.steam/sdk64
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q lib32gcc-s1
+          mkdir -p ~/steamcmd && cd ~/steamcmd
+          curl -fsSL https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz | tar zxf -
+          ./steamcmd.sh +quit || echo "steamcmd.sh exited $? (it can exit nonzero after updating itself)"
+          mkdir -p ~/.steam/sdk64 && ln -sf ~/steamcmd/linux64/steamclient.so ~/.steam/sdk64/steamclient.so
+          sha256sum ~/.steam/sdk64/steamclient.so
+      - name: Install the rust-toolchain.toml toolchain with the runner's rustup
+        run: rustup toolchain install --no-self-update && rustc --version
+      - name: Build sdr_spike
+        run: cargo build -p server --example sdr_spike --locked
+      # The Steam ID line comes seconds into this step. The log is public, so personal Steam IDs (76561...,
+      # the client's account in the connection lines) are masked; the server's anonymous ID (9007...) is not.
+      - name: Run sdr_spike server for up to 30 minutes (copy the Steam ID from here)
+        run: |
+          set +e
+          timeout 30m cargo run -q -p server --example sdr_spike --locked -- server 2>&1 |
+            sed -u -E 's/76561[0-9]{12}/76561<masked>/g' | tee "$RUNNER_TEMP/server.log"
+          code=${PIPESTATUS[0]}
+          set -e
+          echo "exit $code"
+          if [ "$code" = 0 ]; then echo "server done: one message each way"; exit 0; fi
+          if ! grep -q 'server: Steam ID' "$RUNNER_TEMP/server.log"; then
+            echo "::error::no logon: the server printed no Steam ID (see the steam: and FAIL: lines above)"; exit 1; fi
+          if [ "$code" = 124 ]; then echo "the 30-minute window closed with no completed round trip"; exit 0; fi
+          echo "::error::sdr_spike server exited $code"; exit 1
+
+  macos:
+    name: macos (build and start, no Steam)
+    runs-on: macos-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Runner, and no Steam
+        run: |
+          sw_vers; uname -m
+          if ls -d /Applications/Steam.app ~/Library/Application\ Support/Steam 2>/dev/null; then echo "Steam is installed"
+          else echo "no Steam.app and no ~/Library/Application Support/Steam"; fi
+          pgrep -il steam || echo "no Steam process running"
+      - name: Install the rust-toolchain.toml toolchain with the runner's rustup
+        run: rustup toolchain install --no-self-update && rustc --version
+      - name: Build sdr_spike
+        run: cargo build -p server --example sdr_spike --locked
+      - name: sdr_spike links libsteam_api.dylib, starts, and prints its usage line
+        run: |
+          otool -L target/debug/examples/sdr_spike | grep steam_api
+          lipo -info "$(find target/debug/build -name libsteam_api.dylib | head -n1)"
+          for args in "" "--help"; do
+            set +e; out=$(cargo run -q -p server --example sdr_spike --locked -- $args 2>&1); code=$?; set -e
+            echo "sdr_spike ${args:-(no arguments)}: exit $code"; echo "$out"
+            if [ "$code" != 1 ] || ! grep -q 'FAIL: usage: sdr_spike server' <<< "$out"; then
+              echo "::error::expected the usage line and exit 1"; exit 1; fi
+          done
