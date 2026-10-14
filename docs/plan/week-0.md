@@ -1,16 +1,22 @@
+WIP: 10
+
 # Week 0 queue
 
-Producer, 2026-10-08. Planned for 2026-10-12 to 2026-10-18; the founder's first `hours.md` row sets
-the real dates. This is week 0's `queue.md`; from week 1 the queue lives in `docs/plan/queue.md`.
+Producer, 2026-10-08. Planned for 2026-10-12 to 2026-10-18, its real dates; the deload calendar
+counts from them (D31). This is week 0's `queue.md`; from week 1 the queue lives in `docs/plan/queue.md`.
 Week 0 comes before any feature work (`decisions.md`, "Week 0"). Agents take one item at a time in
 the order below, and an item waits until everything in its "After" column has merged. "Per <agent>
-task N" means the acceptance in that agent's first-task list, plus what follows it here. Under a
-`FROZEN:` line below the title (founder review budget spent), open nothing; in-flight work waits as draft.
+task N" means the acceptance in that agent's first-task list, plus what follows it here. While the
+first line reads `WIP: 0 FROZEN: <reason>` (D31), open nothing; in-flight work waits as draft.
 
-**Gap flag: no `hours.md` row exists yet** (W0-11 creates it). This queue is sized on D5's planned 30
-hours, not logged hours; week 1 is re-sized from the week-0 row. Deload fortnight: weeks 12-13 (D5).
+**D31 (2026-10-14): founder hours leave the plan.** The week's minutes and lines budget is retired
+in favour of the first line, `WIP: 10` (open agent PRs, held drafts, and the freeze follow D31). The
+Budget and Founder time sections, the Min column, W0-11 (`hours.md`, now deleted), and merged items'
+hours clauses are retired history. P1 is withdrawn (no `milestones.md`, bands, or V): P0, P2, and P3
+are pulled forward once W0-01 to W0-21 have merged and the WIP limit has room; any not pulled forward
+wait behind D27's items in week 1. Deload fortnight: weeks 12-13 (D31).
 
-## Budget
+## Budget (retired by D31; history)
 
 | Measure | Arithmetic | Week 0 |
 |---|---|---|
@@ -26,7 +32,7 @@ lines, 10 up to 150, 15 above, plus 5 when the founder signs something. The prod
 200 = 15 PRs assumes full-size PRs; week 0 averages 87 lines, so the D6 band sets the count. Lines
 (61% of budget) and review minutes (34%) are low on purpose: there is no logged baseline yet.
 
-## Founder time (allotments for checking fit, not estimates of logged hours)
+## Founder time (retired by D31; week 0's allotments, kept as history)
 
 | Item | Allotment |
 |---|---|
@@ -41,8 +47,7 @@ lines, 10 up to 150, 15 above, plus 5 when the founder signs something. The prod
 
 Review uses about 5 of the 12 review hours; nothing in scope is pushed for lack of hours. Latency is
 the risk: W0-02, 06, 07, 16, 17 are five serial merges, so at one founder pass a day a return round
-carries W0-18 and W0-21 into week 1, charged first there. If W0-01 to W0-21 have merged and hours
-remain, pull forward P0-P3 (25 PRs, 2,185 lines); any not pulled forward wait behind D27's items in week 1.
+carries W0-18 and W0-21 into week 1. Pull-forward follows the D31 note above.
 
 ## Queue
 
@@ -101,8 +106,9 @@ as W0-04 (rule 6); no dotnet job until `client/` exists; no Steam client, app ID
 **W0-08 SDR spike; the outcome writes D3.** Paths: `crates/server/examples/sdr_spike.rs`,
 `crates/server/Cargo.toml`. Accept per server-engineer task 1(b), plus: CI green with no Steam client;
 one `steamworks` in `cargo tree -d`. The founder runs it on a machine they already own, no spend (Q18
-has no written default). FAIL is a result, not a slip. Past the 4-hour cap, the run and D3's line move
-to week 1, flagged at the top of its queue, and no transport work starts before D3's line exists.
+has no written default). FAIL is a result, not a slip. With no PASS or FAIL by week 0's end, the run
+and D3's line move to week 1 (D31), flagged at the top of its queue, and no transport work starts
+before D3's line exists.
 
 **W0-09 Sidecar watchdog spike; the outcome writes D8.** Paths: `docs/adr/0003-sidecar-watchdog.md`.
 Code lives on branch `claude/spike-sidecar-watchdog`, never a PR, never merged. Accept: a std-only Rust
@@ -165,12 +171,12 @@ finishes"; the team runs as subagents); the PR says how a repeat block (`stop_ho
 `.claude/`, `CLAUDE.md`, `docs/research/`, or `decisions.md` fails `RULE D24: <path> is founder-edited`
 unless the PR carries `founder-approved` (D29); rechecked on `labeled` and `unlabeled`; red without the label, green once the founder labels the throwaway PR, and green on head.
 
-## Pull forward only if W0-01 to W0-21 have merged and hours remain
+## Pull forward only if W0-01 to W0-21 have merged and the WIP limit has room (D31)
 
 | ID | Owner | PR | Class | Lines | Min | Waits on |
 |---|---|---|---|---|---|---|
 | P0 | devex-engineer | `never-in-v1.sh`: no bevy, godot or gdext package, cdylib crate, `.gdextension`, prediction or rollback identifier, engine netcode, lobby search, voice, or Steam inventory API (D2 D4 D8 D9 D14) | E | 90 | 10 | W0-17 |
-| P1 | producer | `docs/plan/milestones.md` (producer task 5); the founder signs the D11 line | E | 150 | 20 | nothing; V needs logged weeks first |
+| P1 | producer | Withdrawn by D31: no `milestones.md`, bands, or V | - | - | - | - |
 | P2 | reviewer | Review-log section 3, the hook request list (reviewer task 6) | E | 60 | 10 | W0-14 |
 | P3 | devex-engineer | `tools/checks/pr-template.sh`: five headings, none empty (rule 5) | E | 60 | 10 | P2 |
 
@@ -181,11 +187,11 @@ unless the PR carries `founder-approved` (D29); rechecked on `labeled` and `unla
 - net-engineer: `crates/proto` skeleton; devex-engineer: codegen pipeline, C# solution files,
   `client/global.json`; client-engineer: `client/lib` skeleton. Wait on ADR 0004.
 - devex-engineer: Godot 4.7 and Unity 6 pin-only PRs (rule 8); client-engineer: rung 1 in each engine.
-  Wait on W0-12 and `client/lib`; the bake-off hours start there.
+  Wait on `client/lib` and the founder's signed scorecard in `client/BAKEOFF.md` on main (D31).
 - Feature work after D27's items: persist save-encoding ADR, test simulator, then old P4 (sim allowlist).
 - reviewer: the dry run with eight planted violations. Needs W0-14 to W0-18 merged.
 - marketing: the devlog outline, built from W0-19. Game-designer, art-director, and marketing tasks 3-4
-  start week 1; steam-release and marketing's page-era tasks wait until the page is ~200 build-hours off.
+  start week 1; steam-release and marketing's page-era tasks wait for the two-player loop (`producer.md`, D31).
 - The first D12 architecture review (spend: the founder books and pays), at the end of the weeks 0-6 spikes.
 
 ## Open questions for the founder
@@ -193,7 +199,7 @@ unless the PR carries `founder-approved` (D29); rechecked on `labeled` and `unla
 1. Q18 has no written default; W0-08 states this queue's assumption until answered. Q14 is answered by D30.
 2. Resolved 2026-10-08: the skeptic review's patch was applied with the team (agent files now plan at
    30 h, and `CLAUDE.md` carries the in-week freeze, the agent login rule, replaced by D29 on 2026-10-10, and eligibility-only add-backs).
-3. D2's add-back trigger fires near week 26; D28 makes the cut scope the target. Eligibility only, unless you raise it.
+3. Answered (D31): there is no add-back trigger; a deferred item enters only through a founder decision row naming it.
 
 ## Questions
 
