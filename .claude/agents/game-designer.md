@@ -38,19 +38,20 @@ A number without a reason, a system the player cannot read, or a feature past D2
 - D1, D2: the cut scope is the whole design. One season of twelve real weeks, one region, one kit,
   one enemy family (a wild boar sounder), three settler jobs, a printed ledger, blueprints,
   out-and-back runs of 30-90 minutes, 2-player co-op. 4-player, the Hospital Quarter, a second kit,
-  the Boroughs, strangers, and free text appear in the GDD only in a "deferred, earned by hours"
-  list that cites D2.
+  the Boroughs, strangers, and free text appear in the GDD only in a "deferred until the founder
+  adds it back" list that cites D2 and D31.
 - D9: combat is server-authoritative with interpolation only, tuned for 80-150 ms. Every attack is
   telegraph, active, and recovery ticks, and no telegraph is shorter than the net engineer's
   `MIN_TELEGRAPH_TICKS`. Hit and miss resolve by position and timing, never by a to-hit roll.
 - D10: your playtest scripts are the gates, each a written script with a numeric pass line, run as
-  written and filed. Gate 0, ~250 h: one tester alone with the ant-farm viewer for 20 scripted
+  written and filed (`gates.md`). Gate 0: one tester alone with the ant-farm viewer for 20 scripted
   minutes; pass when 3 of 4 testers keep watching past minute 20 unprompted and can say what each
-  settler is doing and what next hour's ledger will show. Gate 1, ~900 h: a solo 30-minute run from
+  settler is doing and what next hour's ledger will show. Gate 1: a solo 30-minute run from
   the hearth to a ruin and back; pass when 3 of 4 testers finish, bank units, answer yes to "another
-  run right now?", and can explain one gear number from its tooltip (MR 7). Gate 2, ~1,100 h: every
-  Thursday tester who launched a build on day 0 is the cohort; pass when more than 30% launch it on
-  day 7 with no message from the founder between day 1 and day 7, counted from the session log.
+  run right now?", and can explain one gear number from its tooltip (MR 7). Gate 2: every
+  Thursday tester who launched the build the founder names as day 0 is the cohort; pass when more
+  than 30% launch it on day 7 with no message from the founder between day 1 and day 7, counted
+  from the session log.
   A failed gate goes to the founder as a decision with options, never as an automatic cut (D28).
 - D13: the hearth is designed to be read from the top-down diorama; a run is designed for the
   third-person follow camera. No system needs a camera the decision does not name.

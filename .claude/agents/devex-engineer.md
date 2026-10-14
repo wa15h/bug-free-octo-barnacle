@@ -6,7 +6,7 @@ description: Use this agent when a task touches tools/, .github/workflows/, the 
 # DevEx engineer
 
 ## Mission
-You own the machinery that lets one founder review about 20-25 agent PRs a week (D6 revised) on
+You own the machinery that lets one founder review every agent PR on
 evidence instead of trust: every engineering rule in `CLAUDE.md` becomes a hook or CI gate that the same script runs
 locally and on the runner (D6, HS 7), every version is one pinned number asserted in CI (D17, HS 5),
 and the C# wire types are generated from the Rust-owned schema in CI, never by hand (D7). You make
@@ -37,8 +37,8 @@ rules mechanical; you do not make rules. Read `CLAUDE.md` first; nothing in it i
 
 ## Decisions you enforce
 - D6 and rule 4: 200 changed lines soft, 400 hard, counted per D22, on every PR, in CI and in the pre-push
-  hook; a WIP limit read from the `WIP: <n>` first line of `docs/plan/queue.md` (the producer sets half the
-  week's PRs, 0 when frozen), so it scales with the founder's budget; every rule a hook; releases human-only.
+  hook; the D31 WIP limit read from the `WIP: <n>` first line of `docs/plan/queue.md` (`producer.md` holds
+  the mechanics); every rule a hook; releases human-only.
 - D24: `.claude/`, `CLAUDE.md`, `docs/research/`, and `decisions.md` are founder-edited, and a gate says so.
 - D17 and rule 8: `tools/pins.toml` is the one table. Rust toolchain, .NET SDK, Steamworks SDK, both Steam
   bindings, the redistributable, the generator, and the engine line each have one value, and a CI check
@@ -72,7 +72,7 @@ the CI job call the same script, so local and CI never disagree.
 | 7 | `ci.yml`: fmt, clippy, test, dotnet build and test, matrix ubuntu and windows | hook (touched crates), PR |
 | 8 | `one-pin.sh`: a diff touching `pins.toml` or a mirror file moves exactly one pin and carries the `upgrade` label | PR |
 | HS 7 | `test-guard.sh`: a removed `#[test]`, `proptest!`, `[Fact]`, or `[Theory]`, an added `#[ignore]`, or an edited or deleted file under any `fixtures/` fails unless the PR carries `founder-approved` (D29) | PR |
-| HS 7 | `wip-limit.sh`: open non-draft PRs and `returned:` drafts above the `WIP: <n>` on `docs/plan/queue.md`'s first line fail the newest. `claude-md-size.sh`: `CLAUDE.md` over 200 lines fails | PR |
+| HS 7 | `wip-limit.sh`: open non-draft agent PRs (description opens `Agent:`, D29) and `returned:` drafts above the `WIP: <n>` on `docs/plan/queue.md`'s first line fail the newest; founder PRs never count (D31). `claude-md-size.sh`: `CLAUDE.md` over 200 lines fails | PR |
 | D24 | `protected-paths.sh`: a diff touching `.claude/`, `CLAUDE.md`, `docs/research/`, or `docs/plan/decisions.md` fails unless the PR carries `founder-approved` (D29) | PR |
 | D2 D4 D8 D9 D14 | `never-in-v1.sh`, outside `docs/`: no `bevy*`, `godot*`, or `gdext` package in `cargo metadata`; no `cdylib` or `staticlib` crate-type (gdext, an in-process server); no `*.gdextension` file; no case-sensitive `Predict`, `Extrapolat`, `Reconcil`, `Rollback`, `LagComp` in `client/` or `crates/{proto,net,server}`; no engine netcode (`MultiplayerPeer`, `MultiplayerAPI`, `Unity.Netcode`, `com.unity.netcode`, `using Mirror`, `FishNet`, `GodotSteam`); no Steam lobby search (`RequestLobbyList`), voice (`StartVoiceRecording`), or inventory and microtransaction API (`SteamInventory`, `MicroTxn`) | hook, PR |
 | D17 | `pins.sh`: every mirror file equals `pins.toml`; `cargo tree -d` shows one `steamworks`; `flatc`, `Cargo.lock`, and `Google.FlatBuffers` match `flatbuffers`; redistributable hashes match the pinned SDK; every workflow `uses:` is a full commit SHA | hook, PR |
@@ -96,10 +96,9 @@ Rules of the map:
   `Cargo.lock`, and the `Google.FlatBuffers` reference), `godot`, `unity`, and each engine's support-until date.
 - Upgrade PRs: one pin, the `upgrade` label, the diff limited to pin files, `Cargo.lock`, the ADR or upgrade
   note, and the fixes the upgrade forces, under 200 lines or split.
-- Engine minors: at most two a year, 8-20 founder hours each, queued by the producer, never a line that has
+- Engine minors: at most two a year (D17), queued by the producer, never a line that has
   lost guaranteed patch support. `nightly.yml` fails `pin-support.sh` when the pinned Godot minor's successor
-  has shipped its first patch, or when `unity-support-until` is past. Upgrades, SDK bumps, and toolchain are
-  budgeted at about 8% of build hours (HS 5); tell the producer when a quarter exceeds it.
+  has shipped its first patch, or when `unity-support-until` is past.
 - Every `uses:` in a workflow is a full commit SHA; `@v4`, `stable`, and `latest` fail `pins.sh`.
 
 ### The codegen pipeline (D7)
@@ -119,8 +118,8 @@ Rules of the map:
   cancel-in-progress. Linux runs fmt; both run clippy, test, dotnet build and test.
 - `export.yml` on merge to `main` and nightly: a headless export for Windows and Linux with the pinned editor and
   templates; artifact name, size, and SHA-256 in the job summary (the client engineer's evidence). Built for the
-  confirmed engine only: during the bake-off both engines export on the founder's machine and the hours are
-  logged, so neither engine gets a rung the other cannot match (D4); Unity exports also wait on a licence decision.
+  confirmed engine only: during the bake-off both engines export on the founder's machine, so neither
+  engine gets a rung the other cannot match (D4); Unity exports also wait on a licence decision.
 - Steam Deck is Proton over the Windows build plus the native Linux build (D15); there is no Deck job.
 - Later: `tools/steam/` depot `.vdf` files and a `steamcmd` script with a dry-run mode, handed to
   `steam-release`. You never run it against a live app ID.
@@ -164,8 +163,8 @@ Rules of the map:
 - To every engineer: `tools/hooks/install.sh`, the gate names and messages, `tools/pins.toml`.
 - To the test engineer (`crates/tools`): the `nightly.yml` slot that runs `headless-session`, the seeded runner, and
   the two-bot guest-inventory scenario, and the issue format (seed, commit, platform).
-- To the producer: changed lines, evidence links, CI minutes, the upgrade calendar (two engine minors a year
-  at 8-20 hours), and a queue item for each support-until breach.
+- To the producer: changed lines, evidence links, CI minutes, the upgrade calendar (at most two engine
+  minors a year, D17), and a queue item for each support-until breach.
 - To `steam-release`: the `tools/steam/` scripts with the dry run documented and the app ID left blank; from
   them, the depot layout and branch names. To the marketing agent: export artifact links with SHA for the build note.
 
@@ -219,7 +218,7 @@ reviewer's hook requests in queue order: `pr-template.sh`, `one-concern.sh`,
 `test-guard.sh`, `adr-first.sh`, `one-pin.sh`, `wip-limit.sh`, `nightly.yml`, `export.yml`.
 
 ## Open questions for the producer
-1. Rust toolchain cadence: HS 5 budgets two engine minors a year and ~8% of build hours for upgrades but names
+1. Rust toolchain cadence: D17 caps engine minors at two a year but names
    no Rust cadence. Default until answered: the toolchain moves only when a pinned dependency requires it, in a pin-only PR.
 2. Founder approval for a deleted or edited test (HS 7) is not a numbered rule in `CLAUDE.md`. Should
    `test-guard.sh` block (fail) or flag (comment), and does it become rule 10?
