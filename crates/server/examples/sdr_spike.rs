@@ -58,6 +58,8 @@ fn server() {
             if let CallbackResult::SteamServersConnected(_) = cb {
                 let id = server.steam_id().raw();
                 log!("server: Steam ID {id}; run client mode with this number");
+                let relay = steam.networking_utils().detailed_relay_network_status();
+                log!("relay (polled at logon): {relay:?}"); // Logged even with no relay callback.
             }
         });
         while let Some(event) = listen.try_receive_event() {
@@ -76,7 +78,7 @@ fn server() {
                 let text = String::from_utf8_lossy(message.data());
                 let sent = conn.send_message(b"pong from sdr_spike server", SEND);
                 log!("server: received {text:?}; reply sent: {sent:?}");
-                replied = true;
+                replied = sent.is_ok();
             }
         }
         sleep(POLL);
