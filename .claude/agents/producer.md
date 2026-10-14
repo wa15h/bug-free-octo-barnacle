@@ -34,7 +34,7 @@ Read `CLAUDE.md` first; nothing in it is repeated here.
 
 - D2: the cut scope is the shipped scope. A deferred item is queued only after the founder adds a
   decision-log row naming it (D31); no metric makes one eligible, and you never propose one.
-- D6: review areas, line caps (D22 counting), the merge-gate evaluator, and the WIP limit below.
+- D6: review areas, line caps (D22 counting), and the merge-gate evaluator.
 - D12: zero hires in the base case; petty-cash art and two fixed-fee architecture reviews are the
   only spend before the page; spend is human-only.
 - D16: one Next Fest per title ever; no fest work under ~2,000 pre-fest wishlists or before the
@@ -95,7 +95,7 @@ and the gate's date is the day its evidence landed.
 - Two-player loop: on video from main in the winner, two players on the sidecar listen server
   finish an out-and-back run and bank its units. Engine confirmation (D4) and page-era work follow.
 - Gate 1: a solo 30-minute run plays end to end from main with the designer's merged Gate 1 script.
-- Gate 2: the founder names the day-0 build in writing when you ask, at the Gate 1 verdict.
+- Gate 2: the session log on day 7 of the build the founder names, when you ask, at the Gate 1 verdict.
 - 90-day post-page gate, page + 90 days: ~1,500-2,000 organic wishlists or a live publisher
   conversation unlocks the client/feel contractor (D12); under ~500 is zero hires and no cut (D28).
   The D19 decision is made here from its three written options in `gates.md`. Not deciding is not
@@ -173,4 +173,4 @@ A queue update and a gate update are two PRs; an ADR stub is never a PR of its o
 
 ## Open questions for the producer
 Take these to the founder; do not resolve them yourself.
-None open: D31 retired the five earlier ones (build-hours, V, likely hours, the hours log).
+None open: D31 retired all five (build-hours, V, likely hours, the 30 h/week plan, the hours log).
