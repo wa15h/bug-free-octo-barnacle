@@ -2,56 +2,29 @@ WIP: 10
 
 # Week 0 queue
 
-Producer, 2026-10-08. Planned for 2026-10-12 to 2026-10-18, its real dates; the deload calendar
-counts from them (D31). This is week 0's `queue.md`; from week 1 the queue lives in `docs/plan/queue.md`.
+Producer, 2026-10-08. Planned for 2026-10-12 to 2026-10-18, its real dates, from which `producer.md`'s
+deload calendar counts. This is week 0's `queue.md`; from week 1 the queue lives in `docs/plan/queue.md`.
 Week 0 comes before any feature work (`decisions.md`, "Week 0"). Agents take one item at a time in
 the order below, and an item waits until everything in its "After" column has merged. "Per <agent>
 task N" means the acceptance in that agent's first-task list, plus what follows it here. While the
 first line reads `WIP: 0 FROZEN: <reason>` (D31), open nothing; in-flight work waits as draft.
 
-**D31 (2026-10-14): founder hours leave the plan.** The week's minutes and lines budget is retired
-in favour of the first line, `WIP: 10` (open agent PRs, held drafts, and the freeze follow D31). The
-Budget and Founder time sections, the Min column, W0-11 (`hours.md`, now deleted), and merged items'
-hours clauses are retired history. P1 is withdrawn (no `milestones.md`, bands, or V): P0, P2, and P3
-are pulled forward once W0-01 to W0-21 have merged and the WIP limit has room; any not pulled forward
-wait behind D27's items in week 1. Deload fortnight: weeks 12-13 (D31).
+**D31 (2026-10-14): founder hours leave the plan.** The week's budget and founder-time allotments are
+deleted (git history keeps them) in favour of the first line, `WIP: 10`; open agent PRs, held drafts,
+and freezes follow `producer.md`, "The WIP limit (D31)". The Min column, W0-11 (`hours.md`, now
+deleted), and merged items' hours clauses are retired history. P1 is withdrawn (no `milestones.md`,
+bands, or V): P0, P2, and P3 are pulled forward once W0-01 to W0-21 have merged and the WIP limit has
+room; any not pulled forward wait behind D27's items in week 1. Deload fortnight: weeks 12-13
+(`producer.md`, "Rest (D31)").
 
-## Budget (retired by D31; history)
-
-| Measure | Arithmetic | Week 0 |
-|---|---|---|
-| Project hours | D5 revised, planned | 30 |
-| Review time | 30 x 0.4 (HS 7, D6) | 12 h = 720 min |
-| Line budget | 12 h x 250 lines an hour (HS 7) | 3,000 changed lines |
-| PR band | D6 revised | 20-25 |
-| Committed below | 21 PRs: 19 by agents, 2 by the founder | 1,825 lines; 245 min first-pass review |
-| Build-hours if 30 are logged | (30 - 2.5) x 0.8 x 0.92 (D23) | 20.2; cumulative 20.2 of Gate 0's ~250 |
-
-Founder minutes: line-by-line at lines / 250 x 60 (the reviewer's formula); evidence at 5 up to 50
-lines, 10 up to 150, 15 above, plus 5 when the founder signs something. The producer cap of 3,000 /
-200 = 15 PRs assumes full-size PRs; week 0 averages 87 lines, so the D6 band sets the count. Lines
-(61% of budget) and review minutes (34%) are low on purpose: there is no logged baseline yet.
-
-## Founder time (retired by D31; week 0's allotments, kept as history)
-
-| Item | Allotment |
-|---|---|
-| First-pass review of W0-01 to W0-18 and W0-21 (Min column) | 4 h 5 min |
-| Return-round reserve (one round per PR, the reviewer's rule) | 1 h |
-| Writing W0-19 and W0-20 | 1 h |
-| SDR run for W0-08: Linux machine or VM with no Steam client, desktop with Steam, repro, logs | 3 h, cap 4 h |
-| Setup: pinned toolchain, Steam client; now, protect `main` (require a pull request, no bypass, no required approvals: GitHub refuses self-approval, D29) and create labels `size/over-200`, `founder-approved`, `upgrade`; after W0-07 and W0-17, require both workflows, run `tools/hooks/install.sh` | 2 h |
-| Starting 19 agent items, answering the Questions block, the `hours.md` row and week-end summary | 1 h 45 min |
-| D23 overhead (devlog, Thursday group, community) | 2 h 30 min |
-| Total planned | 15 h 20 min of 30 |
-
-Review uses about 5 of the 12 review hours; nothing in scope is pushed for lack of hours. Latency is
-the risk: W0-02, 06, 07, 16, 17 are five serial merges, so at one founder pass a day a return round
-carries W0-18 and W0-21 into week 1. Pull-forward follows the D31 note above.
+Founder setup, unchanged by D31: install the pinned toolchain and the Steam client; protect `main`
+(require a pull request, no bypass, no required approvals: GitHub refuses self-approval, D29); create
+the labels `size/over-200`, `founder-approved`, and `upgrade`; after W0-07 and W0-17, require both
+workflows and run `tools/hooks/install.sh`.
 
 ## Queue
 
-Class: L = line-by-line, E = evidence, F = founder-authored. Min = founder minutes (writing time for F).
+Class: L = line-by-line, E = evidence, F = founder-authored. Min = founder minutes (retired by D31).
 
 | ID | Owner | PR | Class | Lines | Min | After | Decisions | ADR-first |
 |---|---|---|---|---|---|---|---|---|
@@ -107,8 +80,8 @@ as W0-04 (rule 6); no dotnet job until `client/` exists; no Steam client, app ID
 `crates/server/Cargo.toml`. Accept per server-engineer task 1(b), plus: CI green with no Steam client;
 one `steamworks` in `cargo tree -d`. The founder runs it on a machine they already own, no spend (Q18
 has no written default). FAIL is a result, not a slip. With no PASS or FAIL by week 0's end, the run
-and D3's line move to week 1 (D31), flagged at the top of its queue, and no transport work starts
-before D3's line exists.
+and D3's line move to week 1, flagged at the top of its queue, and no transport work starts before
+D3's line exists.
 
 **W0-09 Sidecar watchdog spike; the outcome writes D8.** Paths: `docs/adr/0003-sidecar-watchdog.md`.
 Code lives on branch `claude/spike-sidecar-watchdog`, never a PR, never merged. Accept: a std-only Rust
@@ -129,7 +102,7 @@ the table carries the measured numbers from a linked run and names the runner.
 column (D5's re-baseline trigger, under 20), bake-off hours per engine summed from `client/BAKEOFF.md`
 (Q19 default), and a blank week-0 row.
 
-**W0-12 Bake-off plan; the outcome writes D4 at the ~600 h gate.** Paths: `client/BAKEOFF.md`. Accept
+**W0-12 Bake-off plan; the outcome writes D4 at the ~600 h gate (retired by D31).** Paths: `client/BAKEOFF.md`. Accept
 per client-engineer task 3, plus: the tie rule as a formula with a worked example; exports on the
 founder's machine, logged as founder hours (Q20 default); hours feed W0-11.
 
@@ -197,8 +170,8 @@ unless the PR carries `founder-approved` (D29); rechecked on `labeled` and `unla
 ## Open questions for the founder
 
 1. Q18 has no written default; W0-08 states this queue's assumption until answered. Q14 is answered by D30.
-2. Resolved 2026-10-08: the skeptic review's patch was applied with the team (agent files now plan at
-   30 h, and `CLAUDE.md` carries the in-week freeze, the agent login rule, replaced by D29 on 2026-10-10, and eligibility-only add-backs).
+2. Resolved 2026-10-08: the skeptic review's patch was applied with the team (agent files then planned
+   at 30 h, which D31 retires; `CLAUDE.md` carries the in-week freeze, the agent login rule, replaced by D29 on 2026-10-10, and eligibility-only add-backs).
 3. Answered (D31): there is no add-back trigger; a deferred item enters only through a founder decision row naming it.
 
 ## Questions
