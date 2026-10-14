@@ -3,3 +3,7 @@ name = "server"
 version.workspace = true
 edition.workspace = true
 publish.workspace = true
+
+# ADR 0002: the one steamworks pin. Only examples/sdr_spike.rs (W0-08) uses it so far.
+[dev-dependencies]
+steamworks = "=0.13.1"
