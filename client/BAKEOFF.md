@@ -4,8 +4,8 @@ Owned by the client engineer (`.claude/agents/client-engineer.md`, first task 3)
 item 4 in `docs/plan/decisions.md`: the identical vertical slice and the founder's scorecard
 (D31), signed and merged before `client/godot/` or `client/unity/` exists. The candidates are
 Godot 4.7 C# (.NET build) and Unity 6 LTS with URP, each on the minor line its own pin-only PR
-sets (D17, rule 8). The founder's written verdict picks the engine; the founder confirms it at the
-Two-player loop and engine confirmation gate (`docs/plan/gates.md`, D10) and writes D4's outcome.
+sets (D17, rule 8). The founder's written verdict picks the engine (Verdict rule below); the
+founder confirms it at the gate named in disposal step 2.
 
 ## The slice: six rungs, identical in both engines
 
@@ -42,8 +42,8 @@ Where the engines name a part differently, the line names both.
 - The same kit, palette, and animation set in both. No engine-specific feature the other cannot
   match; no shader is written during the bake-off (the art director's rule: it is built once, in
   the winner).
-- The founder builds both engines' exports on their own machine (Q20 default, D21); nothing logs
-  the time (D31). Neither engine exports in CI during the bake-off.
+- The founder builds both engines' exports on their own machine (Q20 default, D21). Neither
+  engine exports in CI during the bake-off.
 - A rung is done for an engine when its PR has merged with the evidence above.
 - If an engine cannot reach a rung as written, the client engineer reports it to the producer with
   the evidence: what failed, and the PRs and return rounds tried. The slice never changes for one
@@ -54,7 +54,7 @@ Where the engines name a part differently, the line names both.
 
 ## Scorecard (pre-registered, D4, D31)
 
-What the founder weighs, for each engine. No row records anyone's time, and no row is a formula.
+What the founder weighs, for each engine. No row is a formula.
 
 1. **Rung results and video.** Each rung: done, or ruled unreachable, with its merged PR and the
    evidence above, linked.
