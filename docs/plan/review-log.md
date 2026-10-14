@@ -146,7 +146,7 @@ row the devex gate map files it under.
 One summary per review, posted as a "comment" PR review (reviewer loop, step 8: GitHub refuses
 "approve" and "request changes" from a PR's author, and agents work under the founder's login,
 D29). Under 40 lines, with no praise (Never do). Write it from what step 2 allows (the diff, the
-description, the queue entry, and the files the diff touches), the Budget sources in 2.1, and the
+description, the queue entry, and the files the diff touches), the Queue sources in 2.1, and the
 evidence you verified on the head SHA (step 6); never from the writer's transcript. The section 1
 blocks go into it in short form: passes under "Checked, not found", and each failing check after
 `Fix:` with its file and line (step 5).
@@ -154,16 +154,15 @@ blocks go into it in short form: passes under "Checked, not found", and each fai
 ### 2.1 Fields
 
 - Line 1 is `Agent: reviewer` (D29). Line 2 is the verdict: `ready for founder review`,
-  `returned: <reason>`, or `held: founder review budget reached`; a return or a hold moves the PR
+  `returned: <reason>`, or `held: WIP limit reached`; a return or a hold moves the PR
   back to draft. The reason is a weekly-report category: `size`, `concern`, `rule <n>` (a rule
   number or decision ID), `template`, or `evidence`.
 - When either founder-approval check in section 1.1 applies, line 2 ends `; needs founder approval`.
 - A return puts the smallest fix on line 3 after `Fix:`: the change and its rule number; for
   size or concern, the files for each new PR; for evidence, the exact command or artifact.
-- Founder minutes use the queue's formula, plus 5 when the founder signs something (reviewer "How
-  you work"; `week-0.md`, "Budget"). Hours come from `hours.md`, else the queue's planned hours.
-  "Used" counts the PRs marked ready this week, this one only when this review marks it ready; a
-  PR that would take "used" past the week's review minutes is held.
+- Queue comes from `queue.md`'s first line and the open PR list on the review day. Count open
+  agent PRs as `producer.md` ("The WIP limit") defines them, and hold as reviewer "How you work"
+  says (D31). Ages are in days, deload and pause days left out (D31).
 
 ```markdown
 Agent: reviewer
@@ -171,9 +170,9 @@ Agent: reviewer
 Fix: <returns only>
 
 **Size** <n> counted lines (D22): <l> line-by-line, <e> evidence; excluded <files with lines,
-spot-checked | none>; founder minutes <arithmetic = m>; queue entry <class>, <lines> lines.
-**Budget** week <w>, <h> h (<source>): <used> of <total> review minutes marked ready, this PR
-<included | not added>; <left> left. <sent> of <line budget> lines.
+spot-checked | none>; queue entry <class>, <lines> lines.
+**Queue** `<queue.md line 1>`: <k> of <n> open agent PRs, this PR <counted | held | founder PR,
+not counted>; held drafts <PR numbers, oldest first | none>; oldest ready <PR, d days | none>.
 **Concern** <queue ID>: <one sentence>. <Matches the queue entry | Differs: how>.
 **Read line by line** <none, or one item per function, each with file and line range>
 - `<path>:<start>-<end>` `<function>`: <the one thing to check>.
@@ -205,10 +204,10 @@ A hypothetical `crates/sim` ledger PR: queue ID, files, lines, SHA, link, and nu
 Agent: reviewer
 ready for founder review
 
-**Size** 115 counted lines (D22): 115 line-by-line, 0 evidence; excluded none; founder minutes
-115 / 250 x 60 = 28; queue entry L, 120 lines.
-**Budget** week 1, 30 h (`hours.md`): 466 of 720 review minutes marked ready, this PR included;
-254 left. 1,640 of 3,000 lines.
+**Size** 115 counted lines (D22): 115 line-by-line, 0 evidence; excluded none; queue entry L,
+120 lines.
+**Queue** `WIP: 10`: 7 of 10 open agent PRs, this PR counted; held drafts none; oldest ready #41,
+3 days.
 **Concern** W1-99: `Ledger::transfer` moves money between two accounts and refuses an
 overdraft. Matches the queue entry.
 **Read line by line**
