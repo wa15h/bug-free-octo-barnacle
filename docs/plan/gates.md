@@ -102,12 +102,9 @@ founder names; the producer asks for it at the Gate 1 verdict.
 - Fail: a founder decision with written options (D28).
 
 **Review-saturation counter.** Decisions: D6, D12, D31.
-- Evidence: the reviewer's weekly report, with ages: each line-by-line PR that waited for the
-  founder, ready or held, more than five days, and each nightly invariant failure untriaged more
-  than seven days. A week counts when it has either (HS 7); any other week resets the counter to 0.
-  Deload days (weeks 12-13, 26-27, and 40-41 from week 0, then a fortnight every 14 weeks) and
-  founder-pause days count toward no wait; a week spent wholly under either neither counts nor
-  resets.
+- Evidence: the reviewer's weekly report: each line-by-line PR and nightly invariant failure that
+  counts toward the counter `producer.md` defines (Gates), with its age. Deload and pause days
+  stop its clocks as `producer.md` (Rest) says (D31).
 - Pass: under 8; nothing changes.
 - Fail, at 8 in a row: reported to the founder with the eight weeks' numbers. The producer
   proposes no hire (D12).
