@@ -83,7 +83,7 @@ row 4 in the table below and the verdict; no agent writes, edits, or proposes ei
 - The verdict names the winner and gives the founder's reasons, each citing the scorecard rows it
   rests on. It is the founder's judgment on merit, toward the target state: the cut scope at
   full quality (D2, D28).
-- An engine the founder has ruled unable to reach a rung the other reached does not win.
+- An engine the founder has ruled unable to reach a rung does not win.
 - A tie goes to Unity 6: if the founder cannot separate the engines on the scorecard, Unity 6 wins.
 
 Founder signature on this plan, its scorecard, and its verdict rule. Only the founder fills it;
