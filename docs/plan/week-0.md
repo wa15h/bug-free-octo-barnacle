@@ -57,7 +57,7 @@ Class: L = line-by-line, E = evidence, F = founder-authored. Min = founder minut
 | W0-05 | server-engineer | ADR 0002: steamworks 0.13.1 on SDK 1.64 | E | 40 | 10 | 03 | D3 D17 | is the ADR |
 | W0-06 | devex-engineer | Toolchain pins and `pins.sh` | E | 90 | 10 | 02 04 05 | D17 | 0001, 0002 |
 | W0-07 | devex-engineer | CI: fmt, clippy, test on Linux and Windows | E | 90 | 10 | 06 | D6 D15 D17 | 0001 |
-| W0-08 | server-engineer | Week-0 item 1: SDR spike on app 480 | E | 150 | 15 | 05 07 | D3 | 0002 |
+| W0-08 | server-engineer | Week-0 item 1: SDR spike on app 480 | E | 150 | 15 | 05 07 22 | D3 | 0002, amended by W0-22 |
 | W0-09 | server-engineer | Week-0 item 2: sidecar watchdog spike, ADR 0003 | E | 60 | 15 | 02 03 | D8 | is the ADR |
 | W0-10 | net-engineer | Week-0 item 3: wire-format measurement, ADR 0004 | E | 60 | 20 | 02 03 | D7 D30 | is the ADR |
 | W0-11 | producer | Hours log | E | 55 | 10 | - | D5 D23 | no |
@@ -71,6 +71,7 @@ Class: L = line-by-line, E = evidence, F = founder-authored. Min = founder minut
 | W0-19 | founder | Spike outcomes into `decisions.md` | F | 10 | 30 | 08 09 | D3 D8 D24 D29 | no |
 | W0-20 | founder | D25 Stop hook in `.claude/settings.json` | F | 20 | 30 | 16 | D24 D25 D29 | no |
 | W0-21 | devex-engineer | Protected-paths gate (D24) | E | 55 | 10 | 17 | D24 D29 | no |
+| W0-22 | server-engineer | ADR amendment for W0-08: steamworks' eight packages | E | 20 | - | 05 10 | D3 D17 D30 | is the ADR |
 
 **W0-01.** Paths: `docs/plan/week-0.md`. Accept: every item has ID, owner, paths, class, lines,
 acceptance, decisions, ADR-first; lines at most 3,000 and PRs inside 20-25; each spike names the
@@ -198,3 +199,126 @@ unless the PR carries `founder-approved` (D29); rechecked on `labeled` and `unla
 ## Questions
 
 Agents add `W0-NN: question` here. The producer answers or parks it.
+
+**W0-08: requests 1 to 6**, quoted verbatim from W0-08's draft description (1 to 5) and the
+reviewer's pre-review of it (6), 2026-10-14. The producer answered 1, 3, 4, 5, and 6 on 2026-10-14;
+the founder answered 2 on 2026-10-15.
+
+**W0-08: request 1.**
+> Producer, answer first: "W0-08: keep ports 54320 and 54321, the 60 s client timeout, the 1 ms
+> poll, the 500 ms close wait, and the receive caps 8 and 1 as spike-local constants, or name them
+> in a contract?" The founder's run waits on this answer. If the answer changes `sdr_spike.rs`, the
+> change lands as new commits on this branch and the throwaway branch before the run, and the SHAs
+> in the steps change with them (The founder's run).
+
+Producer, 2026-10-14: keep all of them spike-local in `crates/server/examples/sdr_spike.rs` (:21
+poll, :45 ports, :77 cap 8, :99 60 s, :108 cap 1, :113 500 ms), with the throwaway workflow's
+30-minute window; none goes into a contract. `sdr_spike.rs` does not change, so `6f8d106` and
+`fcfb2bc` stay the run's SHAs and steps 1-8 are final as written. Conditions: none of these numbers
+is copied into `crates/server/src`, `SIDECAR.md`, `crates/proto`, or any test; W0-08's Risk list
+stays their record; when the transport is queued after D3's line, its ports, timeouts, and caps are
+asked fresh (server-engineer.md:109-110, :124) and land in `SIDECAR.md` or an ADR inside D3, never
+inherited from the spike. They were coded before the question was asked; that is noted and needs no
+rework. Why: the example never enters `src/` (server-engineer.md:16-17) and nothing builds against
+it. The relayed connection is addressed by Steam ID and P2P virtual port 0 (task 1(b)); 54320 and
+54321 are only the GameServer's own UDP ports, from steamworks-rs `examples/game-server` at
+`bfc8210`. D3's PASS or FAIL depends on none of them. A contract would mean a `SIDECAR.md` or D3 ADR
+edit outside W0-08's two paths (rule 4), and would pre-empt the real values, such as Q16's 10 and 2,
+before D3 has an outcome.
+
+**W0-08: request 2.**
+> Founder: does SteamCMD's `steamclient.so` still count as "no Steam client installed"
+> (server-engineer.md:174-175)? The runner depends on it. Q18 (open-questions.md:28, who provisions
+> the headless Linux box) has no written default; re-running the workflow means you accept a
+> GitHub-hosted runner as that box for this spike. Then run steps 1-8.
+
+Founder, in chat, 2026-10-15, as relayed to the producer: "Yes on the runner." This answers request
+2 for the W0-08 spike only: the run goes ahead on the GitHub-hosted runner with SteamCMD's
+`steamclient.so`, which for this spike stands in for W0-08's "a machine they already own". Q18 for
+the shipped headless box stays open (Open questions for the founder, 1). Request 5's answer stands.
+Once this file merges, the founder's run (W0-08's steps 1-8) waits on nothing in this queue.
+
+**W0-08: request 3.**
+> Producer: queue the ADR amendment now as its own docs PR, to merge before this PR is opened (hold
+> 2). It is written: commit `c1f3043` on the local branch `claude/adr-0002-steamworks-deps` (ADR
+> 0002 +16 lines, ADR 0004:28 one line). It needs a push of that branch and a PR, which this item
+> may not do. The server engineer owns ADR 0002; the net engineer, who owns ADR 0004, reviews its
+> one line. ADR 0002 grows from 39 to 55 lines; W0-05's "under 40 lines" applied to that item, so
+> the docs item's queue entry sets its own limit. The only other route is a founder ruling that an
+> ADR'd crate's transitive packages are covered, which would also change `docs/adr/README.md:9`.
+
+Producer, 2026-10-14: queued as W0-22 (the row above); W0-08 now waits on it. The server engineer,
+who owns ADR 0002 (W0-05), pushes `claude/adr-0002-steamworks-deps` and opens its PR with `Agent:
+server-engineer (W0-22)`; W0-08's push limit does not bind a separate item. On 2026-10-15 its head
+is `45aac66`: `c1f3043` plus a fix showing where each package is required, authored `Claude` (D29).
+No producer stub and no new number: it edits two Accepted ADRs in place and the choice is unchanged
+(README:32-33), so 0005 stays free. The founder-ruling route is not needed. W0-22 gates when W0-08's
+PR opens, not the founder's run. Once W0-22 merges, W0-08's writer removes hold 2 and its Rule 6
+bullet reads "met: W0-22, #<n>"; no code, lock, or SHA changes, so re-review covers the description
+only. Why: rule 6 and README:9 count every package new to `cargo metadata`, and README:25 puts the
+ADR first. The lock diff between main and `6f8d106` is exactly `steamworks`, `steamworks-sys`, and
+these eight, with one `bitflags`. ADR 0004:28 already names `flatbuffers`' transitive packages, so
+this follows practice.
+
+**W0-22.** Paths: `docs/adr/0002-steamworks.md`, line 28 of `docs/adr/0004-wire-format.md`. Accept:
+nothing else changes (no code, `Cargo.lock`, `tools/pins.toml`, or pin); 20 counted lines at most
+(`45aac66`: +18 -1). ADR 0002 names exactly the eight packages W0-08's lock at `6f8d106` adds beyond
+`steamworks` 0.13.1 and `steamworks-sys` 0.13.0: `bitflags` 2.13.2, `thiserror` 2.0.21,
+`thiserror-impl` 2.0.21, `paste` 1.0.15, `syn` 3.0.9, `quote` 1.0.47, `proc-macro2` 1.0.107,
+`unicode-ident` 1.0.27. Each has its version, crates.io owner, licence, and linked or compile-time
+only, and the ADR shows from steamworks-rs `bfc8210`'s `Cargo.toml` and crates.io where each is
+required and that none is optional. The reviewer checks the list against the lock's package diff and
+each crates.io page. ADR 0004:28 keeps every word and adds only that `bitflags` 2.13.2 is also used
+through `server`'s `steamworks`; the net engineer, who owns ADR 0004 (W0-10), confirms that line in
+a PR comment opening `Agent: net-engineer (W0-22)`, which is not an approval (D29). Both ADRs stay
+Accepted under their own numbers; ADR 0002 ends at 60 lines or fewer (56) and ADR 0004 stays at 59.
+`ci.yml` green on head. No `founder-approved`: `docs/adr/` is not a D24 path. Min is "-" because D31
+retires founder minutes. It merges before W0-08's PR opens.
+
+**W0-08: request 4.**
+> Producer: say in the D31 rewrite of week-0.md when an unrun W0-08 spike carries over to week 1,
+> now that D31 retires the cap at week-0.md:104-105. Task 1(b)'s "repro steps the founder can rerun
+> in an hour" (server-engineer.md:178) is also a D31-retired clause; that file is a D24 path, so the
+> founder edits it.
+
+Producer, 2026-10-14: answered in the D31 retire-hours follow-up, not here. The carry-over rule
+replaces W0-08's "Past the 4-hour cap" sentence (lines 104-105) on `claude/d31-retire-hours`, the
+D31 rewrite of this file, and takes effect when that PR merges. This entry does not repeat it, so
+the two branches never edit the same lines. The rest of the answer, the draft-until-`client.log`
+hold and the INCONCLUSIVE fallback, is in W0-08's description. "In an hour" at
+server-engineer.md:178 is the founder's D24 edit, drafted on `claude/d31-build-agents` as "rerun
+from the PR alone".
+
+**W0-08: request 5.**
+> Producer: does rule 6 apply to a throwaway-branch workflow (SteamCMD and `lib32gcc-s1`, Rules
+> touched), and if it does, must its ADR merge before the founder re-runs the workflow?
+
+Producer, 2026-10-14: no. Rule 6 does not apply to `claude/spike-sdr-server`'s workflow, so it needs
+no ADR, and nothing has to merge before the founder re-runs it. Conditions: the branch is never a PR
+and never merges, and nothing on main refers to it; W0-08's description keeps disclosing both
+dependencies (SteamCMD from Valve's CDN, unpinned and self-updating, version 1791918946, with
+`steamclient.so`'s SHA-256 printed every run; apt's `lib32gcc-s1`); if anything on main ever depends
+on SteamCMD or its `steamclient.so` (a `ci.yml` job, a `tools/` script, a promoted spike workflow),
+that PR's ADR merges first (README:10-11). Why: rule 6 and README:25 tie the ADR to a PR ("before
+the PR that adds them"); README:10-11 defines a dependency, not when its ADR is due. Precedent:
+W0-10's never-merged `claude/spike-wire-format` workflow used `flatc`, `flatbuffers`, and `bitflags`
+before ADR 0004 merged (#15). W0-09's "no new dependency" was that item's own clause, not a reading
+of rule 6.
+
+**W0-08: request 6.**
+> Producer: does server-engineer.md:131's integration-test line apply to a spike PR whose only
+> possible test would need a Steam client (server-engineer.md:158)?
+
+Producer, 2026-10-14: no, :131 ("An integration test in the diff that fails on the old code and
+passes on the new") does not apply to W0-08. Its evidence is the run: CI building the example on
+both runners, the runner's server log, the macOS build, and the founder's client log and round trip.
+The rest of the definition of done holds: :130 (size, one concern, the five sections, checklists),
+:132 (fmt, clippy `-D warnings`, and `cargo test --workspace` green on Windows and Linux at head,
+which build the example), and :133 (the ADR merged first, W0-22; one `steamworks` in `Cargo.lock`).
+W0-08's Definition-of-done bullet ends "no integration test; answered as request 6, the run logs are
+the evidence". W0-08 only: every PR into `crates/server/src` or `tests/` keeps :131 in full, the
+future `SteamRelay` transport included (tested through `RawUdp`, :104); a later spike gets its own
+answer in its queue item. Why: :131 and :158 cannot both hold for this PR, and the queue item
+governs its acceptance: task 1(b) (:170-182) names logs, a round trip, and repro steps, not a test,
+and the spike lives in `examples/`, never `src/` (:16-17). Writing the exemption into
+server-engineer.md:131 would be the founder's D24 edit, if wanted.
