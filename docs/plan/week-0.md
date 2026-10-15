@@ -79,9 +79,10 @@ as W0-04 (rule 6); no dotnet job until `client/` exists; no Steam client, app ID
 **W0-08 SDR spike; the outcome writes D3.** Paths: `crates/server/examples/sdr_spike.rs`,
 `crates/server/Cargo.toml`. Accept per server-engineer task 1(b), plus: CI green with no Steam client;
 one `steamworks` in `cargo tree -d`. The founder runs it on a machine they already own, no spend (Q18
-has no written default). FAIL is a result, not a slip. With no PASS or FAIL by week 0's end, the run
-and D3's line move to week 1, flagged at the top of its queue, and no transport work starts before
-D3's line exists.
+has no written default). FAIL is a result, not a slip. If week 1's queue is written while W0-08's PR
+shows no PASS or FAIL (an unrun spike or an INCONCLUSIVE run), W0-08 and D3's line (W0-19) carry over,
+flagged at the top of that queue; W0-08 is never split, re-scoped, or cut for waiting (D28), and no
+transport work starts before D3's line exists.
 
 **W0-09 Sidecar watchdog spike; the outcome writes D8.** Paths: `docs/adr/0003-sidecar-watchdog.md`.
 Code lives on branch `claude/spike-sidecar-watchdog`, never a PR, never merged. Accept: a std-only Rust
