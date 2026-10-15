@@ -313,8 +313,9 @@ Producer, 2026-10-14: no, :131 ("An integration test in the diff that fails on t
 passes on the new") does not apply to W0-08. Its evidence is the run: CI building the example on
 both runners, the runner's server log, the macOS build, and the founder's client log and round trip.
 The rest of the definition of done holds: :130 (size, one concern, the five sections, checklists),
-:132 (fmt, clippy `-D warnings`, and `cargo test --workspace` green on Windows and Linux at head,
-which build the example), and :133 (the ADR merged first, W0-22; one `steamworks` in `Cargo.lock`).
+:132 (fmt and clippy `-D warnings` clean and `cargo test --workspace` green at head: clippy and test
+on Windows and Linux, fmt on Linux only, ci.yml:46; clippy `--all-targets` and `cargo test` build
+the example), and :133 (the ADR merged first, W0-22; one `steamworks` in `Cargo.lock`).
 W0-08's Definition-of-done bullet ends "no integration test; answered as request 6, the run logs are
 the evidence". W0-08 only: every PR into `crates/server/src` or `tests/` keeps :131 in full, the
 future `SteamRelay` transport included (tested through `RawUdp`, :104); a later spike gets its own
