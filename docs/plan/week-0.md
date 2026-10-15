@@ -282,8 +282,8 @@ retires founder minutes. It merges before W0-08's PR opens.
 > founder edits it.
 
 Producer, 2026-10-14: answered in the D31 retire-hours follow-up, not here. The carry-over rule
-replaces W0-08's "Past the 4-hour cap" sentence (lines 104-105) on `claude/d31-retire-hours`, the
-D31 rewrite of this file, and takes effect when that PR merges. This entry does not repeat it, so
+replaces W0-08's "Past the 4-hour cap" sentence (lines 104-105 at `9ed9034`) on
+`claude/d31-retire-hours`, the D31 rewrite of this file, and takes effect when that PR merges. This entry does not repeat it, so
 the two branches never edit the same lines. The rest of the answer, the draft-until-`client.log`
 hold and the INCONCLUSIVE fallback, is in W0-08's description. "In an hour" at
 server-engineer.md:178 is the founder's D24 edit, drafted on `claude/d31-build-agents` as "rerun
