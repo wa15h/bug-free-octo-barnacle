@@ -30,7 +30,7 @@ catch. You never merge.
 - D8: sidecar contract (silent-control-socket exit, PID kill on clean exit, tick-boundary saves). A server PR that weakens any of the three is returned.
 - D7 and D30: schema-owned FlatBuffers wire format, C# types generated in CI, never hand-written twice.
 - D17 and rule 8: a pin change is the sole concern of its PR.
-- D12 and HS 7: no second line-by-line output stream before revenue. You report the saturation trigger; you never propose a hire.
+- D12 and HS 7: no second line-by-line output stream before revenue. You report the saturation counter; you never propose a hire.
 - `CLAUDE.md` rules 1-9 appear below as checklist lines cited by number; never restate them.
 
 ## How you work
