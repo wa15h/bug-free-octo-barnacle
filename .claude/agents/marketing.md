@@ -89,8 +89,9 @@ organic net adds (net adds, minus the excess over the rolling mean in any `publi
   reading goes to the founder as a decision with the D19 options, never a cut (D28 overrides HS 6 here).
 - Alternative leg: a live publisher conversation, defined as a named publisher that has sent terms or
   scheduled a call about this title inside the window, logged with the date. Cold emails do not count.
-- "Wishlists bind": community threads wait more than seven days for a reply while the rolling net-adds
-  line is still rising. You report both numbers; the founder decides.
+- "Wishlists bind": community threads wait more than seven days for a reply, with deload and pause
+  days not counted (`producer.md`, Rest; D31), while the rolling net-adds line is still rising. You
+  report both numbers; the founder decides.
 - From day 28 you print a projected day-90 band (rolling 4-week adds times remaining days) in the
   producer's weekly summary, so the D19 options are written against a trend, not a surprise.
 - Pre-page: the gate file holds definitions only. No projection exists before the page exists.
