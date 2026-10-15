@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Pre-push hook (W0-16); tools/hooks/install.sh points git here. It runs the checks ci.yml runs, in ci.yml's order:
+# rule 7 (fmt, cargo fetch --locked, clippy, test), then each tools/checks gate, so a push CI would fail stops here.
+# Git passes a remote name and URL, and ref lines on stdin; the D25 Stop hook (W0-20) passes no arguments and empty
+# stdin. Neither is read: every check reads the working tree. All output goes to stderr. The first failure stops
+# the run and exits 1 with `RULE <n>: <what> -- <fix>` as its last line.
+set -uo pipefail
+exec </dev/null 1>&2
+root=$(git rev-parse --show-toplevel) || exit 1
+cd "$root" || exit 1
+top=$(pwd -W 2>/dev/null || pwd) # Git Bash on Windows: C:/..., the form rustfmt prints once \ becomes /
+log=$(mktemp) || exit 1
+trap 'rm -f "$log"' EXIT
+fail() { echo "RULE $1: $2 -- $3"; exit 1; }
+say() { echo "pre-push: $*"; }
+# The file:line places cargo printed in $log, with / for \, as ci.yml lists them.
+at() { f=$(sed -n 's|\\|/|g; s|.* panicked at \(.*:[0-9]*\):[0-9]*:$|\1|p; s|^ *--> \(.*:[0-9]*\):[0-9]*$|\1|p' "$log" |
+  sort -u | paste -sd' ' -); echo "${f:-(no file named; see the cargo error above)}"; }
+
+command -v cargo >/dev/null || fail 7 "cargo is not on PATH" "install rustup; rust-toolchain.toml selects the pin"
+say "cargo fmt --all --check"
+if ! cargo fmt --all --check; then
+  f=$(cargo fmt --all --check -- -l 2>&1 | sed -n -e 's|\\|/|g' -e 's|^ *--> \(.*:[0-9]*\):[0-9]*$|\1|' -e "s|^$top/||p" |
+    sort -u | paste -sd' ' -)
+  fail 7 "unformatted Rust in ${f:-(no file listed; see the rustfmt error above)}" "run cargo fmt --all and commit"
+fi
+say "cargo fetch --locked"
+cargo fetch --locked || fail 7 "Cargo.lock is stale, or a download failed (cargo's error above says which)" \
+  "if stale, run cargo fetch and commit Cargo.lock, keeping --locked; if a download, rerun"
+say "cargo clippy --workspace --all-targets --locked -- -D warnings"
+cargo clippy --workspace --all-targets --locked -- -D warnings 2>&1 | tee "$log" ||
+  fail 7 "clippy failed at $(at)" "fix each, then rerun clippy"
+say "cargo test --workspace --locked"
+cargo test --workspace --locked 2>&1 | tee "$log" ||
+  fail 7 "a test failed at $(at)" "fix the code until cargo test passes"
+
+# The tools/checks gates, one line each; each prints its own RULE line. W0-17 adds pr-size.sh (rule 4) below pins.sh.
+say "tools/checks/pins.sh"
+tools/checks/pins.sh || exit 1
+say "ok: every check passed in ${SECONDS}s"
