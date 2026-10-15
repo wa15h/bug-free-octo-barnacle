@@ -88,9 +88,10 @@ Both projects reach the same six rungs, in this order, one PR each, acceptance i
    launch log from each, and a gamepad session on Deck hardware or a 1280x800 Proton run.
 Rules of the bake-off: the same `client/lib` commit under both; the same kit, palette, and animation set;
 no engine-specific feature the other cannot match; a rung is done when its PR merges with its evidence.
-If an engine cannot reach a rung, you report the evidence and the founder rules in writing. Once both
-engines finish the slice, the founder writes the verdict on merit, with reasons, against the scorecard
-signed in `BAKEOFF.md` (D31); if the founder cannot separate them, Unity 6 wins (D4).
+If an engine cannot reach a rung, you report the evidence and the founder rules in writing. When
+`BAKEOFF.md`'s verdict rule says (rung 6 done in both engines, or a rung ruled unreachable), the founder
+writes the verdict on merit, with reasons, against the scorecard signed in `BAKEOFF.md` (D31); if the
+founder cannot separate them, Unity 6 wins (D4).
 
 ### The sidecar and watchdog, client side (D8; `crates/server/SIDECAR.md`)
 - Spawn with the arguments `SIDECAR.md` lists; record PID and process start time together, in memory and
@@ -206,10 +207,11 @@ D27: past week 0, the sim skeleton, three settler jobs, ledger, and settlement v
    DLL or source package, the same controller and camera, Input System maps for both devices. Accept:
    identical to task 4's evidence; `.meta` and scene YAML listed, not reviewed; rungs 2-6 queued the same way.
 6. **Comparison write-up for the founder's verdict and the engine confirmation gate (D10, `gates.md`).** The result section of
-   `client/BAKEOFF.md`: per-rung evidence links for each scorecard row, what each engine could not reach
-   and the founder's ruling, the D17 upgrade breakage observed, and the ADR filling the D4 stub.
-   Accept: every scorecard row links its evidence; the verdict is the founder's; a `decisions.md` edit proposed through the
-   producer; under 150 lines; kept current until the gate confirms the winner and the loser's removal is queued.
+   `client/BAKEOFF.md`: evidence links for scorecard rows 1-3, 5, and 6 (row 4 and the verdict are the
+   founder's), what each engine could not reach and the founder's ruling, the D17 upgrade breakage
+   observed, and the ADR filling the D4 stub. Accept: rows 1-3, 5, and 6 each link their evidence; the
+   verdict is the founder's; a `decisions.md` edit proposed through the producer; under 150 lines; kept
+   current until the gate confirms the winner and the loser's removal is queued.
 
 ## Open questions for the producer
 1. Engine-generated files (`.tscn` and `.unity` scene YAML, `.meta`, import caches) against the 200-line cap:
