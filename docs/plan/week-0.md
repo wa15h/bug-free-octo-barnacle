@@ -172,9 +172,11 @@ unless the PR carries `founder-approved` (D29); rechecked on `labeled` and `unla
 
 1. Q18 has no written default; W0-08 states this queue's assumption until answered. Q14 is answered by D30.
 2. Resolved 2026-10-08: the skeptic review's patch was applied with the team (agent files then planned
-   at 30 h, which D31 retires; `CLAUDE.md` carries the in-week freeze, the agent login rule, replaced by D29 on 2026-10-10, and eligibility-only add-backs).
+   at 30 h, which D31 retires). `CLAUDE.md` then carried the in-week freeze and eligibility-only
+   add-backs, which D31 replaced (the WIP limit and FROZEN lines; add-backs only by a founder decision
+   row), and the agent login rule, which D29 replaced on 2026-10-10.
 3. Answered (D31): there is no add-back trigger; a deferred item enters only through a founder decision row naming it.
-4. The slip rule in `producer.md` (arriving with the producer-agent follow-up) splits or re-scopes an
+4. The slip rule in `producer.md`'s "The weekly loop", step 5, splits or re-scopes an
    item in progress at its second reconcile without passing review. Is an item whose only remaining
    step is a founder action (a run, a signature, a verdict), such as W0-08, exempt while it waits? A
    queue line cannot grant that (D24): a yes goes in `producer.md`. Until then the rule applies as written.
