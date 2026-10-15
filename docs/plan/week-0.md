@@ -81,8 +81,8 @@ as W0-04 (rule 6); no dotnet job until `client/` exists; no Steam client, app ID
 one `steamworks` in `cargo tree -d`. The founder runs it on a machine they already own, no spend (Q18
 has no written default). FAIL is a result, not a slip. If week 1's queue is written while W0-08's PR
 shows no PASS or FAIL (an unrun spike or an INCONCLUSIVE run), W0-08 and D3's line (W0-19) carry over,
-flagged at the top of that queue; W0-08 is never split, re-scoped, or cut for waiting (D28), and no
-transport work starts before D3's line exists.
+flagged at the top of that queue; W0-08 is never cut for waiting (D28), and no transport work starts
+before D3's line exists. Founder question 4 asks how the slip rule treats it while it waits.
 
 **W0-09 Sidecar watchdog spike; the outcome writes D8.** Paths: `docs/adr/0003-sidecar-watchdog.md`.
 Code lives on branch `claude/spike-sidecar-watchdog`, never a PR, never merged. Accept: a std-only Rust
@@ -174,6 +174,10 @@ unless the PR carries `founder-approved` (D29); rechecked on `labeled` and `unla
 2. Resolved 2026-10-08: the skeptic review's patch was applied with the team (agent files then planned
    at 30 h, which D31 retires; `CLAUDE.md` carries the in-week freeze, the agent login rule, replaced by D29 on 2026-10-10, and eligibility-only add-backs).
 3. Answered (D31): there is no add-back trigger; a deferred item enters only through a founder decision row naming it.
+4. The slip rule in `producer.md` (arriving with the producer-agent follow-up) splits or re-scopes an
+   item in progress at its second reconcile without passing review. Is an item whose only remaining
+   step is a founder action (a run, a signature, a verdict), such as W0-08, exempt while it waits? A
+   queue line cannot grant that (D24): a yes goes in `producer.md`. Until then the rule applies as written.
 
 ## Questions
 
