@@ -18,19 +18,25 @@ wins over anything you remember about this project. The research behind it is in
 - Out-and-back runs of 30-90 minutes; slow, telegraphed, positioning-first combat.
 - 2-player co-op over a listen server the host's client spawns as a sidecar process.
 - Offline progression as a deterministic catch-up function, identical on every server.
-- Deferred until earned by demonstrated hours: 4-player drop-in, the free headless
+- Deferred until a founder decision row names it (D31): 4-player drop-in, the free headless
   dedicated binary, the Hospital Quarter mode, a second kit, the Boroughs meta-layer,
   localization. Never in v1: client prediction or rollback, strangers, free text between
   players, in-game voice promises.
 
 ## Founder constraints that shape every task
 
-- 30 hours a week of founder time on top of a day job, 42 project weeks a year, a deload
-  fortnight every 12 weeks. Dates are bands, not points. Gates are cumulative build-hour
-  triggers, not calendar dates. See `docs/plan/decisions.md` D5, D10, D11, and D23.
-- Review budget: about 20-25 pull requests a week at 30 hours (8-15 at 15 hours), each
-  200 changed lines or fewer (hard cap 400). Review bandwidth is the binding constraint of the whole project. A PR that is
-  too big does not get reviewed; it gets split.
+- Founder hours are not part of the plan (D31). Nothing logs, estimates, budgets, forecasts,
+  or triggers on them; every choice is made on evidence and merit, toward the target state:
+  the cut scope (D2) at full quality (D28). No dates and no forecasts: gates fire when their
+  evidence exists on main and the founder gives every verdict; the page, demo, and early
+  access go live when their checklists are true and the founder publishes.
+- Review: at most n open agent PRs (`WIP: <n>` on the queue's first line; n = 10 until the
+  founder sets another; founder PRs never count). A ready PR that has waited more than five
+  days freezes the queue until none has waited more than two. Each PR is 200 changed lines
+  or fewer (hard cap 400; D6, D22). Review bandwidth is the binding constraint of the whole
+  project. A PR that is too big does not get reviewed; it gets split.
+- Rest: a deload fortnight every 12 weeks from week 0, and the founder may pause the queue
+  at any time without a reason. Deload and pause days stop every waiting clock.
 - Line-by-line review areas: `crates/sim`, `crates/proto`, `crates/persist`, and the
   authority paths of `crates/server`. The founder reads every line. Keep these crates
   small, boring, and heavily tested.
@@ -50,19 +56,21 @@ wins over anything you remember about this project. The research behind it is in
 - Client: C# on an engine-agnostic .NET Standard 2.1 class library (protocol decode,
   Steam via Steamworks.NET or Facepunch.Steamworks, interpolation buffers, sidecar
   launch and watchdog, typed events). The engine project is a thin presentation layer.
-- Engine: PENDING a weeks 0-6 bake-off between Godot 4.7 C# and Unity 6 on logged
-  founder hours for an identical vertical slice; tie within 15% goes to Unity 6.
+- Engine: PENDING a bake-off between Godot 4.7 C# and Unity 6 on an identical vertical
+  slice, decided by the founder's written verdict on merit against a scorecard
+  signed in `client/BAKEOFF.md` before either engine project exists; a tie goes to Unity 6 (D31).
   Not Bevy. Not Unreal. No Rust GDExtension on the critical path.
 - Netcode: server-authoritative, interpolation only, tuned for 80-150 ms. No prediction.
 - Listen server: the client spawns the server binary as a sidecar process and owns a
   watchdog (server exits on a silent control socket; client kills the recorded PID on
   clean exit; saves are written at tick boundaries). No in-process server, ever.
 - Camera: third-person follow camera by default, with the top-down diorama as the
-  settlement management view; locked by a prototype of both at about 400 logged hours.
+  settlement management view; locked by a prototype of both, the first client item after
+  the bake-off result.
 - Pins: one Rust toolchain, one Steamworks SDK version across the Rust binding, the C#
   binding, and the redistributable, one FlatBuffers version across `flatc`, the crate, and
   the C# runtime (D30), one engine minor line. At most two engine minor
-  upgrades a year, 8-20 hours each, never shipping on a line that has lost patch support.
+  upgrades a year, never shipping on a line that has lost patch support.
 
 ## Repository layout
 
@@ -72,7 +80,7 @@ crates/proto      schema-owned wire protocol and versioning; generates C# types 
 crates/net        replication, snapshots, interest filtering, interpolation inputs
 crates/persist    saves, versioned migrations, catch-up, migration-fixture harness
 crates/server     the authoritative tokio binary, Steam GameServer transport, sidecar contract
-crates/tools      bots, headless harnesses, replay tools, hour and velocity logging
+crates/tools      bots, headless harnesses, replay tools
 client/lib        the engine-agnostic C# library
 client/godot      Godot 4.7 C# presentation project (bake-off)
 client/unity      Unity 6 presentation project (bake-off)
@@ -104,28 +112,27 @@ tools/            git hooks, CI scripts, PR checks
 
 ## How the team works
 
-- The `producer` agent turns the plan into a weekly queue sized to the review budget.
+- The `producer` agent turns the plan into a weekly queue in priority order.
   Every other agent takes work from that queue, one PR at a time.
 - The `reviewer` agent pre-reviews every PR before the founder sees it and writes the
   founder-facing summary. Nothing reaches the founder without it.
-- The founder's review budget is enforced inside the week. The reviewer holds (back to draft)
-  any PR that would take the week's ready-for-founder minutes past the review minutes and
-  reports a founder backlog; the producer then writes `WIP: 0 FROZEN: <reason>` as the first
-  line of the queue. Every agent reads that line before starting an item and opens nothing for
-  review while it says FROZEN.
+- The producer writes the queue's first line (D31), and every agent reads it before starting
+  an item. A PR finished while the WIP cap is full waits as a draft marked
+  `held: WIP limit reached`. While it says `WIP: 0 FROZEN: <reason>` (founder backlog, deload,
+  or founder pause), no agent opens anything for review.
 - Agents work under the founder's GitHub login; there is no separate agent account (D29). Agent
   commits are authored `Claude`, agent branches start `claude/`, and every agent PR description,
   issue, and comment opens with `Agent: <name>`. Agents never approve, merge, or apply or remove the
   `founder-approved` or `upgrade` labels. `.claude/settings.json` denies the direct merge and
   label tools, but it is a guard, not a boundary: this rule is what holds.
-- When hours run short, dates slip; scope and quality never do (D28). No agent proposes a
-  shortcut or a cut to hold a date.
-- The D2 add-back trigger makes a deferred item eligible, not queued. Nothing deferred is
-  built, promised, or translated until the founder adds a decision naming it.
+- Dates slip; scope and quality never do (D28). No agent proposes a shortcut or a cut to hold
+  a date.
+- Nothing deferred is built, promised, or translated until the founder adds a decision row
+  naming it (D31).
 - Agents ask the producer when a task is unclear, and never widen scope on their own.
 - Agents never claim a result they did not verify. A failing test is reported as failing.
-- Hours are logged by the founder, not estimated by agents. Agents report their own work
-  in changed lines and test evidence.
+- Agents never log, estimate, or forecast founder hours (D31). They report their own work in
+  changed lines and test evidence.
 - Agents never edit `.claude/`, this file, `docs/research/`, or `docs/plan/decisions.md`
   (D24). Open questions follow the defaults in `docs/plan/open-questions.md` (D21).
 
