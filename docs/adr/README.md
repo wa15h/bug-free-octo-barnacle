@@ -11,11 +11,13 @@ is carried out, and never edits that file: a changed decision is a row the found
   a workflow or `tools/` script depends on; an art kit only when it brings an importer plugin or a
   shader dependency (Q30 default, D21).
 - D17 pins: choosing a pinned version (the Rust toolchain; the Steamworks SDK with every binding and
-  the redistributable; the engine minor line). An upgrade PR edits that ADR in place (step 3 below).
-- Inside D3, D7, or D8: a design choice of how the area works, such as the runtime setup or the
+  the redistributable; the engine minor line; one FlatBuffers version for `flatc`, the `flatbuffers`
+  crate, and `Google.FlatBuffers`, by D30). An upgrade PR edits that ADR in place (step 3 below).
+- Inside D3, D7, D8, or D30: a design choice of how the area works, such as the runtime setup or the
   snapshot layout, even with no new dependency (founder, 2026-10-10). D3 is the tokio server binary,
   SDR transport, the raw-UDP fallback, and the engine-free sim, proto, net, and persist crates; D7
-  the wire format and C# codegen; D8 the sidecar process and its watchdog. Routine work in them with
+  the Rust-owned schema and C# codegen; D8 the sidecar process and its watchdog; D30 the wire format,
+  FlatBuffers, which replaced D7's format clause. Routine work in them with
   no new dependency needs none: W0-02's empty crates, the sim skeleton, and work carrying out a merged
   spike ADR (`SIDECAR.md` under 0003, the proto skeleton under 0004). Q10 asks if `Fixed` needs one.
 - The ant-farm viewer in `crates/tools`, even with no dependency (test-engineer, sim-engineer files).
