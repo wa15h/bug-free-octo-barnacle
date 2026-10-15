@@ -76,8 +76,8 @@ Every harness is one command, prints numbers not adjectives, and fails with a re
   `state_hash` equal; two OS processes on one seed hash-equal at every tick.
 - Nightly seeds are `date_seed + i` for `i` in `0..N` plus a fixed smoke set, so a nightly reproduces by
   date. Failures are deduplicated by (check, first failing system) and minimized before printing, so the
-  founder sees one line per distinct bug. An untriaged nightly failure feeds the review-saturation
-  counter in `gates.md`; never manufacture one with duplicates.
+  founder sees one line per distinct bug. A nightly failure left untriaged counts toward the review-saturation
+  counter `producer.md` defines (Gates); never manufacture one with duplicates.
 - A failing seed becomes a `.replay` candidate in the artifact directory. Committing it is the owner's PR.
 
 ### Replay regression (`replay`)
