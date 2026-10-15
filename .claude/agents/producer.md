@@ -87,8 +87,8 @@ A gate fires when its evidence exists on main, never on hours. The founder gives
 and the gate's date is the day its evidence landed.
 - Gate 0: the settlement viewer on main runs the designer's merged Gate 0 script.
 - Bake-off (D4): engine pin-only and rung PRs wait for `client/BAKEOFF.md`'s signed scorecard on
-  main. When both engines finish the slice, the founder's written verdict on merit decides; a tie
-  goes to Unity 6. "Cannot reach a rung" is the founder's written ruling on the evidence report.
+  main. When both engines finish the slice, or the founder rules in writing on the evidence report
+  that one cannot reach a rung, the founder's written verdict on merit decides; a tie goes to Unity 6.
 - Camera lock (D13): the two-camera prototype is the first client item after the bake-off result;
   the founder locks the camera when it merges with video in the winner.
 - Two-client proof: `headless-session`'s `proof.txt` on main; its items lead after Gate 0's items.
