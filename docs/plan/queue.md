@@ -143,7 +143,7 @@ Merged in week 0: W0-01 to W0-07, W0-09 to W0-17 (W0-11 then retired by D31), an
 | N-17 | persistence-engineer | Envelope, atomic write, loader: `crates/persist/src/{envelope,write,load}.rs`, `crates/persist/README.md` | L | 190 | per persist 2 | D8 | 0008 | N-16 | Two-client proof |
 | N-18 | server-engineer | `Transport` trait and `RawUdp`, `crates/server/src/transport/` | E | 150 | per server 5 | D3 D9 | 0009 | D3's line, N-14 | Two-client proof |
 | N-19 | devex-engineer | ADR 0010: the .NET SDK pin and its CI action, `docs/adr/0010-dotnet-sdk.md` | E | 40 | one SDK version for `client/global.json`; any action at a full SHA (ADR 0001) | D7 D17 | is the ADR | - | Bake-off |
-| N-51 | devex-engineer | `pins.sh`: check `client/global.json` against `dotnet-sdk`, `tools/checks/pins.sh` | E | 40 | as W1-13a, per `devex-engineer.md`:43-46: a `global.json` whose SDK version differs from the `dotnet-sdk` row, or has no row, goes red naming both files; no `global.json` yet passes, saying so; red and green linked | D17 | no | N-19 | Bake-off |
+| N-51 | devex-engineer | `pins.sh`: check `client/global.json` against `dotnet-sdk`, `client/godot/project.godot` against `godot`, and `client/unity/ProjectSettings/ProjectVersion.txt` against `unity`; `tools/checks/pins.sh` | E | 70 | as W1-13a, per `devex-engineer.md`:43-46 and :93-96 (the row names): a mirror whose version differs from its row, or that has no row, goes red naming both files; a mirror not there yet passes, saying so (`global.json` lands in N-52, `project.godot` in N-28, `ProjectVersion.txt` in N-29); red and green linked | D17 | no | N-19 | Bake-off |
 | N-52 | devex-engineer | Pin-only: `dotnet-sdk` in `tools/pins.toml` and its mirror `client/global.json` | E | 10 | rule 8: ADR 0010's SDK version, N-51's check green on it; the founder labels it `upgrade` | D17 | 0010 | N-51 | Bake-off |
 | N-53 | devex-engineer | Pin-only: the .NET CI action's full-SHA row in `tools/pins.toml` | E | 5 | rule 8: the action and SHA ADR 0010 names (ADR 0001); the founder labels it `upgrade` | D17 | 0010 | N-19 | Bake-off |
 | N-20 | client-engineer | ADR 0013: the test packages of `client/lib.Tests`, `docs/adr/0013-dotnet-tests.md` | E | 40 | every `PackageReference` with version, owner, and licence (rule 6) | D4 | is the ADR | - | Bake-off |
@@ -151,11 +151,11 @@ Merged in week 0: W0-01 to W0-07, W0-09 to W0-17 (W0-11 then retired by D31), an
 | N-22 | client-engineer | `client/lib` skeleton: `client/lib/`, `client/lib.Tests/` | E | 190 | per client 1 | D4 D7 D30 | 0004, 0013 | N-20 N-21 | Bake-off |
 | N-23 | founder | Sign the scorecard in `client/BAKEOFF.md` | F | 5 | the founder's own PR (D31) | D4 D31 | no | - | Bake-off |
 | N-24 | devex-engineer | ADR 0011: the Godot 4.7 .NET minor-line pin, `docs/adr/0011-godot-pin.md` | E | 40 | one minor line (D17) | D4 D17 | is the ADR | N-23 | Bake-off |
-| N-25 | devex-engineer | Godot pin-only PR: `tools/pins.toml` and its mirror | E | 30 | rule 8; the founder labels it `upgrade` | D17 | 0011 | N-22 N-24 | Bake-off |
+| N-25 | devex-engineer | Godot pin-only PR: the `godot` row in `tools/pins.toml` only | E | 5 | rule 8: ADR 0011's line; no mirror in the diff: `project.godot` lands in N-28, and N-51's `pins.sh` check runs on it there; the founder labels it `upgrade` | D17 | 0011 | N-22 N-24 | Bake-off |
 | N-26 | devex-engineer | ADR 0012: the Unity 6 LTS line pin, `docs/adr/0012-unity-pin.md` | E | 40 | one LTS line (D17), with the URP and Input System versions rung 1 uses (rule 6) | D4 D17 | is the ADR | N-23 | Bake-off |
-| N-27 | devex-engineer | Unity pin-only PR: `tools/pins.toml` and its mirror | E | 30 | rule 8; the founder labels it `upgrade` | D17 | 0012 | N-22 N-26 | Bake-off |
-| N-28 | client-engineer | Godot rung 1, `client/godot/` | E | 190 | per client 4 | D4 D13 | 0011 | N-25 | Bake-off |
-| N-29 | client-engineer | Unity rung 1, `client/unity/` | E | 190 | per client 5 | D4 D13 | 0012 | N-27 | Bake-off |
+| N-27 | devex-engineer | Unity pin-only PR: the `unity` row in `tools/pins.toml` only | E | 5 | rule 8: ADR 0012's line; no mirror in the diff: `ProjectVersion.txt` lands in N-29, and N-51's `pins.sh` check runs on it there; the founder labels it `upgrade` | D17 | 0012 | N-22 N-26 | Bake-off |
+| N-28 | client-engineer | Godot rung 1, `client/godot/` | E | 190 | per client 4; `pins.sh` green on the `project.godot` it creates, against N-25's row (linked) | D4 D13 D17 | 0011 | N-25 | Bake-off |
+| N-29 | client-engineer | Unity rung 1, `client/unity/` | E | 190 | per client 5; `pins.sh` green on the `ProjectVersion.txt` it creates, against N-27's row (linked) | D4 D13 D17 | 0012 | N-27 | Bake-off |
 | N-30 | game-designer | GDD, the runs half, `docs/design/gdd.md` | E | 150 | per designer 1 | D2 D9 D26 | no | W1-06 | Gate 1 |
 | N-31 | game-designer | `content/cordon.csv` | E | 40 | per designer 6 | D14 D26 | no | W1-07 N-30 | Gate 1 |
 | N-32 | sim-engineer | Cordon calendar, `crates/sim/src/cordon.rs` | L | 150 | per sim 5 | D26 | 0005 | N-07 N-31 | Gate 1 |
@@ -166,7 +166,7 @@ Merged in week 0: W0-01 to W0-07, W0-09 to W0-17 (W0-11 then retired by D31), an
 | N-35 | art-director | `content/palette/` | E | 50 | per art-director 2, both outputs from N-49's job linked | D26 | no | N-31 N-48 N-49 | Bake-off rung 2 |
 | N-50 | art-director | Brief template and capsule brief, `docs/plan/art-briefs/{TEMPLATE,capsule,spend-ledger}.md` | E | 140 | per art-director 5, on Q31's default (D21); no spend queued: the ~$400 and D26's greybox test come later | D12 D14 D21 D26 | no | N-34 N-35 | - |
 | N-36 | founder | Buy the recommended kit (spend); no file | F | 0 | the founder buys; no pack file is committed (Q30) | D12 | no | W1-15 | Bake-off rung 2 |
-| N-37 | art-director | `content/kits/README.md` and the kit's records | E | 150 | per art-director 3 | D12 D17 | Q30 default | N-36 | Bake-off rung 2 |
+| N-37 | art-director | `content/kits/README.md` and the kit's records | E | 150 | per art-director 3, restated: `LICENSE-RECORD.md` with the license checklist complete and its clauses quoted; no pack file in the diff; every source material in `palette-map.csv` maps to a key in the merged `palette.csv`; every manifest `category` is a slot class the merged `cordon.csv` names; the import stated as not yet run (`art-director.md`:153), since task 3's both-engines import clause moves to the rung-2 rows a later queue adds | D12 D17 | Q30 default | N-35 N-36 | Bake-off rung 2 |
 | N-38 | test-engineer | Simulator skeleton, `crates/tools/src/bin/sim.rs` | E | 190 | per test 1 | D3 | no | W1-10 | Rule 2 nightly |
 | N-39 | devex-engineer | Sim allowlist: `tools/allowlist/sim.toml`, `tools/checks/sim-deps.sh` | E | 150 | per devex 6, listing 0005 and 0006 | D3 | no | W1-04 W1-05 | Rule 1 hook |
 | N-40 | devex-engineer | Hearth-only CI step, `.github/workflows/ci.yml` | E | 20 | `cargo test -p sim --no-default-features` on both runners | D27 | no | N-07 | Rule 7 hook |
@@ -194,7 +194,7 @@ Held: steam-release's tasks and marketing tasks 1, 2, 5, 6 wait for the two-play
    do) also cover art-director task 5? A yes is your answer to Q31, and N-50 leaves the queue until the loop.
 5. Q7 has no written default, so `test-guard.sh` is not queued. Q18 stays open; nothing here waits on it.
 6. May the test engineer open N-45, one synthetic PR closed unmerged, despite `test-engineer.md`:172, :176, and :181 (no
-   test deleted, no other crate patched, no PR past 200 lines, as every writer's file says)? A yes goes in that file (D24).
+   test deleted, no other crate patched, no PR past 200 lines)? No single owner holds all four crates. A yes goes in that file (D24).
 
 ## Questions
 Agents add `<ID>: question` here. The producer answers it or parks the item and asks the founder above.
