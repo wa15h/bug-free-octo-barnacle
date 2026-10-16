@@ -45,12 +45,11 @@ Class: L = line-by-line, E = evidence, F = founder-authored. Min = founder minut
 | W0-15 | reviewer | Founder summary format (section 2) | E | 70 | 10 | 14 | D6 D18 | no |
 | W0-16 | devex-engineer | Pre-push hook and installer | E | 70 | 10 | 07 | D6 D25 | no |
 | W0-17 | devex-engineer | PR size gate | E | 120 | 15 | 16 | D6 D22 | 0001 |
-| W0-18 | devex-engineer | PR template copy and drift check | E | 70 | 5 | 17 23 | D6 | no |
+| W0-18 | devex-engineer | PR template copy and drift check | E | 45 | 5 | 17 | D6 | no |
 | W0-19 | founder | Spike outcomes into `decisions.md` | F | 10 | 30 | 08 09 | D3 D8 D24 D29 | no |
 | W0-20 | founder | D25 Stop hook in `.claude/settings.json` | F | 20 | 30 | 16 | D24 D25 D29 | no |
 | W0-21 | devex-engineer | Protected-paths gate (D24) | E | 55 | 10 | 17 | D24 D29 | no |
 | W0-22 | server-engineer | ADR amendment for W0-08: steamworks' eight packages | E | 20 | - | 05 10 | D3 D17 D30 | is the ADR |
-| W0-23 | producer | PR template opens with the Agent line (W0-18 question) | E | 60 | - | - | D29 D31 | no |
 
 **W0-01.** Paths: `docs/plan/week-0.md`. Accept: every item has ID, owner, paths, class, lines,
 acceptance, decisions, ADR-first; lines at most 3,000 and PRs inside 20-25; each spike names the
@@ -154,7 +153,7 @@ unless the PR carries `founder-approved` (D29); rechecked on `labeled` and `unla
 | P0 | devex-engineer | `never-in-v1.sh`: no bevy, godot or gdext package, cdylib crate, `.gdextension`, prediction or rollback identifier, engine netcode, lobby search, voice, or Steam inventory API (D2 D4 D8 D9 D14) | E | 90 | 10 | W0-17 |
 | P1 | producer | Withdrawn by D31: no `milestones.md`, bands, or V | - | - | - | - |
 | P2 | reviewer | Review-log section 3, the hook request list (reviewer task 6) | E | 60 | 10 | W0-14 |
-| P3 | devex-engineer | `tools/checks/pr-template.sh`: five headings, none empty; a section holding only its template comment is empty (rule 5) | E | 60 | 10 | P2 |
+| P3 | devex-engineer | `tools/checks/pr-template.sh`: five headings, none empty (rule 5) | E | 60 | 10 | P2 |
 
 ## Pushed to week 1 (waits on a week-0 outcome, or is feature work)
 
@@ -310,34 +309,3 @@ answer in its queue item. Why: :131 and :158 cannot both hold for this PR, and t
 governs its acceptance: task 1(b) (:170-182) names logs, a round trip, and repro steps, not a test,
 and the spike lives in `examples/`, never `src/` (:16-17). Writing the exemption into
 server-engineer.md:131 would be the founder's D24 edit, if wanted.
-
-**W0-18: question**, from the reviewer's hold of W0-18 (`claude/w0-18-template-drift` at `a12e9e0`, not
-opened) after four pre-review rounds, 2026-10-16, quoted as relayed to the producer.
-> Clauses 1, 3 and 4 pass. Clause 2 cannot: GitHub fills a web-form PR body with the copy, and
-> pr-template.md on main opens with `# Pull request template` and an intro paragraph that names
-> `Agent: <owner agent> (<queue ID>)` inside a sentence, so a filled body opens with an H1, not the
-> `Agent:` line. (a) The producer edits docs/plan/pr-template.md in its own PR so a body filled from
-> it opens with the `Agent: <owner agent> (<queue ID>)` line, then the five sections; W0-18 merges
-> main and re-copies after that PR merges. (b) The producer rewords clause 2 (for example, to "the
-> copy carries the `Agent:` line guidance and the five sections").
-
-Producer, 2026-10-16: (a); clause 2 stands as written. Queued as W0-23 (the row above); W0-18 now
-waits on it (After `17 23`; Lines 70, as the copy grows by 18). Once W0-23 merges, W0-18's owner
-merges main, copies the file again, and re-runs its evidence; its paths and acceptance stand. A
-founder opening a PR from the web form deletes the `Agent:` line: an unmarked PR is the founder's
-(D29), D24 PRs with `founder-approved` included, and never counts toward the WIP limit (D31). Why:
-D29 has every agent PR description open with `Agent:`, and the gate map's `wip-limit.sh`
-(devex-engineer.md, HS 7 row) tells an agent PR from the founder's by that opening alone, so a body
-opening with an H1 reads as the founder's and escapes the D31 cap. Rule 5 makes this file the shape
-of every description, and devex-engineer.md:21 and row 5 keep the `.github` copy verbatim, so the
-source has to be a body; otherwise every writer deletes a title by hand and the reviewer corrects it
-at step 7. (b) would loosen W0-18's acceptance to fit a file the producer owns and can fix
-(devex-engineer.md:36). With the guidance in comments, P3's row now counts a section holding only
-its template comment as empty.
-
-**W0-23.** Paths: `docs/plan/pr-template.md`; in this file, this entry and the W0-18, W0-23, and P3
-rows. Accept: the template's line 1 is exactly `Agent: <owner agent> (<queue ID>)`; the five `##`
-headings follow, unchanged and in order; the title, the intro, and each section's guidance keep
-every word inside HTML comments, which a filled body carries and GitHub does not show; three added
-lines say an agent fills the first line in and the founder deletes it; 60 counted lines at most;
-`ci.yml` green on head. It merges before W0-18.
