@@ -1,11 +1,13 @@
 # PR gates: one job per tools/checks script. W0-17 adds pr-size (rule 4), the same file tools/hooks/pre-push runs.
 # Every team branch is in this repo (D29), so the token gets the permissions each job lists. Actions per ADR 0001:
 # actions/checkout at its tools/pins.toml SHA; labels go on and off with the runner's gh. No Steam client or secret.
+# W0-21 adds protected-paths (D24), PR only. labeled and unlabeled re-run every job, so founder-approved is rechecked;
+# pr-size counts the same head again and re-syncs size/over-200 (its GITHUB_TOKEN label change starts no new run).
 name: pr-gates
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened, ready_for_review, labeled, unlabeled]
 
 concurrency:
   group: pr-gates-${{ github.event.pull_request.number }}
@@ -40,3 +42,22 @@ jobs:
         run: |
           if [ "$N" -gt 200 ] && [ "$HAS" = false ]; then gh api --method POST "$API" -f "labels[]=size/over-200" --silent; fi
           if [ "$N" -le 200 ] && [ "$HAS" = true ]; then gh api --method DELETE "$API/size%2Fover-200" --silent; fi
+
+  protected-paths:
+    name: protected-paths (D24)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read # checkout
+      pull-requests: read # read the PR's labels for founder-approved (D29); nothing is written
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # all history, so origin/main and the merge base are present
+          persist-credentials: false # no ref: the merge commit, so a PR branched before this job runs main's script
+      - name: tools/checks/protected-paths.sh (D24, D29)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: tools/checks/protected-paths.sh "$PR"
