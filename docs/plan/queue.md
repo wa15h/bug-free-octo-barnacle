@@ -6,8 +6,8 @@ dates, or forecasts (D31): items are pulled in the order below, and none is prom
 Weeks 2-6 do not fit in full under the 200-line cap (D22, rule 4), so they follow as one ordered pull list: each row has
 the eight fields, acceptance by reference to the owner's first-task list, and the gate it serves.
 
-How to pull: read line 1 first. Take the first item in order that you own and whose After items have all merged,
-one at a time. Open agent PRs never pass n, `held:` drafts included (`producer.md`, The WIP limit); under a
+How to pull: read line 1 first. Take the first item in order that you own and whose After items have all merged ("-"
+names none), one at a time. Open agent PRs never pass n, `held:` drafts included (`producer.md`, The WIP limit); under a
 `WIP: 0 FROZEN: <reason>` line open nothing for review. The first deload is weeks 12-13 (`producer.md`, Rest).
 
 Order (D27; `producer.md`, Gates): Gate 0's items lead, the two-client proof's follow, and tooling Gate 0 does
@@ -20,10 +20,13 @@ W1-13a, W1-15 to W1-17, W1-20, N-19, N-20, N-34, N-41, and N-48 (16 agent items)
 Class: L line-by-line, E evidence, F founder-authored (no `Agent:` line, D29; never counts toward n, D31).
 Lines: expected counted lines (D22); a sim or server diff past 150 splits as its owner's PR loop says (step 3).
 "Per <owner> N": that owner's first task N in `.claude/agents/`, plus the note. ADRs 0005-0013 are reserved here (W1-20).
+Paths: a row's listed files, plus the files named by its acceptance or by the part of its owner's task it takes; the
+`lib.rs` or `main.rs` lines that declare and wire them; the crate's `tests/` and `README.md`; the `Cargo.toml` line for
+a package its ADR-first column names or a workspace crate it calls; in `crates/sim`, the `State`, `Input`, `Event`,
+order-list, `state_hash`, and `HearthView` lines for what the row adds; for a gate, its `tools/hooks/pre-push` line and
+`pr-gates.yml` job where `devex-engineer.md`:64-79 places them. Any other file is scope widening (`review-log.md`:54).
 
-## Carried over from week 0
-Merged in week 0: W0-01 to W0-07, W0-09 to W0-17 (W0-11 then retired by D31), and W0-22.
-
+## Carried over from week 0 (merged: W0-01 to W0-07, W0-09 to W0-17, and W0-22; W0-11 then retired by D31)
 | ID | Owner | State at week start | Next |
 |---|---|---|---|
 | W0-08 | server-engineer | Draft, holding a slot; waits on the founder's Mac client run | PASS or FAIL in the PR, then D3's line (W0-19); no transport work before it (N-18) |
@@ -32,7 +35,7 @@ Merged in week 0: W0-01 to W0-07, W0-09 to W0-17 (W0-11 then retired by D31), an
 | W0-19 | founder | Open. D3's line waits on W0-08; D8's line can land now in its own founder PR (W0-19's text) | D8's line unblocks N-11 and N-12 |
 | W0-20 | founder | Open; W0-16 has merged, so it waits on nothing | - |
 | W0-12 | founder | `client/BAKEOFF.md` merged unsigned | The signature is N-23; engine pin and rung PRs wait on it (D31) |
-| Setup | founder | `week-0.md`'s founder setup | If not done: require `ci.yml` and `pr-gates.yml`; run `tools/hooks/install.sh` |
+| Setup | founder | `week-0.md`'s founder setup | If not done: protect `main` (D29); create `founder-approved` and `upgrade`; require `ci.yml` and `pr-gates.yml`; run `tools/hooks/install.sh` |
 
 ## Week 1
 | ID | Owner | PR | Class | Lines | After | Decisions | ADR-first | Gate |
@@ -119,9 +122,6 @@ Merged in week 0: W0-01 to W0-07, W0-09 to W0-17 (W0-11 then retired by D31), an
   and next free reads 0014; nothing else changes.
 
 ## Weeks 2-6: pull order
-"-" in After means ready. A row's paths also cover, in its own crate, the `src/lib.rs` or `src/main.rs` module line,
-`tests/`, and the `Cargo.toml` line for a package its ADR-first column names or a workspace crate it calls.
-
 | ID | Owner | PR and paths | Class | Lines | Accept | Decisions | ADR-first | After | Gate |
 |---|---|---|---|---|---|---|---|---|---|
 | N-01 | sim-engineer | Job and ledger table structs and loaders, `crates/sim/src/tables.rs` | L | 150 | per sim 4, the loader: `&str` in, `Result` out; a fourth job row is a load error; a test loads W1-09's files | D2 D3 | 0005 | W1-09 W1-10 | Gate 0 |
@@ -143,11 +143,11 @@ Merged in week 0: W0-01 to W0-07, W0-09 to W0-17 (W0-11 then retired by D31), an
 | N-17 | persistence-engineer | Envelope, atomic write, loader: `crates/persist/src/{envelope,write,load}.rs`, `crates/persist/README.md` | L | 190 | per persist 2 | D8 | 0008 | N-16 | Two-client proof |
 | N-18 | server-engineer | `Transport` trait and `RawUdp`, `crates/server/src/transport/` | E | 150 | per server 5 | D3 D9 | 0009 | D3's line, N-14 | Two-client proof |
 | N-19 | devex-engineer | ADR 0010: the .NET SDK pin and its CI action, `docs/adr/0010-dotnet-sdk.md` | E | 40 | one SDK version for `client/global.json`; any action at a full SHA (ADR 0001) | D7 D17 | is the ADR | - | Bake-off |
-| N-51 | devex-engineer | `pins.sh`: check `client/global.json` against `dotnet-sdk`, `client/godot/project.godot` against `godot`, and `client/unity/ProjectSettings/ProjectVersion.txt` against `unity`; `tools/checks/pins.sh` | E | 70 | as W1-13a, per `devex-engineer.md`:43-46 and :93-96 (the row names): a mirror whose version differs from its row, or that has no row, goes red naming both files; a mirror not there yet passes, saying so (`global.json` lands in N-52, `project.godot` in N-28, `ProjectVersion.txt` in N-29); red and green linked | D17 | no | N-19 | Bake-off |
+| N-51 | devex-engineer | `pins.sh`: check `client/global.json` against `dotnet-sdk`, `client/godot/project.godot` against `godot`, and `client/unity/ProjectSettings/ProjectVersion.txt` against `unity`; `tools/checks/pins.sh` | E | 70 | as W1-13a, per `devex-engineer.md`:43-46 and :93-96 (the row names). It compares: `global.json`'s `sdk.version` equals the `dotnet-sdk` row; `project.godot`'s `config/features` version equals the `godot` row's x.y; `ProjectVersion.txt` passes when `m_EditorVersion` minus its letter suffix (`6000.0.32f1` reads `6000.0.32`) equals an x.y.z `unity` row, or when its x.y equals an x.y row, so either form ADR 0012 picks can go green. A mirror that fails its comparison, or that has no row, goes red naming both files; a mirror not there yet passes, saying so (`global.json` lands in N-52, `project.godot` in N-28, `ProjectVersion.txt` in N-29); red and green linked | D17 | no | N-19 | Bake-off |
 | N-52 | devex-engineer | Pin-only: `dotnet-sdk` in `tools/pins.toml` and its mirror `client/global.json` | E | 10 | rule 8: ADR 0010's SDK version, N-51's check green on it; the founder labels it `upgrade` | D17 | 0010 | N-51 | Bake-off |
 | N-53 | devex-engineer | Pin-only: the .NET CI action's full-SHA row in `tools/pins.toml` | E | 5 | rule 8: the action and SHA ADR 0010 names (ADR 0001); the founder labels it `upgrade` | D17 | 0010 | N-19 | Bake-off |
 | N-20 | client-engineer | ADR 0013: the test packages of `client/lib.Tests`, `docs/adr/0013-dotnet-tests.md` | E | 40 | every `PackageReference` with version, owner, and licence (rule 6) | D4 | is the ADR | - | Bake-off |
-| N-21 | devex-engineer | Codegen skeleton: `client/Hearth.sln`, `client/Directory.Build.props`, `tools/codegen/`, `lockstep.yml` | E | 175 | per devex 5, on N-52's SDK and N-53's action; no pin or mirror file in the diff (rule 8) | D7 D17 D30 | 0004, 0010 | W1-14 N-52 N-53 | Bake-off |
+| N-21 | devex-engineer | Codegen skeleton: `client/Hearth.sln`, `client/Directory.Build.props`, `tools/codegen/`, `tools/checks/lockstep.sh`, `lockstep.yml` | E | 175 | per devex 5, on N-52's SDK and N-53's action; no pin or mirror file in the diff (rule 8) | D7 D17 D30 | 0004, 0010 | W1-14 N-52 N-53 | Bake-off |
 | N-22 | client-engineer | `client/lib` skeleton: `client/lib/`, `client/lib.Tests/` | E | 190 | per client 1 | D4 D7 D30 | 0004, 0013 | N-20 N-21 | Bake-off |
 | N-23 | founder | Sign the scorecard in `client/BAKEOFF.md` | F | 5 | the founder's own PR (D31) | D4 D31 | no | - | Bake-off |
 | N-24 | devex-engineer | ADR 0011: the Godot 4.7 .NET minor-line pin, `docs/adr/0011-godot-pin.md` | E | 40 | one minor line (D17) | D4 D17 | is the ADR | N-23 | Bake-off |
@@ -167,8 +167,8 @@ Merged in week 0: W0-01 to W0-07, W0-09 to W0-17 (W0-11 then retired by D31), an
 | N-50 | art-director | Brief template and capsule brief, `docs/plan/art-briefs/{TEMPLATE,capsule,spend-ledger}.md` | E | 140 | per art-director 5, on Q31's default (D21); no spend queued: the ~$400 and D26's greybox test come later | D12 D14 D21 D26 | no | N-34 N-35 | - |
 | N-36 | founder | Buy the recommended kit (spend); no file | F | 0 | the founder buys; no pack file is committed (Q30) | D12 | no | W1-15 | Bake-off rung 2 |
 | N-37 | art-director | `content/kits/README.md` and the kit's records | E | 150 | per art-director 3, restated: `LICENSE-RECORD.md` with the license checklist complete and its clauses quoted; no pack file in the diff; every source material in `palette-map.csv` maps to a key in the merged `palette.csv`; every manifest `category` is a slot class the merged `cordon.csv` names; the import stated as not yet run (`art-director.md`:153), since task 3's both-engines import clause moves to the rung-2 rows a later queue adds | D12 D17 | Q30 default | N-35 N-36 | Bake-off rung 2 |
-| N-38 | test-engineer | Simulator skeleton, `crates/tools/src/bin/sim.rs` | E | 190 | per test 1 | D3 | no | W1-10 | Rule 2 nightly |
-| N-39 | devex-engineer | Sim allowlist: `tools/allowlist/sim.toml`, `tools/checks/sim-deps.sh` | E | 150 | per devex 6, listing 0005 and 0006 | D3 | no | W1-04 W1-05 | Rule 1 hook |
+| N-38 | test-engineer | Simulator skeleton, `crates/tools/src/{bin/sim,scenario,report}.rs` | E | 190 | per test 1 | D3 | no | W1-10 | Rule 2 nightly |
+| N-39 | devex-engineer | Sim allowlist: `tools/allowlist/{sim.toml,sim-forbidden.txt}`, `tools/checks/sim-deps.sh` | E | 150 | per devex 6, listing 0005 and 0006 | D3 | no | W1-04 W1-05 | Rule 1 hook |
 | N-40 | devex-engineer | Hearth-only CI step, `.github/workflows/ci.yml` | E | 20 | `cargo test -p sim --no-default-features` on both runners | D27 | no | N-07 | Rule 7 hook |
 | N-41 | devex-engineer | `tools/checks/wip-limit.sh`, a `pr-gates.yml` job | E | 90 | per `devex-engineer.md`:75, its `wip-limit.sh` half; first, as D31's only limit | D31 | no | - | WIP limit hook |
 | N-42 | devex-engineer | `tools/checks/one-concern.sh`, a `pr-gates.yml` job | E | 90 | per W1-16's request | D6 | no | W1-16 | Rule 4 hook |
