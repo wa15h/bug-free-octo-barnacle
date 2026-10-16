@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # D24 gate: .claude/, CLAUDE.md, docs/research/, and docs/plan/decisions.md are founder-edited. pr-gates.yml runs this
-# file with the PR number. It is not in tools/hooks/pre-push: a push has no PR and no label to read.
+# file on the PR's merge commit with the PR number. It is not in tools/hooks/pre-push: a push has no PR or label.
 # It reads commits, not the working tree: each path `git diff --no-renames --name-only` lists from HEAD's merge base
 # with origin/main to HEAD (a rename lists its old and new path). A diff touching none of the four passes.
 # A diff touching one passes only if the PR carries founder-approved (D29). The labels come from the GitHub API when
