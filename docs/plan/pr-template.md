@@ -14,7 +14,7 @@ this one do not show on GitHub; write each section under its heading.
 
 ## What this changes
 <!--
-One paragraph. One concern. If a second concern crept in, split the PR.
+One paragraph. Single concern. If a second concern crept in, split the PR.
 -->
 
 ## Read line by line
