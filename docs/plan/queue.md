@@ -19,7 +19,7 @@ W1-13a, W1-15 to W1-17, W1-20, N-19, N-20, N-34, N-41, and N-48 (16 agent items)
 
 Class: L line-by-line, E evidence, F founder-authored (no `Agent:` line, D29; never counts toward n, D31).
 Lines: expected counted lines (D22); a sim or server diff past 150 splits as its owner's PR loop says (step 3).
-"Per <owner> N": that owner's first task N in `.claude/agents/`, plus the note. ADRs 0005-0013 are reserved here (W1-20).
+"Per <owner> N": that owner's first task N in `.claude/agents/`, plus the note. ADRs 0005-0014 are reserved here (W1-20).
 Paths: a row's listed files, plus the files named by its acceptance or by the part of its owner's task it takes; the
 `lib.rs` or `main.rs` lines that declare and wire them; the crate's `tests/` and `README.md`; the `Cargo.toml` line for
 a package its ADR-first column names or a workspace crate it calls; in `crates/sim`, the `State`, `Input`, `Event`,
@@ -61,7 +61,7 @@ order-list, `state_hash`, and `HearthView` lines for what the row adds; for a ga
 | W1-17 | devex-engineer | `never-in-v1.sh` (was P0) | E | 90 | - | D2 D4 D8 D9 D14 | no | Cut-scope hook |
 | W1-18 | devex-engineer | `pr-template.sh` (was P3) | E | 60 | W1-16 | D6 | no | Rule 5 hook |
 | W1-19 | reviewer | Week 1's review-log entries and weekly report | E | 60 | week 1's last review | D6 D31 | no | Saturation counter |
-| W1-20 | producer | ADR README: reserve 0005-0013 | E | 15 | - | D17 D24 | no | - |
+| W1-20 | producer | ADR README: reserve 0005-0014 | E | 15 | - | D17 D24 | no | - |
 
 - **W1-01.** Paths: `crates/sim/src/{lib,fixed,rng}.rs`, `crates/sim/tests/fixed_rng.rs`. Accept per sim 1, split in
   three by its PR loop's 150-line rule (W1-01 to W1-03): `[dependencies]` empty and `Cargo.lock` unchanged; `Rng`
@@ -117,9 +117,8 @@ order-list, `state_hash`, and `HearthView` lines for what the row adds; for a ga
 - **W1-18.** Paths: `tools/checks/pr-template.sh`, a job in `pr-gates.yml`. Accept per W1-16's request: a
   description missing one of the five headings, out of order, or with one empty goes red naming it; red and green linked.
 - **W1-19.** Paths: `docs/plan/review-log.md`. Accept per reviewer 5: every hand-off field has a number; one PR.
-- **W1-20.** Paths: `docs/adr/README.md`. Accept: the reservation table gains 0005 W1-04, 0006 W1-05, 0007 W1-11,
-  0008 N-16, 0009 N-11, 0010 N-19, 0011 N-24, 0012 N-26, and 0013 N-20 with owners, its heading names this queue,
-  and next free reads 0014; nothing else changes.
+- **W1-20.** Paths: `docs/adr/README.md`. Accept: the reservation table gains 0005 to 0014 with owners, in order: W1-04,
+  W1-05, W1-11, N-16, N-11, N-19, N-24, N-26, N-20, N-54; its heading names this queue; next free reads 0015; nothing else changes.
 
 ## Weeks 2-6: pull order
 | ID | Owner | PR and paths | Class | Lines | Accept | Decisions | ADR-first | After | Gate |
@@ -141,7 +140,8 @@ order-list, `state_hash`, and `HearthView` lines for what the row adds; for a ga
 | N-15 | server-engineer | Watchdog: `crates/server/src/watchdog.rs`, `tests/` | L | 90 | per server 3: `Exiting { Watchdog }` and exit 2 within `CONTROL_SILENCE_SECS + 1`; green on both runners | D8 | 0009 | N-14 | Two-client proof |
 | N-16 | persistence-engineer | ADR 0008: save encoding, `docs/adr/0008-save-encoding.md` | E | 60 | per persist 1; Q11 default | D3 D8 | is the ADR | W1-05 | Two-client proof |
 | N-17 | persistence-engineer | Envelope, atomic write, loader: `crates/persist/src/{envelope,write,load}.rs`, `crates/persist/README.md` | L | 190 | per persist 2 | D8 | 0008 | N-16 | Two-client proof |
-| N-18 | server-engineer | `Transport` trait and `RawUdp`, `crates/server/src/transport/` | E | 150 | per server 5 | D3 D9 | 0009 | D3's line, N-14 | Two-client proof |
+| N-54 | server-engineer | ADR 0014: `RawUdp`'s ports, resend timeout, and caps, `docs/adr/0014-rawudp-transport.md` | E | 40 | a design choice inside D3 (`docs/adr/README.md`:16-20): the port policy, the `Reliable` resend timeout, and the receive caps server 5's `RawUdp` needs, each asked fresh in Questions (`server-engineer.md`:109-110, :124), none from the spike (`week-0.md`:204-206); under 40 lines; no new package | D3 | is the ADR | D3's line | Two-client proof |
+| N-18 | server-engineer | `Transport` trait and `RawUdp`, `crates/server/src/transport/` | E | 150 | per server 5, its ports, resend timeout, and caps as ADR 0014 sets them | D3 D9 | 0009, 0014 | D3's line, N-14 N-54 | Two-client proof |
 | N-19 | devex-engineer | ADR 0010: the .NET SDK pin and its CI action, `docs/adr/0010-dotnet-sdk.md` | E | 40 | one SDK version for `client/global.json`; any action at a full SHA (ADR 0001) | D7 D17 | is the ADR | - | Bake-off |
 | N-51 | devex-engineer | `pins.sh`: check `client/global.json` against `dotnet-sdk`, `client/godot/project.godot` against `godot`, and `client/unity/ProjectSettings/ProjectVersion.txt` against `unity`; `tools/checks/pins.sh` | E | 70 | as W1-13a, per `devex-engineer.md`:43-46 and :93-96 (the row names). It compares: `global.json`'s `sdk.version` equals the `dotnet-sdk` row; `project.godot`'s `config/features` version equals the `godot` row's x.y; `ProjectVersion.txt` passes when `m_EditorVersion` minus its letter suffix (`6000.0.32f1` reads `6000.0.32`) equals an x.y.z `unity` row, or when its x.y equals an x.y row, so either form ADR 0012 picks can go green. A mirror that fails its comparison, or that has no row, goes red naming both files; a mirror not there yet passes, saying so (`global.json` lands in N-52, `project.godot` in N-28, `ProjectVersion.txt` in N-29); red and green linked | D17 | no | N-19 | Bake-off |
 | N-52 | devex-engineer | Pin-only: `dotnet-sdk` in `tools/pins.toml` and its mirror `client/global.json` | E | 10 | rule 8: ADR 0010's SDK version, N-51's check green on it; the founder labels it `upgrade` | D17 | 0010 | N-51 | Bake-off |
