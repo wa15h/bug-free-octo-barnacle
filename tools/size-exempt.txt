@@ -1,0 +1,15 @@
+# Paths whose lines do not count toward rule 4's 200 and 400 (D6); tools/checks/pr-size.sh reads this file.
+# The list is D22's. A line added or widened (a loosening) needs founder approval (review-log section 1.1);
+# removing a line changes D22, which is the founder's decision.
+# One git glob pathspec per line (gitglossary, `:(glob)`): * stays inside one directory, **/ is any depth.
+# pr-size.sh lists every exempt file with its size, and the reviewer spot-checks them (D22).
+Cargo.lock
+# Generated C# types (D7): built in CI from crates/proto, gitignored.
+client/lib/Generated/**
+# Engine-generated scene files (Godot text and binary scenes, Unity scenes) and Unity .meta files.
+client/godot/**/*.tscn
+client/godot/**/*.scn
+client/unity/**/*.unity
+client/unity/**/*.meta
+# Fixture files, in any fixtures/ directory.
+**/fixtures/**

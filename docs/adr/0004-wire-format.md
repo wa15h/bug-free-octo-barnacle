@@ -25,7 +25,7 @@ proven. It merges before any PR adding `flatbuffers`, `flatc`, or `Google.FlatBu
 FlatBuffers, by D30, at one version, `25.2.10` (D17), from the google/flatbuffers project (Google
 LLC), Apache-2.0, tag `v25.2.10` at commit `1c514626e83c20fffa8557e75641848e1e15cd5e`:
 - `flatbuffers = "=25.2.10"` (crates.io owners CasperN, rw, dbaileychess, team `github:flatbuffers:rust-publish`) in `crates/proto` only; `net` uses
-  `proto`'s re-export. It brings `bitflags` 2.13.2 (crates.io owners KodrAus, rust-lang-owner) and, build-only, `rustc_version` 0.4.1 (Kimundi, djc) and `semver` 1.0.28 (dtolnay) (spike lock), each MIT OR Apache-2.0, used only through `proto`'s `flatbuffers`.
+  `proto`'s re-export. It brings `bitflags` 2.13.2 (crates.io owners KodrAus, rust-lang-owner) and, build-only, `rustc_version` 0.4.1 (Kimundi, djc) and `semver` 1.0.28 (dtolnay) (spike lock), each MIT OR Apache-2.0, used only through `proto`'s `flatbuffers`, except that `bitflags` 2.13.2 is also used through `server`'s `steamworks` (ADR 0002, 2026-10-14).
 - `flatc` 25.2.10 (`Linux.flatc.binary.g++-13.zip`, `Windows.flatc.binary.zip`) only in `crates/proto`'s build and tests (in CI and on clones) and in `tools/codegen/gen-csharp.sh`.
 - `Google.FlatBuffers` `[25.2.10]` (NuGet owner `google`, authors Google LLC) in `client/lib` only. Not used:
   `prost`, `prost-build`, `prost-types`, `bytes`. Another FlatBuffers library is a new ADR.

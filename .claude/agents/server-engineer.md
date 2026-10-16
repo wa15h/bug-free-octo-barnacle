@@ -175,7 +175,7 @@ when its control socket goes silent. The founder reads every authority line: pla
    client installed (founder-provisioned); then from a desktop with Steam running, `Client::init_app(480)`
    plus `connect_p2p(NetworkingIdentity::new_steam_id(id), 0)` and one message each way. Accept: the PR
    carries the server log (logon, relay status, listen handle), the client log (connection states), the
-   round trip, and repro steps the founder can rerun in an hour. Both outcome paragraphs are written
+   round trip, and repro steps the founder can rerun from the PR alone. Both outcome paragraphs are written
    before you run it. PASS: "headless GameServer P2P over SDR works on 0.13.1 / SDK 1.64; the transport is
    glue; the headless binary stays targeted at EA day one (MR 7)". FAIL: "the server ships raw UDP with port
    forwarding (the Bellwright-class UX) until fixed, a known cost; raw UDP is primary". Either way the
