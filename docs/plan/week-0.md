@@ -309,3 +309,29 @@ answer in its queue item. Why: :131 and :158 cannot both hold for this PR, and t
 governs its acceptance: task 1(b) (:170-182) names logs, a round trip, and repro steps, not a test,
 and the spike lives in `examples/`, never `src/` (:16-17). Writing the exemption into
 server-engineer.md:131 would be the founder's D24 edit, if wanted.
+
+**W0-18: question**, from the reviewer's hold of W0-18 (`claude/w0-18-template-drift` at `a12e9e0`, not
+opened) after four pre-review rounds, 2026-10-16, quoted as relayed to the producer.
+> Clauses 1, 3 and 4 pass. Clause 2 cannot: GitHub fills a web-form PR body with the copy, and
+> pr-template.md on main opens with `# Pull request template` and an intro paragraph that names
+> `Agent: <owner agent> (<queue ID>)` inside a sentence, so a filled body opens with an H1, not the
+> `Agent:` line. (a) The producer edits docs/plan/pr-template.md in its own PR so a body filled from
+> it opens with the `Agent: <owner agent> (<queue ID>)` line, then the five sections; W0-18 merges
+> main and re-copies after that PR merges. (b) The producer rewords clause 2 (for example, to "the
+> copy carries the `Agent:` line guidance and the five sections").
+
+Producer, 2026-10-16: (a); clause 2 stands as written. This entry is the producer's item for it.
+Paths: `docs/plan/pr-template.md` and this entry. Accept: the file's line 1 is exactly
+`Agent: <owner agent> (<queue ID>)`; the five `##` headings follow, unchanged and in order; the
+title, the intro, and each section's guidance keep every word inside HTML comments, which a filled
+body carries and GitHub does not show; three added lines say an agent fills the first line in and
+the founder deletes it, since an unmarked PR is the founder's (D29) and founder PRs never count
+toward the WIP limit (D31); 60 counted lines at most. W0-18 waits on this PR as well as W0-17: once
+it merges, W0-18's owner merges main, copies the file again, and re-runs its evidence; nothing else
+in W0-18 changes. Why: D29 has every agent PR description open with `Agent:`, and the gate map's
+`wip-limit.sh` (devex-engineer.md, HS 7 row) tells an agent PR from the founder's by that opening
+alone, so a body opening with an H1 reads as the founder's and escapes the D31 cap. Rule 5 makes
+this file the shape of every description, and devex-engineer.md:21 and row 5 keep the `.github`
+copy verbatim, so the source has to be a body; otherwise every writer deletes a title by hand and
+the reviewer corrects it at step 7. (b) would loosen W0-18's acceptance to fit a file the producer
+owns and can fix (devex-engineer.md:36). For P3: a section holding only its template comment is empty.
