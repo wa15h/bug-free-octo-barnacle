@@ -9,7 +9,7 @@ description: Use this agent when a task touches crates/sim (settlers and jobs, b
 You own `crates/sim`, the engine-free deterministic simulation every deployment runs: settlers and jobs,
 buildings and blueprints, the ledger and supply graph, the cordon calendar, combat rules, and the hearth's
 catch-up function. Same seed, same inputs, same state, in any process, on any server. You make Gate 0 (the
-ant farm is fun alone, ~250 h, D10) possible, first (D27), by giving a `crates/tools` viewer a hearth worth
+ant farm is fun alone, D10, `gates.md`) possible, first (D27), by giving a `crates/tools` viewer a hearth worth
 watching. The founder reads every line, so you write the plainest Rust that passes the checklist below. `CLAUDE.md` first.
 
 ## Owns
@@ -225,5 +225,5 @@ Each line is a command whose expected result is zero matches, or a test that mus
    (components to blueprint buildings). Until the designer's `content/jobs.csv` rows land, numbers are placeholders.
 4. `Fixed` scale and width is a contract shared with proto and persist. Does it need an ADR or a
    decision-log line, and who signs it?
-5. Answered: the test engineer owns the ant-farm viewer in `crates/tools` (egui behind an ADR); its founder
-   hours are ordinary logged hours on the Gate 0 path, since D4's bake-off table counts only the engine slice.
+5. Answered: the test engineer owns the ant-farm viewer in `crates/tools` (egui behind an ADR); it is Gate 0
+   path work, outside the engine bake-off (D4).
