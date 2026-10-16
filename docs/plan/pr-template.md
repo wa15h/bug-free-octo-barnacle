@@ -5,7 +5,7 @@ in or corrects them before the founder sees the PR. An agent's PR description op
 line above them: `Agent: <owner agent> (<queue ID>)` (D29).
 
 ## What this changes
-One paragraph. One concern. If a second concern crept in, split the PR.
+One paragraph. Single concern. If a second concern crept in, split the PR.
 
 ## Read line by line
 The files and functions in `crates/sim`, `crates/proto`, `crates/persist`, or server
