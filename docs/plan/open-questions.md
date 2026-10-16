@@ -6,11 +6,11 @@ one, edit the line to say `Answered:` with your answer, or promote it to a decis
 `decisions.md`. The agent named in parentheses is the one waiting on it.
 
 Two questions where agents disagreed are already resolved in `decisions.md` as D22
-(how lines count against the PR cap) and D23 (gates count build-hours).
+(how lines count against the PR cap) and D23 (gates count build-hours), which D31 supersedes.
 
-1. Gate counting: D10 says cumulative-hour triggers, but the HS 6 dates reproduce only from build-hours ((logged - 2.5) x 0.8 x 0.92). Confirm gates.md counts build-hours, not raw logged hours. (producer)
-2. Answered (D28): V < 0.6 at the ~400 h velocity gate re-dates the bands (D5, D11) and nothing else; no scope is cut and no fallback slice is built to hold a date. The cut scope (D2) stays the target state. (producer)
-3. Hours source of truth: docs/plan/hours.md typed by you, with the crates/tools hours tool only deriving columns (the team's default); and is that tool wanted before week 6 or does the file by hand suffice until the velocity gate? (producer, test-engineer)
+1. Answered (D31): gates fire when their evidence exists on main, and the founder gives every verdict; nothing counts logged hours or build-hours. (producer)
+2. Answered (D28, D31): there is no V, no velocity gate, and no band to re-date; no scope is cut and no fallback slice is built to hold a date. The cut scope (D2) at full quality stays the target state. (producer)
+3. Answered (D31): there is no hours log and no hours tool; docs/plan/hours.md is deleted, and git history keeps it. (producer, test-engineer)
 4. The 201-400 line band: D6 sets 200 as the norm and 400 as the hard cap but not when the band is allowed. Until told, the reviewer returns 201-400 with a split plan. (reviewer)
 5. Line counting against the 200 cap: do generated C# types, Cargo.lock, fixture files and engine-generated scene/.meta files count, and do evidence-area lines cost the same budget as line-by-line lines? The defaults currently differ: reviewer counts every line, client counts hand-written lines only, devex exempts Cargo.lock only. (reviewer, client-engineer, devex)
 6. Who runs headless-session and attaches proof.txt to a PR: the writer (team default), the reviewer, or the test engineer? (reviewer, test-engineer)
@@ -25,9 +25,9 @@ Two questions where agents disagreed are already resolved in `decisions.md` as D
 15. Protocol version policy: exact match (default, simplest to explain) or a compatibility window; it is player-facing. (net)
 16. Sidecar timing and transport: CONTROL_SILENCE_SECS and HEARTBEAT_SECS (defaults 10 and 2) and localhost TCP on a client-chosen port (default) versus stdin/stdout pipes. (server)
 17. Raw-UDP identity: Steam auth session tickets over raw UDP, or LAN-only unverified peers refused unless --allow-unverified (default). (server)
-18. SDR spike logistics and app creation: who provisions the headless Linux box; does the spike rerun on the project's own app ID once a Steamworks partner account exists; and which checkpoint queues the 'create app' row given the fee is spend (D12) and the D20 search comes first? (server, steam-release)
-19. Where the per-engine bake-off hours table lives: client/BAKEOFF.md with one summed line per week in hours.md (default), or hours.md itself. (client)
-20. Unity exports in CI need a seat or licence server (spend): default is bake-off exports on your machine logged as founder hours, a CI export job only for the confirmed winner. Confirm. (client, devex)
+18. SDR spike logistics and app creation: who provisions the headless Linux box; does the spike rerun on the project's own app ID once a Steamworks partner account exists; and which event queues the 'create app' row: the page sprint's start at the two-player loop (producer.md, D31), or earlier, given the fee is spend (D12) and the D20 search comes first? (server, steam-release)
+19. Answered (D31): there is no bake-off hours table; client/BAKEOFF.md holds the founder's signed scorecard and written verdict. (client)
+20. Unity exports in CI need a seat or licence server (spend): default is bake-off exports on your machine, a CI export job only for the confirmed winner. Confirm. (client, devex)
 21. Nightly and CI budgets: nightly seed count and wall cap (defaults 2,000 seeds, 60 minutes) and the monthly CI-minutes budget with Windows runners at 2x. (test-engineer, devex)
 22. Initial bench budgets for tick p99, bytes per tick and one-season catch-up: baseline x 2 on the pinned runner, set in the bench PR? (test-engineer)
 23. Does a red nightly block every merge (default) or only merges into crates/sim, proto, persist and server? (test-engineer)
@@ -36,7 +36,7 @@ Two questions where agents disagreed are already resolved in `decisions.md` as D
 26. Gate 0 pass line: MR 7 gives '3 of 4 testers' for Gate 1 only; default is the same 3 of 4 for Gate 0, and the Gate 2 cohort is every Thursday tester who launched on day 0. (game-designer)
 27. Death in a run: no decision names the loss on death; D26 names it only for missing the last gate (gear kept, carried units left where you stood). Default: gear kept, carried units dropped where you fell and retrievable until the next cordon stage, the bound a row in gear.csv. (game-designer)
 28. Opt-in stakes: MR 2 lists bounded opt-in stakes as a pillar and MR 7 defers the opt-in extraction mode, now the Hospital Quarter (D26). Does v1 carry any, or none (default) with the deferred list saying why? (game-designer)
-29. Settler rig cost against the $8k year-one cap: default is a recolored kit character until the page month, with settler-rig.md written but not queued. (art-director)
+29. Settler rig cost against the $8k year-one cap: default is a recolored kit character until the page checklist is otherwise true, with settler-rig.md written but not queued. (art-director)
 30. Purchased kits: confirm a founder-held, backed-up location with a devex-written tools/ fetch script and meshes never committed; and under rule 6 is LICENSE-RECORD.md the record, with an ADR only when a kit brings an importer plugin or shader dependency (default)? (art-director, client)
 31. Capsule timing: HS 9.7 pulls the capsule into the page month, MR 7 wants the hook in the first screenshot; default is the brief ready in weeks 0-6 and a founder-made HUD screenshot until the ~$400 spend is queued. (art-director)
 32. Themed fests: does D16's ~2,000-wishlist, public-a-month rule bind themed-fest entries too? Default: tag the page, enter nothing. (steam-release)
