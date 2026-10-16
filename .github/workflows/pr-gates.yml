@@ -50,7 +50,6 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.pull_request.head.sha }} # the PR head, as pr-size reads it
-          persist-credentials: false
+          persist-credentials: false # no ref: the merge commit, so a PR branched before this job runs main's script
       - name: tools/checks/template-drift.sh (rule 5)
         run: tools/checks/template-drift.sh
