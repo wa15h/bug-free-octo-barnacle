@@ -40,3 +40,17 @@ jobs:
         run: |
           if [ "$N" -gt 200 ] && [ "$HAS" = false ]; then gh api --method POST "$API" -f "labels[]=size/over-200" --silent; fi
           if [ "$N" -le 200 ] && [ "$HAS" = true ]; then gh api --method DELETE "$API/size%2Fover-200" --silent; fi
+
+  template-drift:
+    name: template-drift (rule 5)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read # checkout
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }} # the PR head, as pr-size reads it
+          persist-credentials: false
+      - name: tools/checks/template-drift.sh (rule 5)
+        run: tools/checks/template-drift.sh
