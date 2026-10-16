@@ -1,16 +1,14 @@
 WIP: 10
 
 # Queue: weeks 1-6
-Producer, first task 1. Week 0 is `docs/plan/week-0.md`; from week 1 the queue is this file. It holds no
-founder hours, dates, or forecasts (D31): items are pulled in the order below, and none is promised to a week.
-Week 1 is given in full. Weeks 2-6 do not fit in full under the 200-line cap (D22, rule 4), so they follow as
-one ordered pull list: each row has the eight fields, acceptance by reference to the owner's first-task list,
-and the gate it serves. Each weekly queue PR reconciles this file and promotes, splits, or reorders rows.
+Producer, first task 1. Week 0 is `docs/plan/week-0.md`; from week 1 the queue is this file. It holds no founder hours,
+dates, or forecasts (D31): items are pulled in the order below, and none is promised to a week. Week 1 is given in full.
+Weeks 2-6 do not fit in full under the 200-line cap (D22, rule 4), so they follow as one ordered pull list: each row has
+the eight fields, acceptance by reference to the owner's first-task list, and the gate it serves.
 
 How to pull: read line 1 first. Take the first item in order that you own and whose After items have all merged,
 one at a time. Open agent PRs never pass n, `held:` drafts included (`producer.md`, The WIP limit); under a
-`WIP: 0 FROZEN: <reason>` line open nothing for review. At week start W0-08's draft, W0-18, and W0-21 hold 3 of
-the 10 slots. No deload falls in weeks 1-6; the first is weeks 12-13 (`producer.md`, Rest).
+`WIP: 0 FROZEN: <reason>` line open nothing for review. The first deload is weeks 12-13 (`producer.md`, Rest).
 
 Order (D27; `producer.md`, Gates): Gate 0's items lead, the two-client proof's follow, and tooling Gate 0 does
 not need waits behind both. Four slots stay for Gate 0: until N-10 merges, an item whose Gate column does not
@@ -21,8 +19,7 @@ W1-13a, W1-15 to W1-17, W1-20, N-19, N-20, N-34, N-41, and N-48 (16 agent items)
 
 Class: L line-by-line, E evidence, F founder-authored (no `Agent:` line, D29; never counts toward n, D31).
 Lines: expected counted lines (D22); a sim or server diff past 150 splits as its owner's PR loop says (step 3).
-"Per <owner> N": that owner's first task N in `.claude/agents/`, plus the note. ADR numbers 0005-0013 are
-reserved here (W1-20); the producer's stub is the first commit of each ADR PR.
+"Per <owner> N": that owner's first task N in `.claude/agents/`, plus the note. ADRs 0005-0013 are reserved here (W1-20).
 
 ## Carried over from week 0
 Merged in week 0: W0-01 to W0-07, W0-09 to W0-17 (W0-11 then retired by D31), and W0-22.
@@ -35,7 +32,6 @@ Merged in week 0: W0-01 to W0-07, W0-09 to W0-17 (W0-11 then retired by D31), an
 | W0-19 | founder | Open. D3's line waits on W0-08; D8's line can land now in its own founder PR (W0-19's text) | D8's line unblocks N-11 and N-12 |
 | W0-20 | founder | Open; W0-16 has merged, so it waits on nothing | - |
 | W0-12 | founder | `client/BAKEOFF.md` merged unsigned | The signature is N-23; engine pin and rung PRs wait on it (D31) |
-| P0 P2 P3 | devex, reviewer | Not pulled forward | Now W1-17, W1-16, W1-18 |
 | Setup | founder | `week-0.md`'s founder setup | If not done: require `ci.yml` and `pr-gates.yml`; run `tools/hooks/install.sh` |
 
 ## Week 1
@@ -123,9 +119,8 @@ Merged in week 0: W0-01 to W0-07, W0-09 to W0-17 (W0-11 then retired by D31), an
   and next free reads 0014; nothing else changes.
 
 ## Weeks 2-6: pull order
-D3's and D8's lines are W0-19's (founder). A row's Accept adds to its owner's task; "-" in After means ready. A row's
-paths also cover, in its own crate, the `src/lib.rs` or `src/main.rs` module line, `tests/`, and the `Cargo.toml` line
-for a package its ADR-first column names or a workspace crate it calls.
+"-" in After means ready. A row's paths also cover, in its own crate, the `src/lib.rs` or `src/main.rs` module line,
+`tests/`, and the `Cargo.toml` line for a package its ADR-first column names or a workspace crate it calls.
 
 | ID | Owner | PR and paths | Class | Lines | Accept | Decisions | ADR-first | After | Gate |
 |---|---|---|---|---|---|---|---|---|---|
@@ -148,8 +143,11 @@ for a package its ADR-first column names or a workspace crate it calls.
 | N-17 | persistence-engineer | Envelope, atomic write, loader: `crates/persist/src/{envelope,write,load}.rs`, `crates/persist/README.md` | L | 190 | per persist 2 | D8 | 0008 | N-16 | Two-client proof |
 | N-18 | server-engineer | `Transport` trait and `RawUdp`, `crates/server/src/transport/` | E | 150 | per server 5 | D3 D9 | 0009 | D3's line, N-14 | Two-client proof |
 | N-19 | devex-engineer | ADR 0010: the .NET SDK pin and its CI action, `docs/adr/0010-dotnet-sdk.md` | E | 40 | one SDK version for `client/global.json`; any action at a full SHA (ADR 0001) | D7 D17 | is the ADR | - | Bake-off |
+| N-51 | devex-engineer | `pins.sh`: check `client/global.json` against `dotnet-sdk`, `tools/checks/pins.sh` | E | 40 | as W1-13a, per `devex-engineer.md`:43-46: a `global.json` whose SDK version differs from the `dotnet-sdk` row, or has no row, goes red naming both files; no `global.json` yet passes, saying so; red and green linked | D17 | no | N-19 | Bake-off |
+| N-52 | devex-engineer | Pin-only: `dotnet-sdk` in `tools/pins.toml` and its mirror `client/global.json` | E | 10 | rule 8: ADR 0010's SDK version, N-51's check green on it; the founder labels it `upgrade` | D17 | 0010 | N-51 | Bake-off |
+| N-53 | devex-engineer | Pin-only: the .NET CI action's full-SHA row in `tools/pins.toml` | E | 5 | rule 8: the action and SHA ADR 0010 names (ADR 0001); the founder labels it `upgrade` | D17 | 0010 | N-19 | Bake-off |
 | N-20 | client-engineer | ADR 0013: the test packages of `client/lib.Tests`, `docs/adr/0013-dotnet-tests.md` | E | 40 | every `PackageReference` with version, owner, and licence (rule 6) | D4 | is the ADR | - | Bake-off |
-| N-21 | devex-engineer | Codegen skeleton: `client/Hearth.sln`, `client/Directory.Build.props`, `client/global.json`, `tools/codegen/`, `lockstep.yml` | E | 180 | per devex 5 | D7 D17 D30 | 0004, 0010 | W1-14 N-19 | Bake-off |
+| N-21 | devex-engineer | Codegen skeleton: `client/Hearth.sln`, `client/Directory.Build.props`, `tools/codegen/`, `lockstep.yml` | E | 175 | per devex 5, on N-52's SDK and N-53's action; no pin or mirror file in the diff (rule 8) | D7 D17 D30 | 0004, 0010 | W1-14 N-52 N-53 | Bake-off |
 | N-22 | client-engineer | `client/lib` skeleton: `client/lib/`, `client/lib.Tests/` | E | 190 | per client 1 | D4 D7 D30 | 0004, 0013 | N-20 N-21 | Bake-off |
 | N-23 | founder | Sign the scorecard in `client/BAKEOFF.md` | F | 5 | the founder's own PR (D31) | D4 D31 | no | - | Bake-off |
 | N-24 | devex-engineer | ADR 0011: the Godot 4.7 .NET minor-line pin, `docs/adr/0011-godot-pin.md` | E | 40 | one minor line (D17) | D4 D17 | is the ADR | N-23 | Bake-off |
@@ -176,7 +174,7 @@ for a package its ADR-first column names or a workspace crate it calls.
 | N-42 | devex-engineer | `tools/checks/one-concern.sh`, a `pr-gates.yml` job | E | 90 | per W1-16's request | D6 | no | W1-16 | Rule 4 hook |
 | N-43 | devex-engineer | `tools/checks/adr-first.sh`, a `pr-gates.yml` job | E | 90 | per W1-16's request | D17 | no | W1-16 | Rule 6 hook |
 | N-44 | devex-engineer | `tools/checks/one-pin.sh`, a `pr-gates.yml` job | E | 60 | per W1-16's request | D17 | no | W1-16 | Rule 8 hook |
-| N-45 | test-engineer | Synthetic PR for the reviewer's dry run: the planted files in `crates/{sim,proto,persist,server}/` on a `claude/` branch | E | 220 | `reviewer.md`:149's eight violations, over 200 lines among them; the description names none (a blind review); closed unmerged after the review; the deleted test is one W1-01 merged; the reviewer's planted-versus-caught entry lands in that week's report PR (`reviewer.md`:57) | D6 | no | W0-18 W1-01 | Review gate |
+| N-45 | test-engineer | Synthetic PR for the reviewer's dry run: the planted files in `crates/{sim,proto,persist,server}/` on a `claude/` branch | L | 220 | `reviewer.md`:149's eight violations, over 200 lines among them; the description names none (a blind review); closed unmerged after the review; the deleted test is one W1-01 merged; the unbumped schema is W1-14's v1, the unmigrated struct N-17's envelope; the reviewer's planted-versus-caught entry lands in that week's report PR (`reviewer.md`:57) | D6 | no | W0-18 W1-01 W1-14 N-17; founder question 6 | Review gate |
 | N-46 | marketing | `docs/devlog/` README and first outline | E | 120 | per marketing 3 | D2 D31 | no | D3's line | - |
 | N-47 | founder | Book architecture review 1 (spend); no file | F | 0 | the founder books and pays; the producer queues each finding | D12 | no | D3's line | Architecture review 1 |
 
@@ -195,6 +193,8 @@ Held: steam-release's tasks and marketing tasks 1, 2, 5, 6 wait for the two-play
 4. N-50, the capsule brief, is queued on Q31's default (D21) with no spend. Should `producer.md`'s page rule (Never
    do) also cover art-director task 5? A yes is your answer to Q31, and N-50 leaves the queue until the loop.
 5. Q7 has no written default, so `test-guard.sh` is not queued. Q18 stays open; nothing here waits on it.
+6. May the test engineer open N-45, one synthetic PR closed unmerged, despite `test-engineer.md`:172, :176, and :181 (no
+   test deleted, no other crate patched, no PR past 200 lines, as every writer's file says)? A yes goes in that file (D24).
 
 ## Questions
 Agents add `<ID>: question` here. The producer answers it or parks the item and asks the founder above.
