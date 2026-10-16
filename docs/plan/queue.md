@@ -1,7 +1,6 @@
 WIP: 10
 
 # Queue: weeks 1-6
-
 Producer, first task 1. Week 0 is `docs/plan/week-0.md`; from week 1 the queue is this file. It holds no
 founder hours, dates, or forecasts (D31): items are pulled in the order below, and none is promised to a week.
 Week 1 is given in full. Weeks 2-6 do not fit in full under the 200-line cap (D22, rule 4), so they follow as
@@ -18,7 +17,7 @@ not need waits behind both. Four slots stay for Gate 0: until N-10 merges, an it
 name Gate 0 starts only while fewer than n - 4 agent PRs (6 at n = 10), held drafts included, are open. Gate 0
 fires when the viewer (N-08, N-09) on main runs the merged script (W1-08); N-10 files the sheets for the
 founder's verdict. Its path: W1-01 to W1-12 and N-01 to N-10. Ready at week start: W1-01, W1-04 to W1-08,
-W1-12, W1-13, W1-15 to W1-17, W1-20, N-19, N-20, and N-34 (15 agent items), and the founder's N-23.
+W1-13a, W1-15 to W1-17, W1-20, N-19, N-20, N-34, N-41, and N-48 (16 agent items), and the founder's N-23.
 
 Class: L line-by-line, E evidence, F founder-authored (no `Agent:` line, D29; never counts toward n, D31).
 Lines: expected counted lines (D22); a sim or server diff past 150 splits as its owner's PR loop says (step 3).
@@ -26,7 +25,6 @@ Lines: expected counted lines (D22); a sim or server diff past 150 splits as its
 reserved here (W1-20); the producer's stub is the first commit of each ADR PR.
 
 ## Carried over from week 0
-
 Merged in week 0: W0-01 to W0-07, W0-09 to W0-17 (W0-11 then retired by D31), and W0-22.
 
 | ID | Owner | State at week start | Next |
@@ -41,11 +39,10 @@ Merged in week 0: W0-01 to W0-07, W0-09 to W0-17 (W0-11 then retired by D31), an
 | Setup | founder | `week-0.md`'s founder setup | If not done: require `ci.yml` and `pr-gates.yml`; run `tools/hooks/install.sh` |
 
 ## Week 1
-
 | ID | Owner | PR | Class | Lines | After | Decisions | ADR-first | Gate |
 |---|---|---|---|---|---|---|---|---|
 | W1-01 | sim-engineer | `Fixed` and `Rng` | L | 140 | - | D3 D27 | no: zero dependencies | Gate 0 |
-| W1-02 | sim-engineer | `State`, `Input`, `Event`, `tick`, `SYSTEM_ORDER`, `HEARTH_ORDER` | L | 100 | W1-01 | D3 D9 D27 | no | Gate 0 |
+| W1-02 | sim-engineer | `State`, `Input`, `Event`, `tick`, `SYSTEM_ORDER`, `HEARTH_ORDER` | L | 130 | W1-01 | D3 D9 D27 | no | Gate 0 |
 | W1-03 | sim-engineer | `state_hash` and `determinism_two_runs` | L | 90 | W1-02 | D3 D27 | no | Gate 0 |
 | W1-04 | sim-engineer | ADR 0005: `proptest`, a sim dev-dependency | E | 40 | - | D3 D17 | is the ADR | Gate 0 |
 | W1-05 | sim-engineer | ADR 0006: `serde` derive on `State` | E | 40 | - | D3 D8 D17 | is the ADR | Gate 0 |
@@ -55,9 +52,11 @@ Merged in week 0: W0-01 to W0-07, W0-09 to W0-17 (W0-11 then retired by D31), an
 | W1-09 | game-designer | `content/jobs.csv` and `content/ledger.csv` | E | 40 | W1-06 W1-07 | D2 D26 D27 | no | Gate 0 |
 | W1-10 | sim-engineer | Ledger and `check_invariants` | L | 150 | W1-03 W1-04 W1-05 | D2 D3 D27 | 0005; 0006 by sim 2's order | Gate 0 |
 | W1-11 | test-engineer | ADR 0007: the settlement viewer | E | 40 | W1-08 | D10 D27 | is the ADR | Gate 0 |
-| W1-12 | marketing | `docs/plan/marketing/thursday-group.md` | E | 100 | - | D10 D28 D31 | no | Gate 0 (testers); Gate 2 |
-| W1-13 | devex-engineer | Pin `flatbuffers` 25.2.10; install `flatc` in CI and on clones | E | 90 | - | D7 D17 D30 | 0004 | Two-client proof |
-| W1-14 | net-engineer | `crates/proto` skeleton | L | 190 | W1-13 | D7 D30 | 0004 | Two-client proof |
+| W1-12 | marketing | `docs/plan/marketing/thursday-group.md` | E | 100 | W1-08 | D10 D28 D31 | no | Gate 0 (testers); Gate 2 |
+| W1-13a | devex-engineer | `pins.sh`: check `flatc`, `Cargo.lock`, `Google.FlatBuffers` against `flatbuffers` | E | 60 | - | D17 D30 | no | Two-client proof |
+| W1-13b | devex-engineer | Pin-only: `flatbuffers` 25.2.10 and the two flatc zip SHA-256s | E | 10 | W1-13a | D17 D30 | 0004 | Two-client proof |
+| W1-13c | devex-engineer | Install `flatc` by hash in CI and on clones | E | 80 | W1-13b | D7 D17 | 0004 | Two-client proof |
+| W1-14 | net-engineer | `crates/proto` skeleton | L | 190 | W1-13a W1-13b W1-13c | D7 D30 | 0004 | Two-client proof |
 | W1-15 | art-director | Kit shortlist with licences | E | 150 | - | D12 D26 | no | Bake-off rung 2 |
 | W1-16 | reviewer | Review-log section 3, the hook request list (was P2) | E | 60 | - | D6 | no | Rules 1-9 hooks |
 | W1-17 | devex-engineer | `never-in-v1.sh` (was P0) | E | 90 | - | D2 D4 D8 D9 D14 | no | Cut-scope hook |
@@ -70,9 +69,10 @@ Merged in week 0: W0-01 to W0-07, W0-09 to W0-17 (W0-11 then retired by D31), an
   reproduces xoshiro256**'s published reference outputs; a seeded loop over 10,000 pairs shows each `Fixed` op equals
   `i128` math or returns `Err`, never panics (rule 2 before 0005); the determinism checklist pasted, every ripgrep
   empty. The description names the scale constant (founder question 2).
-- **W1-02.** Paths: `crates/sim/src/{lib,state}.rs`, `crates/sim/tests/order.rs`. Accept per sim 1: `State` holds
-  plain data and its `Rng`; `tick` runs the systems in `SYSTEM_ORDER` and nothing else; `order_is_complete` passes,
-  with `HEARTH_ORDER` a prefix; `[dependencies]` still empty; checklist pasted.
+- **W1-02.** Paths: `crates/sim/src/{lib,state}.rs`, `crates/sim/tests/{order,tick}.rs`. Accept per sim 1: `State` holds
+  plain data and its `Rng`; `tick` runs the systems in `SYSTEM_ORDER` and nothing else; `order_is_complete` passes, with
+  `HEARTH_ORDER` a prefix; a seeded loop feeds random `Input`s from `Rng` through `tick` for 1,000 ticks without a panic,
+  and two runs from one seed end with equal `State` (rule 2 before 0005); `[dependencies]` empty; checklist pasted.
 - **W1-03.** Paths: `crates/sim/src/{lib,hash}.rs`, `crates/sim/tests/determinism.rs`. Accept: FNV-1a over a
   canonical byte walk of `State`, under 60 lines (`sim-engineer.md`, rule 6); `determinism_two_runs` holds at every
   tick of a 10,000-tick seeded run; changing one field of each kind changes the hash; checklist pasted.
@@ -101,11 +101,11 @@ Merged in week 0: W0-01 to W0-07, W0-09 to W0-17 (W0-11 then retired by D31), an
   owner, licence); only `crates/tools` takes it; the viewer reads `sim::view`, drives `sim::tick`, re-implements no rule.
 - **W1-12.** Paths: `docs/plan/marketing/thursday-group.md`. Accept per marketing 4; until `gate-2-thursday.md`
   exists the designer confirms the session note against W1-08 and `gates.md`'s Gate 2; Q34's default; no tester name.
-- **W1-13.** Paths: `tools/pins.toml`, `tools/checks/pins.sh`, `.github/workflows/ci.yml`, one install script under
-  `tools/`. Accept: ADR 0004's devex follow-up: the `flatbuffers` row set to 25.2.10 with both flatc zips' SHA-256
-  from ADR 0004; CI installs flatc on both runners by hash and prints its version; a wrong hash goes red naming the
-  zip (linked); one documented command gives a clone the same flatc; `pins.sh` green on head. Pin-only (rule 8):
-  the founder labels it `upgrade` (`tools/pins.toml`, line 2).
+- **W1-13a to W1-13c.** One concern each (`pins.sh`:72; rules 4 and 8). W1-13a, `tools/checks/pins.sh`, per
+  `devex-engineer.md`:78: a mismatch goes red naming both files, a row with no mirror yet passes; red and green linked.
+  W1-13b, `tools/pins.toml`: the values from ADR 0004; pin-only, so the founder labels it `upgrade`. W1-13c,
+  `.github/workflows/ci.yml` and one install script under `tools/`: both CI runners install flatc by the pinned hash and
+  print its version; a wrong hash goes red naming the zip (linked); one documented command gives a clone the same flatc.
 - **W1-14.** Paths: `crates/proto/` (`Cargo.toml`, `build.rs`, `schema/`, `src/lib.rs`, `examples/make_fixture.rs`,
   `fixtures/v1/`, `tests/`). Accept per net 2: `build.rs` fails unless flatc reports 25.2.10; `fixtures/v1/schema.bfbs`
   frozen; the four compatibility tests, `schema_is_frozen` red run linked; `Cargo.lock` gains only ADR 0004's packages.
@@ -123,15 +123,16 @@ Merged in week 0: W0-01 to W0-07, W0-09 to W0-17 (W0-11 then retired by D31), an
   and next free reads 0014; nothing else changes.
 
 ## Weeks 2-6: pull order
-
-D3's and D8's lines are W0-19's (founder). A row's Accept adds to its owner's task; "-" in After means ready.
+D3's and D8's lines are W0-19's (founder). A row's Accept adds to its owner's task; "-" in After means ready. A row's
+paths also cover, in its own crate, the `src/lib.rs` or `src/main.rs` module line, `tests/`, and the `Cargo.toml` line
+for a package its ADR-first column names or a workspace crate it calls.
 
 | ID | Owner | PR and paths | Class | Lines | Accept | Decisions | ADR-first | After | Gate |
 |---|---|---|---|---|---|---|---|---|---|
 | N-01 | sim-engineer | Job and ledger table structs and loaders, `crates/sim/src/tables.rs` | L | 150 | per sim 4, the loader: `&str` in, `Result` out; a fourth job row is a load error; a test loads W1-09's files | D2 D3 | 0005 | W1-09 W1-10 | Gate 0 |
 | N-02 | sim-engineer | Settlers, assignment, work-tick progress, `crates/sim/src/settlers.rs` | L | 150 | per sim 4: every input and output a ledger transfer; proptest: no unit created or lost over a random schedule | D2 D3 D27 | 0005 | N-01; founder question 3 | Gate 0 |
 | N-03 | game-designer | `docs/design/legibility.md` | E | 100 | per designer 2: each rule checkable on a screenshot | D13 D18 | no | W1-06 | Gate 0 |
-| N-04 | game-designer | `content/buildings.csv` | E | 30 | per designer 4 | D2 D26 | no | W1-07 | Gate 0 |
+| N-04 | game-designer | `content/buildings.csv` | E | 30 | per designer 4 | D2 D26 | no | W1-06 W1-07 | Gate 0 |
 | N-05 | game-designer | `content/blueprints.csv` | E | 30 | per designer 4 | D2 D26 | no | N-04 | Gate 0 |
 | N-06 | sim-engineer | Buildings and blueprints, `crates/sim/src/buildings.rs` | L | 150 | `sim-engineer.md`, Rules of the model: construction is the Builder's job; proptest conserves; a test loads N-04 and N-05 | D2 D3 | 0005 | N-02 N-05 | Gate 0 |
 | N-07 | sim-engineer | `view`, `HearthView`, the `expedition` default feature: `crates/sim/src/view.rs`, `Cargo.toml` | L | 120 | per sim 4: `view` and `--no-default-features` | D3 D27 | no | N-06 | Gate 0 |
@@ -140,11 +141,11 @@ D3's and D8's lines are W0-19's (founder). A row's Accept adds to its owner's ta
 | N-10 | game-designer | Gate 0 sheets, `docs/design/playtests/results/` | E | 60 | W1-08 run as written, four or more testers; the verdict is the founder's (`gates.md`) | D10 D28 D31 | no | N-09 W1-12 | Gate 0 evidence |
 | N-11 | server-engineer | ADR 0009: `tokio`, `docs/adr/0009-tokio.md` | E | 40 | per server 3, its first PR | D3 | is the ADR | D8's line | Two-client proof |
 | N-12 | server-engineer | `crates/server/SIDECAR.md` | E | 140 | per server 2 (under 150 lines); Q16 defaults | D8 | 0003 | D8's line | Two-client proof |
-| N-13 | net-engineer | SIDECAR.md's control messages: `crates/proto/schema/`, `tests/`, `fixtures/` | L | 100 | every message with its fields; bump and fixture (rule 3, D30) | D7 D8 D30 | 0004 | W1-14 N-12 | Two-client proof |
+| N-13 | net-engineer | SIDECAR.md's control messages: `crates/proto/schema/`, `crates/proto/src/lib.rs`, `tests/`, `fixtures/` | L | 100 | every message with its fields; bump and fixture (rule 3, D30) | D7 D8 D30 | 0004 | W1-14 N-12 | Two-client proof |
 | N-14 | server-engineer | Args, lock file, control socket: `crates/server/src/{main,control}.rs`, `tests/` | E | 140 | per server 3: `Shutdown` exits 0; a second instance on the same save dir exits 3 | D3 D8 | 0009 | N-11 N-13 | Two-client proof |
 | N-15 | server-engineer | Watchdog: `crates/server/src/watchdog.rs`, `tests/` | L | 90 | per server 3: `Exiting { Watchdog }` and exit 2 within `CONTROL_SILENCE_SECS + 1`; green on both runners | D8 | 0009 | N-14 | Two-client proof |
 | N-16 | persistence-engineer | ADR 0008: save encoding, `docs/adr/0008-save-encoding.md` | E | 60 | per persist 1; Q11 default | D3 D8 | is the ADR | W1-05 | Two-client proof |
-| N-17 | persistence-engineer | Envelope, atomic write, loader: `crates/persist/src/{envelope,write,load}.rs` | L | 190 | per persist 2 | D8 | 0008 | N-16 | Two-client proof |
+| N-17 | persistence-engineer | Envelope, atomic write, loader: `crates/persist/src/{envelope,write,load}.rs`, `crates/persist/README.md` | L | 190 | per persist 2 | D8 | 0008 | N-16 | Two-client proof |
 | N-18 | server-engineer | `Transport` trait and `RawUdp`, `crates/server/src/transport/` | E | 150 | per server 5 | D3 D9 | 0009 | D3's line, N-14 | Two-client proof |
 | N-19 | devex-engineer | ADR 0010: the .NET SDK pin and its CI action, `docs/adr/0010-dotnet-sdk.md` | E | 40 | one SDK version for `client/global.json`; any action at a full SHA (ADR 0001) | D7 D17 | is the ADR | - | Bake-off |
 | N-20 | client-engineer | ADR 0013: the test packages of `client/lib.Tests`, `docs/adr/0013-dotnet-tests.md` | E | 40 | every `PackageReference` with version, owner, and licence (rule 6) | D4 | is the ADR | - | Bake-off |
@@ -158,31 +159,32 @@ D3's and D8's lines are W0-19's (founder). A row's Accept adds to its owner's ta
 | N-28 | client-engineer | Godot rung 1, `client/godot/` | E | 190 | per client 4 | D4 D13 | 0011 | N-25 | Bake-off |
 | N-29 | client-engineer | Unity rung 1, `client/unity/` | E | 190 | per client 5 | D4 D13 | 0012 | N-27 | Bake-off |
 | N-30 | game-designer | GDD, the runs half, `docs/design/gdd.md` | E | 150 | per designer 1 | D2 D9 D26 | no | W1-06 | Gate 1 |
-| N-31 | game-designer | `content/cordon.csv` | E | 40 | per designer 6 | D14 D26 | no | W1-07 | Gate 1 |
+| N-31 | game-designer | `content/cordon.csv` | E | 40 | per designer 6 | D14 D26 | no | W1-07 N-30 | Gate 1 |
 | N-32 | sim-engineer | Cordon calendar, `crates/sim/src/cordon.rs` | L | 150 | per sim 5 | D26 | 0005 | N-07 N-31 | Gate 1 |
 | N-33 | game-designer | `docs/design/prohibitions.md` | E | 60 | per designer 2 | D2 D14 D26 | no | W1-07 | Cut scope |
 | N-34 | art-director | `docs/design/art-direction.md`, the look | E | 150 | per art-director 4, first PR | D2 D9 D13 D14 D26 | no | - | Bake-off rung 2 |
-| N-35 | art-director | `content/palette/` | E | 50 | per art-director 2 | D26 | no | N-31 | Bake-off rung 2 |
+| N-48 | art-director | Swatch-and-contrast script spec, `content/palette/README.md` | E | 40 | the hand-off of `art-director.md`:173-174: the input (`palette.csv`), the strip drawn, the 3:1 pairs of the palette rules and the ratio's formula, the red message | D9 D26 | no | - | Bake-off rung 2 |
+| N-49 | devex-engineer | Swatch-and-contrast script, `tools/checks/swatch.sh`, a `pr-gates.yml` job | E | 100 | per N-48: the strip and the contrast output as job artifacts; a planted pair under 3:1 goes red naming both keys; no `palette.csv` passes, saying so; red and green linked | D9 D26 | no; a new tool needs one first | N-48 | Bake-off rung 2 |
+| N-35 | art-director | `content/palette/` | E | 50 | per art-director 2, both outputs from N-49's job linked | D26 | no | N-31 N-48 N-49 | Bake-off rung 2 |
+| N-50 | art-director | Brief template and capsule brief, `docs/plan/art-briefs/{TEMPLATE,capsule,spend-ledger}.md` | E | 140 | per art-director 5, on Q31's default (D21); no spend queued: the ~$400 and D26's greybox test come later | D12 D14 D21 D26 | no | N-34 N-35 | - |
 | N-36 | founder | Buy the recommended kit (spend); no file | F | 0 | the founder buys; no pack file is committed (Q30) | D12 | no | W1-15 | Bake-off rung 2 |
 | N-37 | art-director | `content/kits/README.md` and the kit's records | E | 150 | per art-director 3 | D12 D17 | Q30 default | N-36 | Bake-off rung 2 |
 | N-38 | test-engineer | Simulator skeleton, `crates/tools/src/bin/sim.rs` | E | 190 | per test 1 | D3 | no | W1-10 | Rule 2 nightly |
 | N-39 | devex-engineer | Sim allowlist: `tools/allowlist/sim.toml`, `tools/checks/sim-deps.sh` | E | 150 | per devex 6, listing 0005 and 0006 | D3 | no | W1-04 W1-05 | Rule 1 hook |
 | N-40 | devex-engineer | Hearth-only CI step, `.github/workflows/ci.yml` | E | 20 | `cargo test -p sim --no-default-features` on both runners | D27 | no | N-07 | Rule 7 hook |
-| N-41 | devex-engineer | `tools/checks/wip-limit.sh`, a `pr-gates.yml` job | E | 90 | per W1-16's request; first, as D31's only limit | D31 | no | W1-16 | WIP limit hook |
+| N-41 | devex-engineer | `tools/checks/wip-limit.sh`, a `pr-gates.yml` job | E | 90 | per `devex-engineer.md`:75, its `wip-limit.sh` half; first, as D31's only limit | D31 | no | - | WIP limit hook |
 | N-42 | devex-engineer | `tools/checks/one-concern.sh`, a `pr-gates.yml` job | E | 90 | per W1-16's request | D6 | no | W1-16 | Rule 4 hook |
 | N-43 | devex-engineer | `tools/checks/adr-first.sh`, a `pr-gates.yml` job | E | 90 | per W1-16's request | D17 | no | W1-16 | Rule 6 hook |
 | N-44 | devex-engineer | `tools/checks/one-pin.sh`, a `pr-gates.yml` job | E | 60 | per W1-16's request | D17 | no | W1-16 | Rule 8 hook |
-| N-45 | reviewer | Dry run: eight planted violations, `docs/plan/review-log.md` | E | 60 | per reviewer 3; test-engineer writes the synthetic PR, closed unmerged | D6 | no | W0-18 | Review gate |
+| N-45 | test-engineer | Synthetic PR for the reviewer's dry run: the planted files in `crates/{sim,proto,persist,server}/` on a `claude/` branch | E | 220 | `reviewer.md`:149's eight violations, over 200 lines among them; the description names none (a blind review); closed unmerged after the review; the deleted test is one W1-01 merged; the reviewer's planted-versus-caught entry lands in that week's report PR (`reviewer.md`:57) | D6 | no | W0-18 W1-01 | Review gate |
 | N-46 | marketing | `docs/devlog/` README and first outline | E | 120 | per marketing 3 | D2 D31 | no | D3's line | - |
 | N-47 | founder | Book architecture review 1 (spend); no file | F | 0 | the founder books and pays; the producer queues each finding | D12 | no | D3's line | Architecture review 1 |
 
-Held, not queued: steam-release's tasks, marketing tasks 1, 2, 5, 6, and art-director task 5 (the capsule brief)
-wait for the two-player loop (`producer.md`, Never do; founder question 4); `test-guard.sh` waits on Q7. The rest
-of the owners' first tasks enter later queues: sim 6, net 3-6, server 4 and 6, persist 3-6, test 2-5, client 2
-and 6, designer 7, art-director 4's second PR, and devex's `nightly.yml` and `export.yml`.
+Held: steam-release's tasks and marketing tasks 1, 2, 5, 6 wait for the two-player loop (`producer.md`, Never do);
+`test-guard.sh` waits on Q7. Later queues take the owners' other first tasks: sim 6, net 3-6, server 4 and 6, persist
+3-6, test 2-5, client 2 and 6, designer 7, art-director 4's second PR, and devex's `nightly.yml` and `export.yml`.
 
 ## Open questions for the founder
-
 1. Week-0 question 4, still open: the slip rule (`producer.md`, The weekly loop, step 5). W0-08 reaches its
    second reconcile at week 1's end, waiting only on your run. Is such an item exempt? A yes goes in
    `producer.md` (D24); until then the rule applies as written, and nothing is cut (D28).
@@ -190,10 +192,9 @@ and 6, designer 7, art-director 4's second PR, and devex's `nightly.yml` and `ex
    without one (`docs/adr/README.md`: the sim skeleton needs none); a yes merges before proto carries `fixed_scale` (net 3).
 3. Q8's default sets one `TICK_HZ` and one `HEARTH_EVERY` but no values, and no decision or design note gives
    them. N-02 needs both to turn W1-09's work times into ticks and waits on your answer in `open-questions.md`.
-4. The capsule brief: Q31's default puts it in weeks 0-6; `producer.md` holds page preparation until the
-   two-player loop. This queue holds it; say if Q31's default wins.
+4. N-50, the capsule brief, is queued on Q31's default (D21) with no spend. Should `producer.md`'s page rule (Never
+   do) also cover art-director task 5? A yes is your answer to Q31, and N-50 leaves the queue until the loop.
 5. Q7 has no written default, so `test-guard.sh` is not queued. Q18 stays open; nothing here waits on it.
 
 ## Questions
-
 Agents add `<ID>: question` here. The producer answers it or parks the item and asks the founder above.
