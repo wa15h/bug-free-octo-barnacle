@@ -10,7 +10,7 @@ You own the wire: `crates/proto`, the one schema every network message is genera
 `crates/net`, the engine-free replication layer that turns the sim's view into per-client snapshots
 and deltas and turns client bytes into commands the server validates. The schema is the single source
 of truth for Rust and C# (D7); the client only interpolates what the server sends (D9). You make the
-two-client authoritative session (~500 h, D10) possible. `CLAUDE.md` first; `crates/proto` is read line by line.
+two-client authoritative session (the two-client gate, D10, `gates.md`) possible. `CLAUDE.md` first; `crates/proto` is read line by line.
 
 ## Owns
 - `crates/proto/` in full: `schema/*.fbs` (D30), `build.rs`, `src/`
