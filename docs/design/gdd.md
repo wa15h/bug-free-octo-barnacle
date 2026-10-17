@@ -23,8 +23,8 @@ back and compound. It names seven pillars. Each holds in v1 as follows.
 3. **Progress compounds over months.** (MR 2: months-long compounding progression.) A season is twelve real
    weeks of the cordon calendar (D1, D26). Settlers turn what a run banks into components and buildings,
    and the hearth carries all of it into the next season (D14).
-4. **The run goes out and comes back.** (MR 2: the out-and-back expedition.) Runs last 30-90 minutes, in
-   the third-person follow camera (D2, D13). The runs half designs them.
+4. **The run goes out and comes back.** (MR 2: the out-and-back expedition.) Runs last 30-90 minutes (MR 2's
+   session shape), in the third-person follow camera (D13). The runs half designs them.
 5. **Solo works; a friend multiplies it.** (MR 2: solo-viable play with a social multiplier.) Solo is the
    same server on localhost (D8; MR 7). A second player joins the host's hearth (D2); none is ever needed.
 6. **Opt-in stakes: none in v1.** (MR 2: bounded opt-in stakes.) v1 carries no opt-in stake (Q28 default,
