@@ -2,8 +2,8 @@
 
 Game designer. The cut scope (D1, D2) is the whole design. This half holds the pillars, loop, and hearth.
 The runs half (runs and the lock-up clock, combat, the cordon calendar) goes before Deferred. Every setting
-word comes from D26's glossary. The doc holds no tuning number; every number the player ever sees is an
-integer cell in a `content/` table, under the rules in `content/README.md`.
+word comes from D26's glossary. The doc holds no tuning number. Every number the player ever sees is an
+integer cell in a `content/` table (`content/README.md`); the sim owns its own constants (Q8 default).
 
 **Scope (D2).** One cordon season of twelve real weeks, one region (Alder, the overgrown city), one kit,
 one enemy family (a wild boar sounder), three settler jobs, and a 2-player listen server (D8).
@@ -35,7 +35,7 @@ back and compound. It names seven pillars. Each holds in v1 as follows.
    The look runs from "wild green and rust beyond a small lit hearth in week one" to "cleared streets, beds,
    and lamplight across the lifted sectors by week twelve" (D26).
 
-**Session shapes (MR 2; D2).** 2-10 minute async check-ins, 30-90 minute runs, and occasional 2-4 hour deep
+**Session shapes (MR 2).** 2-10 minute async check-ins, 30-90 minute runs, and occasional 2-4 hour deep
 sessions; every system serves at least one. MR 2's dislikes are written as rules in `prohibitions.md`.
 
 ## The loop (D1, D2, D8, D26)
@@ -75,8 +75,8 @@ destination from the diorama without a click (`legibility.md`), and can say what
   - **Salvager: junk to components.** It breaks the junk that runs bring back into components.
   - **Grower: planted beds to food.** A planted bed is its workplace; tending the bed grows food.
   - **Builder: components to blueprint buildings.** Its `content/jobs.csv` row names the site as its
-    building: its free workplace is a placed site no Builder holds, and its cycle is that site's blueprint
-    row (see Blueprints and buildings).
+    building and holds zero inputs, outputs, and work hours: its free workplace is a placed site no Builder
+    holds, and that site's blueprint row gives the cycle (see Blueprints and buildings).
 - Each settler holds one job at a time, so the diorama shows it without a click; the player assigns it there.
 - A job runs in cycles. A cycle starts when the store holds the row's inputs and a workplace of the row's
   building is free. The inputs move from the store to the settler, who carries them to the workplace. When
@@ -97,9 +97,10 @@ destination from the diorama without a click (`legibility.md`), and can say what
 - The hearth holds three resources: junk, components, and food (D26). Every unit is an integer balance in a
   named account: a settler, a building (the store and sites included), or a player's pack. All economy math
   is integer and fixed-point (CLAUDE.md, Stack), and every number shown is its cell at its declared unit.
-- Every change is a transfer between two accounts. Units enter only from a named source (a cycle's outputs, a
-  run's finds) and leave only to a named sink (a cycle's inputs used up, a blueprint's cost), so no unit
-  appears or vanishes off the ledger.
+  The hearth has no coin: blueprints cost components and food, and nothing in it is bought or sold.
+- Every change is a transfer between two accounts. A unit enters only from a named source and leaves only to
+  a named sink, so none appears or vanishes off the ledger. The hearth's one source is a cycle's outputs and
+  its one sink a cycle's inputs used up, a blueprint's cost included; runs add their own.
 - The ledger prints once per in-game hour: every unit produced, consumed, moved, or lost, with the job, the
   settler, and the building that did it. Each resource's lines sum to zero that hour, sources and sinks
   included (`legibility.md`).
@@ -132,8 +133,9 @@ migration.
 
 ## Deferred (D2, D31)
 
-D2's cut scope is the whole design, and nothing below is designed here, even as later. An item enters only
-when the founder adds a decision row naming it (D31).
+D2's cut scope is the whole design, and nothing below is designed here, even as later. Both lists are the
+deferred list: an item enters only when the founder adds a decision row naming it (D31). The second list
+holds the four items CLAUDE.md's cut scope marks never in v1.
 
 Deferred until the founder adds it back:
 - 4-player drop-in
