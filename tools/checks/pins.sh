@@ -2,9 +2,12 @@
 # D17 gate; the pre-push hook (W0-16) and CI run this same file. Each mirror must equal tools/pins.toml:
 # rust-toolchain.toml (no legacy rust-toolchain); Cargo.lock (one steamworks and one steamworks-sys, each from
 # crates.io; `cargo tree -d --depth 0` lists only duplicates); the vendored redistributable SHA-256s, STEAM_SDK_LOCATION
-# unset; every `uses:` under .github/workflows and .github/actions. CRLF reads as LF. The first loop reads every row
-# before any check runs, so a missing row fails now. A check with nothing to check yet says so, names the item that
-# makes it bite, and passes. The first failure exits 1: `RULE D17: <what> -- <fix>`.
+# unset; every `uses:` under .github/workflows and .github/actions; for flatbuffers (D30, ADR 0004), `flatc --version`
+# on PATH, every flatbuffers in Cargo.lock, and every Google.FlatBuffers Version in client/'s .csproj, .props, and
+# .targets files (outside obj/ and bin/), written "[x.y.z]". While flatbuffers is "pending", a Cargo.lock or client/
+# mirror fails and flatc is only reported. CRLF reads as LF. The first loop reads every row before any check runs, so a
+# missing row fails now. A check with nothing to check yet says so, names the item that makes it bite, and passes.
+# The first failure exits 1: `RULE D17: <what> -- <fix>`.
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 P=tools/pins.toml; pins=$(tr -d '\r' < "$P" || true)
@@ -68,7 +71,29 @@ else
   say "ok: every uses: in .github/workflows and .github/actions is a full commit SHA equal to $P"
 fi
 
-fb=$(pin flatbuffers); m=$( (grep -ls '^name = "flatbuffers"' Cargo.lock; grep -rlsi --include='*.csproj' --include='*.props' --include='*.targets' Google.FlatBuffers client; grep -rls flatc tools/codegen || true) | paste -sd' ' -)
-[ "$fb" = pending ] && [ -z "$m" ] || fail "$P flatbuffers is \"$fb\", mirrors in: ${m:-none}; pins.sh does not check flatc, Cargo.lock, or Google.FlatBuffers against it yet" "write that check in tools/checks/pins.sh in its own devex PR, with red and green runs, before the pin-only PR that sets the row (D30, rules 4 and 8)"
-say "skip: the D17 check that flatc, Cargo.lock, and Google.FlatBuffers match flatbuffers (D30) is not written; pins.sh fails once the row leaves pending (ADR 0004, W0-10) or a mirror lands (week 1: crates/proto, client/lib, the codegen pipeline)"
+fb=$(pin flatbuffers)
+fbfix() { if [ "$fb" = pending ]; then echo "set $P flatbuffers to ADR 0004's version in its own pin-only PR first (W1-13b, rule 8)"; else echo "${1:-}"; fi; }
+if f=$(command -v flatc); then
+  v=$(flatc --version 2>&1 | tr -d '\r' | paste -sd' ' - || true)
+  if [ "$fb" = pending ]; then say "skip: flatc at $f reports \"$v\"; checked once $P flatbuffers leaves pending (W1-13b)"
+  else [ "$v" = "flatc version $fb" ] || fail "flatc at $f reports \"$v\", $P flatbuffers is $fb" "put flatc $fb, from ADR 0004's zip for this OS, first on PATH"
+    say "ok: flatc at $f reports $fb, equal to $P flatbuffers"; fi
+else say "skip: no flatc on PATH; bites when W1-13c installs it in CI and on clones"; fi
+v=$(grep -A1 '^name = "flatbuffers"' Cargo.lock | sed -n 's/^version = "\([^"]*\)".*/\1/p' | paste -sd' ' - || true)
+if [ -z "$v" ]; then say "skip: no flatbuffers in Cargo.lock yet; bites when W1-14 adds it to crates/proto"
+else [ "$v" = "$fb" ] || fail "Cargo.lock has flatbuffers $v, $P flatbuffers is $fb" "$(fbfix "depend on flatbuffers = \"=$fb\" in crates/proto alone, then commit Cargo.lock (ADR 0004)")"
+  say "ok: Cargo.lock has one flatbuffers, $v, equal to $P flatbuffers"; fi
+refs=$(git ls-files -z -co --exclude-standard -- 'client/*.csproj' 'client/*.props' 'client/*.targets' |
+  while IFS= read -r -d '' f; do case $f in */obj/*|*/bin/*) ;; *) grep -HniE '"Google\.FlatBuffers"' "$f" || true ;; esac; done)
+n=0
+while IFS= read -r r; do
+  [ -n "$r" ] || continue; at=$(cut -d: -f1-2 <<< "$r")
+  [ "$fb" != pending ] || fail "$at references Google.FlatBuffers, $P flatbuffers is pending" "$(fbfix)"
+  while IFS= read -r v; do n=$((n + 1))
+    [ "$v" = "[$fb]" ] || fail "$at has Google.FlatBuffers Version \"$v\", $P flatbuffers is $fb" "write Version=\"[$fb]\", the exact form ADR 0004 names"
+  done < <(grep -oiE '[[:space:]]Version(Override)? *= *"[^"]*"' <<< "$r" | sed 's/^[^"]*"//; s/"$//')
+done <<< "$refs"
+if [ -z "$refs" ]; then say "skip: no Google.FlatBuffers in client/ yet; bites when N-22 adds client/lib"
+elif [ "$n" = 0 ]; then fail "Google.FlatBuffers has no Version on its line at $(cut -d: -f1-2 <<< "$refs" | paste -sd' ' -), $P flatbuffers is $fb" "write Version=\"[$fb]\" on the PackageReference or PackageVersion line (ADR 0004)"
+else say "ok: $n Google.FlatBuffers Version(s) in client/ equal $P flatbuffers, [$fb]"; fi
 say "skip: dotnet-sdk comes with client/global.json and the codegen pipeline in week 1 (ADR 0004); godot and unity in week 1's pin-only PRs; csharp-binding waits on the client engineer's binding ADR (ADR 0002 open pin task)"
