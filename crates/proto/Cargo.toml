@@ -3,3 +3,6 @@ name = "proto"
 version.workspace = true
 edition.workspace = true
 publish.workspace = true
+
+[dependencies]
+flatbuffers = "=25.1.24"
