@@ -18,7 +18,7 @@ Boroughs) is scope, not tuning: it goes to the producer, and it enters only thro
 | File | One row is | Row count | Its `why` also |
 |---|---|---|---|
 | `jobs.csv` | a settler job: inputs, outputs, work hours, building | exactly three: `salvager`, `grower`, `builder` (D2, D26) | names the session shape it serves, a check-in or a run (MR 2) |
-| `ledger.csv` | a starting account and its units | one per account; D2 fixes none | - |
+| `ledger.csv` | a starting account and its units | one per account; D2 fixes none | names the session shape it serves, a check-in or a run (MR 2) |
 | `buildings.csv` | a building | one per building; D2 fixes none | - |
 | `blueprints.csv` | a blueprint: its ledger costs, work hours, and the building it raises | one per blueprint; D2 fixes none | - |
 | `cordon.csv` | a cordon stage | exactly twelve, `week` 1 to 12, one each (D2, D26); week 13 reseeds the season and is never a row | - |
