@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Google.FlatBuffers" Version="[25.1.24]" />
+  </ItemGroup>
+</Project>
