@@ -3,9 +3,9 @@
 The rules every data table below obeys. The game designer owns this file and these tables; the sim
 engineer owns the structs they load into and the validation that rejects a bad table at load.
 `content/palette/` and `content/kits/` are the art director's and follow their own READMEs. Decisions: D2
-(the cut scope), D18 and rule 9 (the founder can explain every row), D26 (setting words), and CLAUDE.md
-"Stack" (fixed-point economy math). No table exists yet; each lands in its own queue item, which follows
-these rules.
+(the cut scope), D18 and CLAUDE.md rule 9 (the founder can explain every row), D26 (setting words), and
+CLAUDE.md "Stack" (fixed-point economy math). No table exists yet; each lands in a later queue item (W1-09
+lands `jobs.csv` and `ledger.csv`), which follows these rules.
 
 ## The tables and their row counts
 
@@ -30,7 +30,8 @@ Boroughs) is scope, not tuning: it goes to the producer, and it enters only thro
 
 ## Rules
 
-Each rule ends with its check: what a reviewer reads in one row (for rule 7, in the PR) to see it holds.
+Each rule ends with its check: what a reviewer reads in the table's rows (for rule 4, a screenshot or a
+doc; for rule 7, the PR) to see it holds.
 
 1. **One CSV per table.** One file per table above: header row first, one row per thing, UTF-8, LF line
    ends. A cell is quoted only when it holds a comma, and no cell holds a double quote.
@@ -44,7 +45,7 @@ Each rule ends with its check: what a reviewer reads in one row (for rule 7, in 
 3. **Every row ends with a `why`.** The last column is `why`: one sentence a tester could read aloud that
    explains the number, as "`<n>` work hours: a Salvager breaks down one day of junk in one day, so the
    pile never grows unattended". A row without a `why` fails review; so does a `why` that says "feels
-   right" or gives no reason (D18, rule 9).
+   right" or gives no reason (D18, CLAUDE.md rule 9).
    Check: read the last cell aloud; it names the number and the reason for it.
 4. **Every number the player sees is a cell.** No constant lives in a doc, a comment, or code: a doc or
    code that needs a number names its cell (file, row `id`, column). If the client needs a number, it
@@ -62,18 +63,18 @@ Each rule ends with its check: what a reviewer reads in one row (for rule 7, in 
    before `why`, in its first rename PR, which waits on the sim loader reading it; the producer sequences
    it with the sim engineer. A rename in `jobs.csv`, `cordon.csv`, or `enemies.csv`, whose ids or counts
    D2 and D26 fix, goes to the producer first; how a deprecated row counts is the sim's validation.
-   Check: the `id` is kebab-case; a deprecated row's `replaced_by_id` names a live row in the same file.
+   Check: the `id` is kebab-case; a deprecated row's `replaced_by_id` chain ends at a live row in its file.
 7. **A table change ships with what consumes it.** The PR links the sim fixture or property test that
    loads the changed rows, green on its head; a ledger number change links the conservation property
-   test, green (the reviewer's rule for `content/`). Where the queue row says no loader exists yet, the
-   PR names the queue item whose test will load the rows (W1-09: N-01 and N-02).
-   Check: the PR's "Accept on evidence" links that run on the PR's head, or names the item its queue row
-   moves the loader to.
+   test, green (the reviewer's rule for `content/`). Where the queue row moves the loader or the
+   conservation test to a later item, the PR names that item (W1-09: N-01 and N-02).
+   Check: the PR's "Accept on evidence" links that run on the PR's head, or names the items its queue row
+   moves the loader and the conservation test to.
 8. **Weights sum to 1000.** Loot and placement weights are integers that sum to 1000 per pool, and each
    weight row's `why` says so.
    Check: the row's `why` gives its weight out of 1000; the pool's rows add up to 1000.
-9. **Setting words come from D26's glossary.** Every setting word in a cell (an `id`, a `why`, or text the
-   player reads) comes from the glossary under D26 in `docs/plan/decisions.md`. The sickness is never
-   named. A word D2 itself uses, such as settler, stands as D2 uses it.
-   Check: read the row's word cells; each setting word is a new term in the glossary or a word D2 uses,
-   and none is an old term the glossary replaces.
+9. **Setting words come from D26's glossary.** Every setting word in a doc, a row `id`, or a `why` comes
+   from the glossary under D26 in `docs/plan/decisions.md`, "the single source for every setting term",
+   so text the player reads in a cell follows it too. The sickness is never named or shown.
+   Check: read the row's word cells; each setting word comes from the glossary under D26, none is an old
+   term the glossary replaces, and none names or describes the sickness.
