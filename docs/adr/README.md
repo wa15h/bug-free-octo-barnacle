@@ -32,7 +32,7 @@ The ADR merges before the PR that needs it. When unsure, ask the producer in the
 3. An upgrade PR (rule 8) edits the pin's ADR in place: the new version and a dated line saying why.
    A changed choice is a new ADR; the old one's Status becomes "Superseded by NNNN" in that PR.
 
-## Numbers reserved by the week-0 queue, `docs/plan/week-0.md` (next free: 0005)
+## Numbers reserved by the queues, `docs/plan/week-0.md` and `docs/plan/queue.md` (next free: 0015)
 
 | Number | File | Queue item | Owner |
 |---|---|---|---|
@@ -40,3 +40,13 @@ The ADR merges before the PR that needs it. When unsure, ask the producer in the
 | 0002 | `0002-steamworks.md` | W0-05 | server-engineer |
 | 0003 | `0003-sidecar-watchdog.md` | W0-09 | server-engineer |
 | 0004 | `0004-wire-format.md` | W0-10 | net-engineer |
+| 0005 | `0005-proptest.md` | W1-04 | sim-engineer |
+| 0006 | `0006-serde.md` | W1-05 | sim-engineer |
+| 0007 | `0007-settlement-viewer.md` | W1-11 | test-engineer |
+| 0008 | `0008-save-encoding.md` | N-16 | persistence-engineer |
+| 0009 | `0009-tokio.md` | N-11 | server-engineer |
+| 0010 | `0010-dotnet-sdk.md` | N-19 | devex-engineer |
+| 0011 | `0011-godot-pin.md` | N-24 | devex-engineer |
+| 0012 | `0012-unity-pin.md` | N-26 | devex-engineer |
+| 0013 | `0013-dotnet-tests.md` | N-20 | client-engineer |
+| 0014 | `0014-rawudp-transport.md` | N-54 | server-engineer |
