@@ -39,9 +39,15 @@ doc; for rule 7, the PR) to see it holds.
 2. **Every number is an integer in a declared unit.** The header ends in the unit: `_units` (a whole
    amount: resource units, damage, carry, a weight), `_ticks` (sim ticks, rule 5), `_hours` (in-game
    hours), `_pct` (0 to 100), or `_hundredths`. No float, no `0.3`, no `30%`. The one number without a
-   suffix is `cordon.csv`'s `week`, the cordon week. Any other column without a unit holds words: the
-   `id`, the `why`, a cell naming another row's `id` (its header ends `_id`), or text the player reads.
-   Check: every cell under a unit header is digits, with at most a leading `-`; a `_pct` cell is 0 to 100.
+   suffix is `cordon.csv`'s `week`, the cordon week. Any other column without a unit holds words, of five
+   kinds: the `id`; the `why`; another row's `id` (its header ends `_id`); text the player reads; or a key
+   shared with another owner's file (its header ends `_key`, or `_keys` for several split by single
+   spaces). The shared keys are `cordon.csv`'s palette key, which names a `content/palette/palette.csv`
+   row by its `key`, and its lifted and closed slot classes, which the kit manifest's `category` column
+   uses (`art-director.md`); the file that lands second checks the match.
+   Check: every cell under a unit header is digits, with at most a leading `-`; a `_pct` cell is 0 to 100;
+   no cell under any other header, except `cordon.csv`'s `week`, is a bare number; each word in a `_key`
+   or `_keys` cell is kebab-case.
 3. **Every row ends with a `why`.** The last column is `why`: one sentence a tester could read aloud that
    explains the number, as "`<n>` work hours: a Salvager breaks down one day of junk in one day, so the
    pile never grows unattended". A row without a `why` fails review; so does a `why` that says "feels
@@ -77,4 +83,4 @@ doc; for rule 7, the PR) to see it holds.
    from the glossary under D26 in `docs/plan/decisions.md`, "the single source for every setting term",
    so text the player reads in a cell follows it too. The sickness is never named or shown.
    Check: read the row's word cells; each setting word comes from the glossary under D26, none is an old
-   term the glossary replaces, and none names or describes the sickness.
+   term the glossary replaces, and none names or shows the sickness.
