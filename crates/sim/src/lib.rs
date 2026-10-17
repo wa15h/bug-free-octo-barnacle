@@ -1,4 +1,4 @@
-//! The deterministic simulation every server runs (D3): no engine, clock, I/O, threads, or floats.
+//! The deterministic sim every server runs: engine-free (D3), no clock, I/O, threads, or floats.
 
 mod fixed;
 mod rng;

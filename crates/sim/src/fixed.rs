@@ -1,5 +1,5 @@
-/// Raw steps in one whole unit, so `Fixed(1_500_000)` is 1.5. Decimal, so a printed ledger shows
-/// exact values. Proto and persist will share it; Q10 (open-questions.md) asks if it needs an ADR.
+/// Raw steps in one whole unit, so `Fixed(1_500_000)` is 1.5. Decimal: a printed ledger is exact.
+/// Proto and persist will share it; Q10 asks if scale and width need an ADR or a decision-log line.
 pub const SCALE: i64 = 1_000_000;
 
 /// A fixed-point number, its value times `SCALE`: the sim's positions, weights, and money.
