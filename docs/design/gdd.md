@@ -2,8 +2,8 @@
 
 Game designer. The cut scope (D1, D2) is the whole design. This half holds the pillars, loop, and hearth.
 The runs half (runs and the lock-up clock, combat, the cordon calendar) goes before Deferred. Every setting
-word comes from D26's glossary. The only numbers here are D2's scope and MR 2's session shapes; every number
-the game uses is an integer cell in a `content/` table, under the rules in `content/README.md`.
+word comes from D26's glossary. The doc holds no tuning number; every number the player ever sees is an
+integer cell in a `content/` table, under the rules in `content/README.md`.
 
 **Scope (D2).** One cordon season of twelve real weeks, one region (Alder, the overgrown city), one kit,
 one enemy family (a wild boar sounder), three settler jobs, and a 2-player listen server (D8).
@@ -27,15 +27,15 @@ back and compound. It names seven pillars. Each holds in v1 as follows.
    the third-person follow camera (D2, D13). The runs half designs them.
 5. **Solo works; a friend multiplies it.** (MR 2: solo-viable play with a social multiplier.) Solo is the
    same server on localhost (D8; MR 7). A second player joins the host's hearth (D2); none is ever needed.
-6. **Opt-in stakes: none in v1.** (MR 2: bounded opt-in stakes.) The stakes mode is the Hospital Quarter,
-   which D2 defers (D26). v1 carries no opt-in stake (Q28 default, D21).
-7. **The world is told by its environment.** (MR 2: a world told through its environment.) The world is
-   Alder, an overgrown city whose ring fence lifts sector by sector each week (D26). The kit, the lifting,
-   and the ledger tell it, with no heavy authored narrative (an MR 2 dislike). The look runs from "wild
-   green and rust beyond a small lit hearth in week one" to "cleared streets, beds, and lamplight across
-   the lifted sectors by week twelve" (D26).
+6. **Opt-in stakes: none in v1.** (MR 2: bounded opt-in stakes.) v1 carries no opt-in stake (Q28 default,
+   D21); the deferred list says why.
+7. **The world is told by its environment.** (MR 2, restated in D26's terms: a world told through its
+   environment.) The world is Alder, an overgrown city whose ring fence lifts sector by sector each week
+   (D26). The kit, the lifting, and the ledger tell it, with no heavy authored narrative (an MR 2 dislike).
+   The look runs from "wild green and rust beyond a small lit hearth in week one" to "cleared streets, beds,
+   and lamplight across the lifted sectors by week twelve" (D26).
 
-**Session shapes (MR 2).** 2-10 minute async check-ins, 30-90 minute runs, and occasional 2-4 hour deep
+**Session shapes (MR 2; D2).** 2-10 minute async check-ins, 30-90 minute runs, and occasional 2-4 hour deep
 sessions; every system serves at least one. MR 2's dislikes are written as rules in `prohibitions.md`.
 
 ## The loop (D1, D2, D8, D26)
@@ -68,15 +68,16 @@ destination from the diorama without a click (`legibility.md`), and can say what
 
 ### Settlers and jobs (D2, D14, D26)
 
-- The hearth's settlers, buildings, and balances start as the accounts in `content/ledger.csv`. No settler
-  is ever lost (D14).
+- The hearth's settlers, buildings, and balances start as the accounts in `content/ledger.csv`. A settler's
+  row there names its starting job, so the hearth works before anyone assigns one.
 - There are three jobs, one row each in `content/jobs.csv`: inputs, outputs, work hours, and the building
   the job works at. A fourth job row is a load error (D2).
   - **Salvager: junk to components.** It breaks the junk that runs bring back into components.
   - **Grower: planted beds to food.** A planted bed is its workplace; tending the bed grows food.
-  - **Builder: components to blueprint buildings.** Its workplace is a blueprint's site, and its cycle is
-    that blueprint's row (see Blueprints and buildings).
-- The player assigns each settler one job, in the diorama. A settler holds one job at a time.
+  - **Builder: components to blueprint buildings.** Its `content/jobs.csv` row names the site as its
+    building: its free workplace is a placed site no Builder holds, and its cycle is that site's blueprint
+    row (see Blueprints and buildings).
+- Each settler holds one job at a time, so the diorama shows it without a click; the player assigns it there.
 - A job runs in cycles. A cycle starts when the store holds the row's inputs and a workplace of the row's
   building is free. The inputs move from the store to the settler, who carries them to the workplace. When
   the row's work hours are done, the inputs are used up and the outputs go to the store.
@@ -96,7 +97,7 @@ destination from the diorama without a click (`legibility.md`), and can say what
 - The hearth holds three resources: junk, components, and food (D26). Every unit is an integer balance in a
   named account: a settler, a building (the store and sites included), or a player's pack. All economy math
   is integer and fixed-point (CLAUDE.md, Stack), and every number shown is its cell at its declared unit.
-- Every change is a transfer between two accounts. Units enter only from a named source (a bed's growth, a
+- Every change is a transfer between two accounts. Units enter only from a named source (a cycle's outputs, a
   run's finds) and leave only to a named sink (a cycle's inputs used up, a blueprint's cost), so no unit
   appears or vanishes off the ledger.
 - The ledger prints once per in-game hour: every unit produced, consumed, moved, or lost, with the job, the
@@ -104,25 +105,24 @@ destination from the diorama without a click (`legibility.md`), and can say what
   included (`legibility.md`).
 - Catch-up is printed, never silent: a returning player sees the lines a live session would have printed,
   and the first line states the elapsed hours and any clamp (one cordon season, Q9 default).
-- Time in the hearth is in-game hours. The sim owns the one constant that turns hours into ticks (Q8
-  default: one `TICK_HZ` and one `HEARTH_EVERY`).
+- Time in the hearth is in-game hours. The sim owns the constants that turn hours into ticks (Q8 default: one
+  `TICK_HZ` and one `HEARTH_EVERY`; their values wait on the founder's answer to Q8).
 
 ### Blueprints and buildings (D2, D26; MR 7)
 
 - A blueprint is a row in `content/blueprints.csv`: its cost in components and food, its work hours, and the
-  building it makes, which is a row in `content/buildings.csv`.
-- Why food: components go into the building and food feeds the hands that raise it, so all three jobs feed
-  the one thing the player places.
+  building it makes (a row in `content/buildings.csv`). Components go into the building and food feeds the
+  hands that raise it, so all three jobs feed the one thing the player places.
 - The player picks a blueprint and places it on the hearth's free ground in the diorama: one pick and one
   placement, with no nested menu (MR 7: building that does not live in nested menus).
 - A placed blueprint is a site, and a site is a Builder's workplace. Builders take sites in the order they
-  were placed.
-- The Builder's cycle is the blueprint's row: its cost moves from the store to the Builder at the start and
-  is used up when the work hours are done and the building stands. Every blueprint cost is a ledger transfer.
-- The store is one starting building: it holds every unit that no settler, site, or pack holds. It has no
-  capacity limit, so no absence wastes a unit and nothing pushes a player to check in on time (D14). Every
-  other building is a workplace for the job its row names; more workplaces let more settlers work the same
-  job at once.
+  were placed, so the same hearth always prints the same ledger.
+- The Builder's cycle is the site's blueprint row: its cost moves from the store to the Builder at the start
+  and is used up when the work hours are done. Its output is the building, not units in the store. Every
+  blueprint cost is a ledger transfer.
+- The store is one starting building: it holds every unit no settler, site, or pack holds, with no capacity
+  limit, so no absence wastes a unit and nothing pushes a player to check in on time (D14). Every other
+  building is a workplace for its row's job; more workplaces let more settlers work that job at once.
 
 ### What persists (D14)
 
