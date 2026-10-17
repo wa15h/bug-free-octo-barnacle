@@ -1,5 +1,4 @@
-use sim::fixed::{Fixed, FixedError, SCALE};
-use sim::rng::Rng;
+use sim::{Fixed, FixedError, Rng, SCALE};
 
 /// Published in rand_xoshiro 0.6.0's `reference` tests, made with the reference C code at
 /// https://prng.di.unimi.it: `src/splitmix64.rs`, SplitMix64's first four outputs from seed
@@ -45,11 +44,10 @@ fn check(x: Fixed, y: Fixed) {
     assert_eq!(x.checked_add(y), exact(a + b), "{x:?} + {y:?}");
     assert_eq!(x.checked_sub(y), exact(a - b), "{x:?} - {y:?}");
     assert_eq!(x.checked_mul(y), exact(a * b / scale), "{x:?} * {y:?}");
-    let quotient = match b {
-        0 => Err(FixedError::DivideByZero),
-        _ => exact(a * scale / b),
-    };
-    assert_eq!(x.checked_div(y), quotient, "{x:?} / {y:?}");
+    match b {
+        0 => assert_eq!(x.checked_div(y), Err(FixedError::DivideByZero), "{x:?} / 0"),
+        _ => assert_eq!(x.checked_div(y), exact(a * scale / b), "{x:?} / {y:?}"),
+    }
 }
 
 /// Every edge-value pair, then 10,000 pairs from seed 1: random words shifted right 0 to 63 bits.
